@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Location Silencer</string>
+    <string name="silencer_title">Silencer Title</string>
+    <string name="silencer_location">Silencer Location</string>
 </resources>
