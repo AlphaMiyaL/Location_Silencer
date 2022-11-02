@@ -1,5 +1,9 @@
 <resources>
     <string name="app_name">Location Silencer</string>
+    <string name="silencer_title_hint">Enter title of the silencer</string>
+    <string name="silencer_title_label">Title</string>
+    <string name="silencer_details_label">Details</string>
     <string name="silencer_title">Silencer Title</string>
     <string name="silencer_location">Silencer Location</string>
+    <string name="new_silencer">New Silencer</string>
 </resources>

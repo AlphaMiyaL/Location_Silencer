@@ -18,7 +18,7 @@ import java.util.*
 data class Silencer(@PrimaryKey
                     val id: UUID = UUID.randomUUID(),
                     val title: String = "",
-                    val location: Location? = null,
-                    val setLocationOn: Boolean = true,
-                    val setSilencerOn: Boolean = true
+                    //val location: Location? = null,
+                    //val setLocationOn: Boolean = true,
+                    //val setSilencerOn: Boolean = true
 )
