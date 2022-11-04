@@ -5,6 +5,7 @@ import android.os.Bundle
 import java.util.*
 
 private const val TAG = "MainActivity"
+private const val REQUEST_FOREGROUND_ONLY_PERMISSIONS_REQUEST_CODE = 34
 class MainActivity : AppCompatActivity(), SilencerListFragment.Callbacks  {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
