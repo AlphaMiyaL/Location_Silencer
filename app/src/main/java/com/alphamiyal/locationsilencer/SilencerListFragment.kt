@@ -100,8 +100,8 @@ class SilencerListFragment: Fragment() {
         @RequiresApi(Build.VERSION_CODES.N)
         fun bind(silencer: Silencer) {
             this.silencer = silencer
-            titleTextView.text = this.silencer.title
-            locationTextView.text = "meow"
+            titleTextView.text = "Hello World"//this.silencer.title
+            locationTextView.text = "meow" //
         }
 
         override fun onClick(v: View?) {

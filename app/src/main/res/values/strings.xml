@@ -6,4 +6,5 @@
     <string name="silencer_title">Silencer Title</string>
     <string name="silencer_location">Silencer Location</string>
     <string name="new_silencer">New Silencer</string>
+    <string name="preference_file_key">com.example.android.while_in_use_location.PREFERENCE_FILE_KEY</string>
 </resources>

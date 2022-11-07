@@ -17,8 +17,8 @@ import java.util.*
 @Entity
 data class Silencer(@PrimaryKey
                     val id: UUID = UUID.randomUUID(),
-                    val title: String = "",
-                    //val location: Location? = null,
+                    var title: String = "",
+                    var location: String = "",
                     //val setLocationOn: Boolean = true,
                     //val setSilencerOn: Boolean = true
 )
