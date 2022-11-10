@@ -45,6 +45,15 @@ class SilencerFragment: Fragment(), TimePickerFragment.Callbacks {
         super.onCreate(savedInstanceState)
         silencer = Silencer()
         val silencerId: UUID = arguments?.getSerializable(ARG_SILENCER_ID) as UUID
+        //Initialize map fragment
+        val mapFrag: Fragment = MapFragment()
+
+        //Open map fragment
+        parentFragmentManager
+            .beginTransaction()
+            .replace(R.id.map_view, mapFrag)
+            .commit()
+
         silencerDetailViewModel.loadSilencer(silencerId)
     }
 
