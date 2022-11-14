@@ -14,9 +14,12 @@ import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.OnMapReadyCallback
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MarkerOptions
 import java.util.*
 
 
@@ -53,13 +56,13 @@ class SilencerFragment: Fragment(), TimePickerFragment.Callbacks, OnMapReadyCall
         silencer = Silencer()
         val silencerId: UUID = arguments?.getSerializable(ARG_SILENCER_ID) as UUID
         //Initialize map fragment
-        val mapFrag: Fragment = MapFragment()
+        //val mapFrag: Fragment = MapFragment()
 
         //Open map fragment
-        parentFragmentManager
-            .beginTransaction()
-            .replace(R.id.map_view, mapFrag)
-            .commit()
+//        parentFragmentManager
+//            .beginTransaction()
+//            .replace(R.id.map_view, mapFrag)
+//            .commit()
 
         silencerDetailViewModel.loadSilencer(silencerId)
     }
@@ -101,6 +104,25 @@ class SilencerFragment: Fragment(), TimePickerFragment.Callbacks, OnMapReadyCall
     }
 
     override fun onMapReady(map: GoogleMap) {
+        map.setOnMapClickListener(object : GoogleMap.OnMapClickListener{
+            override fun onMapClick(latLng: LatLng) {
+                //Initialize marker options
+                val markerOptions: MarkerOptions = MarkerOptions()
+                //Set position of marker
+                markerOptions.position(latLng)
+                //Set title of marker
+                markerOptions.title("" + latLng.latitude + " : " + latLng.longitude)
+                //Remove all previous markers
+                map.clear()
+                //Animate zoom to the marker
+                map.animateCamera(
+                    CameraUpdateFactory.newLatLngZoom(
+                        latLng, 10F
+                    ))
+                //Add marker on map
+                map.addMarker(markerOptions)
+            }
+        })
         if (ActivityCompat.checkSelfPermission(requireActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
             != PackageManager.PERMISSION_GRANTED
             && ActivityCompat.checkSelfPermission(
