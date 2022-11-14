@@ -1,31 +1,38 @@
 package com.alphamiyal.locationsilencer
 
+import android.Manifest
+import android.content.pm.PackageManager
 import android.icu.util.Calendar
-import android.os.Build
 import android.os.Bundle
-import androidx.lifecycle.Observer
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.CheckBox
 import android.widget.EditText
-import androidx.annotation.RequiresApi
+import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import java.text.DateFormat
+import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.MapView
+import com.google.android.gms.maps.OnMapReadyCallback
 import java.util.*
+
 
 private const val TAG = "SilencerFragment"
 private const val ARG_SILENCER_ID = "silencer_id"
 private const val DIALOG_TIME = "DialogTime"
 private const val REQUEST_TIME = 0
+private const val MAPVIEW_BUNDLE_KEY = "MapViewBundleKey"
+private const val ERROR_DIALOG_REQUEST = 9001
+private const val PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 9002
+private const val PERMISSIONS_REQUEST_ENABLE_GPS = 9003
 
-class SilencerFragment: Fragment(), TimePickerFragment.Callbacks {
+class SilencerFragment: Fragment(), TimePickerFragment.Callbacks, OnMapReadyCallback {
     private lateinit var silencer: Silencer
     private lateinit var titleField: EditText
+    private lateinit var mapView: MapView
     private val silencerDetailViewModel: SilencerDetailViewModel by lazy{
         ViewModelProvider(this)[SilencerDetailViewModel::class.java]
     }
@@ -65,9 +72,8 @@ class SilencerFragment: Fragment(), TimePickerFragment.Callbacks {
         val view = inflater.inflate(R.layout.fragment_silencer, container, false)
 
         titleField = view.findViewById(R.id.silencer_title) as EditText
-        //TODO
-        //location = view.findViewById() as ...
-
+        mapView = view.findViewById(R.id.map_view)
+        initGoogleMap(savedInstanceState);
         return view
     }
 
@@ -82,8 +88,40 @@ class SilencerFragment: Fragment(), TimePickerFragment.Callbacks {
             })
     }
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+
+        var mapViewBundle = outState.getBundle(MAPVIEW_BUNDLE_KEY)
+        if (mapViewBundle == null) {
+            mapViewBundle = Bundle()
+            outState.putBundle(MAPVIEW_BUNDLE_KEY, mapViewBundle)
+        }
+
+        mapView.onSaveInstanceState(mapViewBundle)
+    }
+
+    override fun onMapReady(map: GoogleMap) {
+        if (ActivityCompat.checkSelfPermission(requireActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
+            != PackageManager.PERMISSION_GRANTED
+            && ActivityCompat.checkSelfPermission(
+                requireActivity(),
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            )
+            != PackageManager.PERMISSION_GRANTED
+        ) {
+            return
+        }
+        map.isMyLocationEnabled = true
+    }
+
+    override fun onResume() {
+        super.onResume()
+        mapView.onResume()
+    }
+
     override fun onStart() {
         super.onStart()
+        mapView.onStart();
 
         val titleWatcher = object : TextWatcher {
             override fun beforeTextChanged(sequence: CharSequence?, start: Int, count: Int, after: Int) {
@@ -99,11 +137,39 @@ class SilencerFragment: Fragment(), TimePickerFragment.Callbacks {
 
     override fun onStop() {
         super.onStop()
+        mapView.onStop()
         silencerDetailViewModel.saveSilencer(silencer)
+    }
+
+    override fun onPause() {
+        mapView.onPause()
+        super.onPause()
+    }
+
+    override fun onDestroy() {
+        mapView.onDestroy()
+        super.onDestroy()
+    }
+
+    override fun onLowMemory() {
+        super.onLowMemory()
+        mapView.onLowMemory()
     }
 
     private fun updateUI() {
         titleField.setText(silencer.title)
+    }
+
+    private fun initGoogleMap(savedInstanceState: Bundle?) {
+        // *** IMPORTANT ***
+        // MapView requires that the Bundle you pass contain _ONLY_ MapView SDK
+        // objects or sub-Bundles.
+        var mapViewBundle: Bundle? = null
+        if (savedInstanceState != null) {
+            mapViewBundle = savedInstanceState.getBundle(MAPVIEW_BUNDLE_KEY)
+        }
+        mapView.onCreate(mapViewBundle)
+        mapView.getMapAsync(this)
     }
 
     override fun onTimeSelected(calendar: Calendar) {
