@@ -55,14 +55,6 @@ class SilencerFragment: Fragment(), TimePickerFragment.Callbacks, OnMapReadyCall
         super.onCreate(savedInstanceState)
         silencer = Silencer()
         val silencerId: UUID = arguments?.getSerializable(ARG_SILENCER_ID) as UUID
-        //Initialize map fragment
-        //val mapFrag: Fragment = MapFragment()
-
-        //Open map fragment
-//        parentFragmentManager
-//            .beginTransaction()
-//            .replace(R.id.map_view, mapFrag)
-//            .commit()
 
         silencerDetailViewModel.loadSilencer(silencerId)
     }
@@ -112,6 +104,9 @@ class SilencerFragment: Fragment(), TimePickerFragment.Callbacks, OnMapReadyCall
                 markerOptions.position(latLng)
                 //Set title of marker
                 markerOptions.title("" + latLng.latitude + " : " + latLng.longitude)
+                //Save lat and long in silencer
+                    silencer.latitude = latLng.latitude
+                    silencer.longitude = latLng.longitude
                 //Remove all previous markers
                 map.clear()
                 //Animate zoom to the marker
@@ -180,6 +175,7 @@ class SilencerFragment: Fragment(), TimePickerFragment.Callbacks, OnMapReadyCall
 
     private fun updateUI() {
         titleField.setText(silencer.title)
+        //TODO update UI
     }
 
     private fun initGoogleMap(savedInstanceState: Bundle?) {

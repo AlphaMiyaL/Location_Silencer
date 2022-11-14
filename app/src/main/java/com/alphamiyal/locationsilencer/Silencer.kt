@@ -1,5 +1,6 @@
 package com.alphamiyal.locationsilencer
 
+import android.location.Address
 import android.location.Location
 import android.location.LocationManager
 import androidx.core.location.LocationManagerCompat.getCurrentLocation
@@ -18,7 +19,9 @@ import java.util.*
 data class Silencer(@PrimaryKey
                     val id: UUID = UUID.randomUUID(),
                     var title: String = "",
-                    var location: String = "",
+                    var radius: Double = 0.0,
+                    var latitude: Double = 0.0,
+                    var longitude: Double = 0.0,
                     //val setLocationOn: Boolean = true,
                     //val setSilencerOn: Boolean = true
 )

@@ -100,7 +100,9 @@ class SilencerListFragment: Fragment() {
         @RequiresApi(Build.VERSION_CODES.N)
         fun bind(silencer: Silencer) {
             this.silencer = silencer
+            //TODO Actually put in real values
             titleTextView.text = "Hello World"//this.silencer.title
+            //TODO default address value
             locationTextView.text = "meow" //
         }
 
