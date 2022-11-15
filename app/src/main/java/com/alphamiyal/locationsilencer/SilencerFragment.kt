@@ -35,6 +35,9 @@ private const val PERMISSIONS_REQUEST_ENABLE_GPS = 9003
 class SilencerFragment: Fragment(), TimePickerFragment.Callbacks, OnMapReadyCallback {
     private lateinit var silencer: Silencer
     private lateinit var titleField: EditText
+    private lateinit var addressField: EditText
+    private lateinit var radiusField: EditText
+
     private lateinit var mapView: MapView
     private val silencerDetailViewModel: SilencerDetailViewModel by lazy{
         ViewModelProvider(this)[SilencerDetailViewModel::class.java]
@@ -67,6 +70,8 @@ class SilencerFragment: Fragment(), TimePickerFragment.Callbacks, OnMapReadyCall
         val view = inflater.inflate(R.layout.fragment_silencer, container, false)
 
         titleField = view.findViewById(R.id.silencer_title) as EditText
+        addressField = view.findViewById(R.id.silencer_address) as EditText
+        radiusField = view.findViewById(R.id.silencer_radius) as EditText
         mapView = view.findViewById(R.id.map_view)
         initGoogleMap(savedInstanceState);
         return view
@@ -150,6 +155,29 @@ class SilencerFragment: Fragment(), TimePickerFragment.Callbacks, OnMapReadyCall
             }
         }
         titleField.addTextChangedListener(titleWatcher)
+
+        val addressWatcher = object : TextWatcher {
+            override fun beforeTextChanged(sequence: CharSequence?, start: Int, count: Int, after: Int) {
+            }
+            override fun onTextChanged(sequence: CharSequence?, start: Int, count: Int, after: Int) {
+                silencer.address = sequence.toString()
+            }
+            override fun afterTextChanged(sequence: Editable?) {
+            }
+        }
+        addressField.addTextChangedListener(addressWatcher)
+
+        val radiusWatcher = object : TextWatcher {
+            override fun beforeTextChanged(sequence: CharSequence?, start: Int, count: Int, after: Int) {
+            }
+            override fun onTextChanged(sequence: CharSequence?, start: Int, count: Int, after: Int) {
+                //silencer.radius = sequence.toString()
+            }
+            override fun afterTextChanged(sequence: Editable?) {
+            }
+        }
+        //radiusField.addTextChangedListener(radiusWatcher)
+
     }
 
     override fun onStop() {
@@ -176,8 +204,9 @@ class SilencerFragment: Fragment(), TimePickerFragment.Callbacks, OnMapReadyCall
     private fun updateUI() {
         titleField.setText(silencer.title)
 
-        titleField.setText(silencer.address)
-        //TODO update UI
+        addressField.setText(silencer.address)
+        radiusField.setText(silencer.radius.toString())
+    //TODO update UI
     }
 
     private fun initGoogleMap(savedInstanceState: Bundle?) {
