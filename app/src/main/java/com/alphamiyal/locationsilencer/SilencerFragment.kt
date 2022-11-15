@@ -175,6 +175,8 @@ class SilencerFragment: Fragment(), TimePickerFragment.Callbacks, OnMapReadyCall
 
     private fun updateUI() {
         titleField.setText(silencer.title)
+
+        titleField.setText(silencer.address)
         //TODO update UI
     }
 

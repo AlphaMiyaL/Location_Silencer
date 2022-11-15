@@ -13,6 +13,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.lifecycle.Observer
+import kotlinx.android.synthetic.main.fragment_silencer.*
 import java.util.*
 
 private const val TAG = "LocationListFragment"
@@ -91,7 +92,9 @@ class SilencerListFragment: Fragment() {
         private lateinit var silencer: Silencer
 
         private val titleTextView: TextView = itemView.findViewById(R.id.silencer_title)
-        private val locationTextView: TextView = itemView.findViewById(R.id.silencer_location)
+        //private val radiusTextView: TextView = itemView.findViewById(R.id.radius_title)
+        private val addressTextView: TextView = itemView.findViewById(R.id.silencer_address)
+
 
         init {
             itemView.setOnClickListener(this)
@@ -101,9 +104,10 @@ class SilencerListFragment: Fragment() {
         fun bind(silencer: Silencer) {
             this.silencer = silencer
             //TODO Actually put in real values
-            titleTextView.text = "Hello World"//this.silencer.title
-            //TODO default address value
-            locationTextView.text = "meow" //
+            titleTextView.text = this.silencer.title
+
+            //TODO address value
+            addressTextView.text = this.silencer.address
         }
 
         override fun onClick(v: View?) {

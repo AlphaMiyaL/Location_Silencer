@@ -20,6 +20,7 @@ data class Silencer(@PrimaryKey
                     val id: UUID = UUID.randomUUID(),
                     var title: String = "",
                     var radius: Double = 0.0,
+                    var address: String = "",
                     var latitude: Double = 0.0,
                     var longitude: Double = 0.0,
                     //val setLocationOn: Boolean = true,
