@@ -1,113 +1,155 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_margin="16dp">
+    android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/titleTextView"
-        style="?android:listSeparatorTextViewStyle"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/silencer_title_label" />
+        android:layout_height="match_parent"
+        android:layout_margin="16dp"
+        android:orientation="vertical">
 
-    <EditText
-        android:id="@+id/silencer_title"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/silencer_title_hint"
-        android:minHeight="48dp"
-        tools:ignore="TextContrastCheck" />
-
-    <TextView
-        android:id="@+id/radiusTextView"
-        style="?android:listSeparatorTextViewStyle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/silencer_radius_label" />
-
-    <EditText
-        android:id="@+id/silencer_radius"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/silencer_radius_hint"
-        android:minHeight="48dp"
-        tools:ignore="TextContrastCheck" />
-
-    <TextView
-        android:id="@+id/addressTextView"
-        style="?android:listSeparatorTextViewStyle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/silencer_address_label" />
-    <EditText
-        android:id="@+id/silencer_address"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/silencer_address_hint"
-        android:minHeight="48dp"
-        tools:ignore="TextContrastCheck" />
-
-    <TextView
-        android:id="@+id/latitudeTextView"
-        style="?android:listSeparatorTextViewStyle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/silencer_address_label" />
-    <EditText
-        android:id="@+id/silencer_latitude"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/silencer_latitude_hint"
-        android:minHeight="48dp"
-        tools:ignore="TextContrastCheck" />
-
-    <TextView
-        android:id="@+id/longitudeTextView"
-        style="?android:listSeparatorTextViewStyle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/silencer_address_label" />
-    <EditText
-        android:id="@+id/silencer_longitude"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/silencer_longitude_hint"
-        android:minHeight="48dp"
-        tools:ignore="TextContrastCheck" />
-
-
-    <RelativeLayout
-        android:layout_height="0dp"
-        android:layout_width="match_parent"
-        android:layout_weight="50"
-        android:id="@+id/map_container">
-
-        <com.google.android.gms.maps.MapView
-            android:id="@+id/map_view"
+        <TextView
+            android:id="@+id/titleTextView"
+            style="?android:listSeparatorTextViewStyle"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
-    </RelativeLayout>
+            android:layout_height="wrap_content"
+            android:text="@string/silencer_title_label"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-<!--    <androidx.fragment.app.FragmentContainerView-->
-<!--        android:id="@+id/maps"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="match_parent"-->
-<!--        android:name="com.google.android.gms.maps.SupportMapFragment"-->
-<!--        tools:layout="@layout/fragment_map">-->
-<!--    </androidx.fragment.app.FragmentContainerView>-->
+        <EditText
+            android:id="@+id/silencer_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/silencer_title_hint"
+            android:minHeight="48dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/titleTextView"
+            tools:ignore="TextContrastCheck" />
 
-<!--    <Button-->
-<!--        android:id="@+id/silencer_date"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        tools:text="Wed Nov 14 2018"/>-->
+        <TextView
+            android:id="@+id/radiusTextView"
+            style="?android:listSeparatorTextViewStyle"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:text="@string/silencer_radius_label"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/silencer_title" />
 
-<!--    <Button-->
-<!--        android:id="@+id/silencer_time"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        tools:text="11:56 EST" />-->
-</LinearLayout>
+        <EditText
+            android:id="@+id/silencer_radius"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/silencer_radius_hint"
+            android:inputType="number"
+            android:minHeight="48dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/radiusTextView"
+            tools:ignore="TextContrastCheck" />
+
+        <TextView
+            android:id="@+id/addressTextView"
+            style="?android:listSeparatorTextViewStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/silencer_address_label"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/silencer_radius" />
+
+        <EditText
+            android:id="@+id/silencer_address"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/silencer_address_hint"
+            android:minHeight="48dp"
+            android:ems="10"
+            android:inputType="textPostalAddress"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/addressTextView"
+            tools:ignore="TextContrastCheck" />
+
+        <TextView
+            android:id="@+id/latitudeTextView"
+            style="?android:listSeparatorTextViewStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/silencer_lattitude_label"
+            app:layout_constraintEnd_toStartOf="@+id/longitudeTextView"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/silencer_address" />
+
+        <TextView
+            android:id="@+id/silencer_latitude"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:minHeight="48dp"
+            app:layout_constraintEnd_toStartOf="@id/silencer_longitude"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/latitudeTextView"
+            tools:ignore="TextContrastCheck" />
+
+        <TextView
+            android:id="@+id/longitudeTextView"
+            style="?android:listSeparatorTextViewStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/silencer_longitude_label"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/latitudeTextView"
+            app:layout_constraintTop_toBottomOf="@+id/silencer_address" />
+
+        <TextView
+            android:id="@+id/silencer_longitude"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:minHeight="48dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/silencer_latitude"
+            app:layout_constraintTop_toBottomOf="@+id/longitudeTextView"
+            tools:ignore="TextContrastCheck" />
+
+        <RelativeLayout
+            android:id="@+id/map_container"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/silencer_latitude">
+
+            <com.google.android.gms.maps.MapView
+                android:id="@+id/map_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </RelativeLayout>
+
+        <!--    <androidx.fragment.app.FragmentContainerView-->
+        <!--        android:id="@+id/maps"-->
+        <!--        android:layout_width="match_parent"-->
+        <!--        android:layout_height="match_parent"-->
+        <!--        android:name="com.google.android.gms.maps.SupportMapFragment"-->
+        <!--        tools:layout="@layout/fragment_map">-->
+        <!--    </androidx.fragment.app.FragmentContainerView>-->
+
+        <!--    <Button-->
+        <!--        android:id="@+id/silencer_date"-->
+        <!--        android:layout_width="match_parent"-->
+        <!--        android:layout_height="wrap_content"-->
+        <!--        tools:text="Wed Nov 14 2018"/>-->
+
+        <!--    <Button-->
+        <!--        android:id="@+id/silencer_time"-->
+        <!--        android:layout_width="match_parent"-->
+        <!--        android:layout_height="wrap_content"-->
+        <!--        tools:text="11:56 EST" />-->
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>
