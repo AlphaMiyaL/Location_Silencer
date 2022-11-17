@@ -34,12 +34,8 @@ private const val TAG = "SilencerFragment"
 private const val ARG_SILENCER_ID = "silencer_id"
 private const val DIALOG_TIME = "DialogTime"
 private const val REQUEST_TIME = 0
-private const val MAPVIEW_BUNDLE_KEY = "MapViewBundleKey"
-private const val ERROR_DIALOG_REQUEST = 9001
-private const val PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 9002
-private const val PERMISSIONS_REQUEST_ENABLE_GPS = 9003
 
-class SilencerFragment: Fragment(), TimePickerFragment.Callbacks, OnMapReadyCallback {
+class SilencerFragment: Fragment(), TimePickerFragment.Callbacks {
     private lateinit var silencer: Silencer
     private lateinit var titleField: EditText
     private lateinit var addressField: EditText
@@ -47,7 +43,6 @@ class SilencerFragment: Fragment(), TimePickerFragment.Callbacks, OnMapReadyCall
     private lateinit var latitudeField: TextView
     private lateinit var longitudeField: TextView
 
-    private lateinit var mapView: MapView
     private val silencerDetailViewModel: SilencerDetailViewModel by lazy{
         ViewModelProvider(this)[SilencerDetailViewModel::class.java]
     }
@@ -83,8 +78,6 @@ class SilencerFragment: Fragment(), TimePickerFragment.Callbacks, OnMapReadyCall
         radiusField = view.findViewById(R.id.silencer_radius) as EditText
         latitudeField = view.findViewById(R.id.silencer_latitude) as TextView
         longitudeField = view.findViewById(R.id.silencer_longitude) as TextView
-        mapView = view.findViewById(R.id.map_view)
-        initGoogleMap(savedInstanceState)
         return view
     }
 
@@ -99,89 +92,12 @@ class SilencerFragment: Fragment(), TimePickerFragment.Callbacks, OnMapReadyCall
             })
     }
 
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-
-        var mapViewBundle = outState.getBundle(MAPVIEW_BUNDLE_KEY)
-        if (mapViewBundle == null) {
-            mapViewBundle = Bundle()
-            outState.putBundle(MAPVIEW_BUNDLE_KEY, mapViewBundle)
-        }
-
-        mapView.onSaveInstanceState(mapViewBundle)
-    }
-
-    override fun onMapReady(map: GoogleMap) {
-        //Set up marker location for current silencer if exists
-        if(!(silencer.latitude == 0.0 && silencer.longitude == 0.0)){
-            val markerOptions: MarkerOptions = MarkerOptions()
-            val latLng = LatLng(silencer.latitude, silencer.longitude)
-            markerOptions.position(latLng)
-            map.addMarker(markerOptions)
-            markerOptions.title("" + silencer.latitude + " : " + silencer.longitude)
-            //Animate zoom to the marker
-            map.animateCamera(
-                CameraUpdateFactory.newLatLngZoom(
-                    latLng, 10F
-                ))
-        }
-        map.setOnMapClickListener(object : GoogleMap.OnMapClickListener{
-            override fun onMapClick(latLng: LatLng) {
-                //Initialize marker options
-                val markerOptions: MarkerOptions = MarkerOptions()
-                //Set position of marker
-                markerOptions.position(latLng)
-                //Set title of marker
-                markerOptions.title("" + latLng.latitude + " : " + latLng.longitude)
-                //Remove all previous markers
-                map.clear()
-                //Animate zoom to the marker
-                map.animateCamera(
-                    CameraUpdateFactory.newLatLngZoom(
-                        latLng, 10F
-                    ))
-                //Add marker on map
-                map.addMarker(markerOptions)
-                //Save lat and long in silencer
-                silencer.latitude = latLng.latitude
-                silencer.longitude = latLng.longitude
-                //Using Geocoder to find address of latLng
-                markerLoop@ for(i in 1..10){
-                    try{
-                        val gcd: Geocoder = Geocoder(context)
-                        var loc = gcd.getFromLocation( latLng.latitude,  latLng.longitude, 1)
-                        if(loc.isNotEmpty()){
-                            silencer.address = loc[0].getAddressLine(0)
-                        }
-                        updateUI()
-                        break@markerLoop
-                    }catch (e: Exception){
-                        e.printStackTrace()
-                    }
-                }
-            }
-        })
-        if (ActivityCompat.checkSelfPermission(requireActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
-            != PackageManager.PERMISSION_GRANTED
-            && ActivityCompat.checkSelfPermission(
-                requireActivity(),
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            )
-            != PackageManager.PERMISSION_GRANTED
-        ) {
-            return
-        }
-        map.isMyLocationEnabled = true
-    }
-
     override fun onResume() {
         super.onResume()
-        mapView.onResume()
     }
 
     override fun onStart() {
         super.onStart()
-        mapView.onStart()
 
         val titleWatcher = object : TextWatcher {
             override fun beforeTextChanged(sequence: CharSequence?, start: Int, count: Int, after: Int) {
@@ -252,23 +168,19 @@ class SilencerFragment: Fragment(), TimePickerFragment.Callbacks, OnMapReadyCall
 
     override fun onStop() {
         super.onStop()
-        mapView.onStop()
         silencerDetailViewModel.saveSilencer(silencer)
     }
 
     override fun onPause() {
-        mapView.onPause()
         super.onPause()
     }
 
     override fun onDestroy() {
-        mapView.onDestroy()
         super.onDestroy()
     }
 
     override fun onLowMemory() {
         super.onLowMemory()
-        mapView.onLowMemory()
     }
 
     private fun updateUI() {
@@ -277,24 +189,23 @@ class SilencerFragment: Fragment(), TimePickerFragment.Callbacks, OnMapReadyCall
         radiusField.setText(silencer.radius.toString())
         latitudeField.setText(silencer.latitude.toString())
         longitudeField.setText(silencer.longitude.toString())
-
-
-    //TODO update UI
-    }
-
-    private fun initGoogleMap(savedInstanceState: Bundle?) {
-        // *** IMPORTANT ***
-        // MapView requires that the Bundle you pass contain _ONLY_ MapView SDK
-        // objects or sub-Bundles.
-        var mapViewBundle: Bundle? = null
-        if (savedInstanceState != null) {
-            mapViewBundle = savedInstanceState.getBundle(MAPVIEW_BUNDLE_KEY)
-        }
-        mapView.onCreate(mapViewBundle)
-        mapView.getMapAsync(this)
     }
 
     override fun onTimeSelected(calendar: Calendar) {
         TODO("Not yet implemented")
     }
+
+    /**
+     * Button stuff
+     * val currentFragment =supportFragmentManager.findFragmentById(R.id.fragment_container)
+
+    //if fragment doesn't exist, create it
+    if(currentFragment == null){
+    val fragment = SilencerListFragment.newInstance()
+    supportFragmentManager
+    .beginTransaction()
+    .add(R.id.fragment_container, fragment)
+    .commit()
+    }
+     */
 }
