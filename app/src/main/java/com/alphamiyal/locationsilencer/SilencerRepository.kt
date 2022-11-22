@@ -1,6 +1,7 @@
 package com.alphamiyal.locationsilencer
 
 import android.content.Context
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.room.Room
 import com.alphamiyal.locationsilencer.database.SilencerDatabase
@@ -30,7 +31,18 @@ class SilencerRepository private constructor(context: Context){
     private val silencerDao = database.silencerDao()
     private val executor = Executors.newSingleThreadExecutor()
 
-    fun getSilencers(): LiveData<List<Silencer>> = silencerDao.getSilencers()
+    fun getSilencers(): LiveData<List<Silencer>>{
+        var silencers: LiveData<List<Silencer>> = silencerDao.getSilencers()
+//        silencers.observe(
+//            viewLifecycleOwner,
+//            Observer { silencers ->
+//                silencers?.let {
+//                    Log.i(TAG, "Got silencers ${silencers.size}")
+//                }
+//            })
+        return silencers
+    }
+
     fun getSilencer(id: UUID): LiveData<Silencer?> = silencerDao.getSilencer(id)
 
     fun updateSilencer(silencer: Silencer) {

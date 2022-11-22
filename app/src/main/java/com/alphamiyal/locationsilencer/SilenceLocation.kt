@@ -1,6 +1,7 @@
 package com.alphamiyal.locationsilencer
 
 import android.Manifest
+import android.app.PendingIntent
 import android.app.Service
 import android.content.Context
 import android.content.Intent
@@ -16,7 +17,12 @@ import androidx.appcompat.app.AppCompatActivity
 
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.ViewModelProvider
+import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.location.*
+import com.google.android.gms.maps.model.LatLng
+import java.lang.Exception
+import java.util.*
 import java.util.concurrent.TimeUnit
 
 private const val TAG = "SilencerLocation"
@@ -28,32 +34,59 @@ class SilenceLocation: Service(){
 //    private val localBinder = LocalBinder()
 //    private lateinit var locationRequest: LocationRequest
 //    private lateinit var locationCallback: LocationCallback
+//    private lateinit var silencerRepository: SilencerRepository
+//    private lateinit var silencerListFragment: Silence
 
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
     private var currentLocation: Location? = null
-
-
-
-//    private lateinit var silencerRepository: SilencerRepository
-//    private lateinit var silencerListFragment: Silence
-//
     private val silencerRepository = SilencerRepository.get()
-    val silencerListLiveData = silencerRepository.getSilencers()
+    private val silencerListLiveData = silencerRepository.getSilencers()
 
-
-
-
-    lateinit var geofencingClient: GeofencingClient
+    private lateinit var geofencingClient: GeofencingClient
+    private lateinit var geofenceHelper: GeofenceHelper
 
     override fun onCreate() {
         super.onCreate()
 
-
         geofencingClient = LocationServices.getGeofencingClient(this)
+        geofenceHelper = GeofenceHelper(this)
     }
 
     override fun onBind(p0: Intent?): IBinder? {
         TODO("Not yet implemented")
+    }
+
+    fun addGeofence(id: UUID, lat: Double, lng: Double, radius: Double){
+        val geofence = geofenceHelper.getGeofence(id, lat, lng, radius)
+        val geofencingRequest = geofenceHelper.getGeofencingRequest(geofence)
+        val pendingIntent = geofenceHelper.getPendingIntent()
+
+        if (ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return
+        }
+
+        geofencingClient.addGeofences(geofencingRequest, pendingIntent)
+            .addOnSuccessListener {
+                Log.d(TAG, "Success: Geofence Added")
+            }
+            .addOnFailureListener {
+                it.printStackTrace()
+            }
+    }
+
+    fun removeGeofence(){
+        //TODO()
     }
 
 //    override fun onCreate()
