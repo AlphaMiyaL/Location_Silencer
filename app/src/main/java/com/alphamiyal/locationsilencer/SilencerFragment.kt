@@ -9,10 +9,12 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
+import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.OnFocusChangeListener
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
@@ -26,6 +28,8 @@ import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.fragment_silencer.*
 import java.lang.Exception
 import java.util.*
 
@@ -42,6 +46,7 @@ class SilencerFragment: Fragment(), TimePickerFragment.Callbacks {
     private lateinit var radiusField: EditText
     private lateinit var latitudeField: TextView
     private lateinit var longitudeField: TextView
+    private lateinit var mapButton: Button
 
     private val silencerDetailViewModel: SilencerDetailViewModel by lazy{
         ViewModelProvider(this)[SilencerDetailViewModel::class.java]
@@ -78,6 +83,7 @@ class SilencerFragment: Fragment(), TimePickerFragment.Callbacks {
         radiusField = view.findViewById(R.id.silencer_radius) as EditText
         latitudeField = view.findViewById(R.id.silencer_latitude) as TextView
         longitudeField = view.findViewById(R.id.silencer_longitude) as TextView
+        mapButton = view.findViewById(R.id.button_id) as Button
         return view
     }
 
@@ -130,7 +136,61 @@ class SilencerFragment: Fragment(), TimePickerFragment.Callbacks {
             override fun afterTextChanged(sequence: Editable?) {
             }
         }
-        addressField.onFocusChangeListener = OnFocusChangeListener { v, hasFocus ->
+
+        addressField.setOnKeyListener(View.OnKeyListener { v, keyCode, event ->
+            if (keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_UP) {
+                val loc: String = silencer.address.trim()
+                if(loc == null || loc == "") {
+                    Toast.makeText(context, "provide location", Toast.LENGTH_SHORT).show()
+                }
+                else{
+                    val gcd: Geocoder = Geocoder(context, Locale.getDefault())
+                    var add: List<Address>? = null
+                    loop@ for(i in 1..10){
+                        try {
+                            add = gcd.getFromLocationName(silencer.address, 1)
+                        }catch (e: Exception){
+                            e.printStackTrace()
+                        }
+
+                        if(add != null){
+                            silencer.address = add!![0].getAddressLine(0)
+                            val latLng = LatLng(add!![0].latitude, add!![0].longitude)
+                            silencer.latitude = latLng.latitude
+                            silencer.longitude = latLng.longitude
+//                            mMap!!.addMarker(MarkerOptions().position(latLng).title(location))
+//                            mMap!!.animateCamera(CameraUpdateFactory.newLatLng(latLng))
+                            updateUI()
+                            break@loop
+                        }
+                    }
+                }
+
+                return@OnKeyListener true
+            }
+            false
+        })
+
+        mapButton.setOnClickListener { view: View ->
+//           childFragmentManager?.findFragmentById(R.id.map_view)
+//            Log.d(TAG, "Hello2")
+//
+//            //if fragment doesn't exist, create it
+//            if(mapFragment == null){
+//                Log.d(TAG, "Hello")
+//                val mapFrag = MapFragment.newInstance(silencer)
+//                requireParentFragment().childFragmentManager
+//                    .beginTransaction()
+//                    .add(R.id.map_view, mapFrag)
+//                    .commit()
+//            }
+            val mapFrag = MapFragment.newInstance(silencer)
+            Log.d(TAG, "Created?")
+
+
+        }
+
+        /*addressField.onFocusChangeListener = OnFocusChangeListener { v, hasFocus ->
             if (!hasFocus) {
                 val loc: String = silencer.address.trim()
                 if(loc == null || loc == "") {
@@ -159,7 +219,8 @@ class SilencerFragment: Fragment(), TimePickerFragment.Callbacks {
                     }
                 }
             }
-        }
+        }*/
+
         titleField.addTextChangedListener(titleWatcher)
         addressField.addTextChangedListener(addressWatcher)
         //radiusField.addTextChangedListener(radiusWatcher)

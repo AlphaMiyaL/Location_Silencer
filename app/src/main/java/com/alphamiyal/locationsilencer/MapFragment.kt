@@ -33,6 +33,11 @@ class MapFragment(s: Silencer): Fragment(), OnMapReadyCallback {
     var silencer = s
     private lateinit var mapView: MapView
 
+    companion object{
+        fun newInstance(s: Silencer): MapFragment{
+            return MapFragment(s)
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -162,4 +167,6 @@ class MapFragment(s: Silencer): Fragment(), OnMapReadyCallback {
         }
         map.isMyLocationEnabled = true
     }
+
+
 }

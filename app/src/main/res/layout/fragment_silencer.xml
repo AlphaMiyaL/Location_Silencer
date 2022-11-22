@@ -47,7 +47,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/silencer_radius_hint"
-            android:inputType="number"
+            android:inputType="numberDecimal"
             android:minHeight="48dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -82,7 +82,7 @@
             style="?android:listSeparatorTextViewStyle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="@string/silencer_lattitude_label"
+            android:text="@string/silencer_latitude_label"
             app:layout_constraintEnd_toStartOf="@+id/longitudeTextView"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/silencer_address" />
@@ -117,28 +117,42 @@
             app:layout_constraintTop_toBottomOf="@+id/longitudeTextView"
             tools:ignore="TextContrastCheck" />
 
+
+        <Button
+            android:id="@+id/button_id"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/map_button_label"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/silencer_latitude"
+            tools:ignore="MissingConstraints" />
+
         <RelativeLayout
             android:id="@+id/map_container"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             app:layout_constraintDimensionRatio="1:1"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/silencer_latitude">
+            app:layout_constraintTop_toBottomOf="@+id/button_id">
 
-            <com.google.android.gms.maps.MapView
-                android:id="@+id/map_view"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+        <com.google.android.gms.maps.MapView
+            android:id="@+id/map_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+
         </RelativeLayout>
 
-        <!--    <androidx.fragment.app.FragmentContainerView-->
-        <!--        android:id="@+id/maps"-->
-        <!--        android:layout_width="match_parent"-->
-        <!--        android:layout_height="match_parent"-->
-        <!--        android:name="com.google.android.gms.maps.SupportMapFragment"-->
-        <!--        tools:layout="@layout/fragment_map">-->
-        <!--    </androidx.fragment.app.FragmentContainerView>-->
+<!--            <androidx.fragment.app.FragmentContainerView-->
+<!--                android:id="@+id/maps"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="match_parent"-->
+<!--                android:name="com.google.android.gms.maps.SupportMapFragment"-->
+<!--                tools:layout="@layout/fragment_map">-->
+<!--            </androidx.fragment.app.FragmentContainerView>-->
 
         <!--    <Button-->
         <!--        android:id="@+id/silencer_date"-->
