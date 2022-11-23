@@ -1,5 +1,7 @@
 package com.alphamiyal.locationsilencer
 
+import android.app.NotificationManager
+import android.content.Context
 import android.content.pm.PackageManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -22,6 +24,7 @@ class MainActivity : AppCompatActivity(), SilencerListFragment.Callbacks  {
         setContentView(R.layout.activity_main)
 
         val currentFragment =supportFragmentManager.findFragmentById(R.id.fragment_container)
+
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
 
 
@@ -46,6 +49,10 @@ class MainActivity : AppCompatActivity(), SilencerListFragment.Callbacks  {
             .addToBackStack(null)
             .commit()
     }
+
+
+
+
 
 //    private fun fetchLocation(){
 //        val task = fusedLocationProviderClient.lastLocation
