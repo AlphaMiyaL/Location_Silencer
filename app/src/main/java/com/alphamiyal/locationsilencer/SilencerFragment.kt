@@ -115,13 +115,26 @@ class SilencerFragment: Fragment(), TimePickerFragment.Callbacks {
             }
         }
 
-        val radiusWatcher = object : TextWatcher {
-            override fun beforeTextChanged(sequence: CharSequence?, start: Int, count: Int, after: Int) {
-            }
-            override fun onTextChanged(sequence: CharSequence?, start: Int, count: Int, after: Int) {
-                //silencer.radius = sequence.toString()
-            }
-            override fun afterTextChanged(sequence: Editable?) {
+//        val radiusWatcher = object : TextWatcher {
+//            override fun beforeTextChanged(sequence: CharSequence?, start: Int, count: Int, after: Int) {
+//            }
+//            override fun onTextChanged(sequence: CharSequence?, start: Int, count: Int, after: Int) {
+//                silencer.radius = sequence.toString().toDouble()
+//            }
+//            override fun afterTextChanged(sequence: Editable?) {
+//            }
+//        }
+
+        radiusField.onFocusChangeListener = OnFocusChangeListener { v, hasFocus ->
+            if (!hasFocus) {
+                try {
+                    silencer.radius = radiusField.text.toString().toDouble()
+                    updateUI()
+                }
+                catch (e: Exception){
+                    radiusField.setText(silencer.radius.toString())
+                    updateUI()
+                }
             }
         }
 
@@ -146,7 +159,7 @@ class SilencerFragment: Fragment(), TimePickerFragment.Callbacks {
                 else{
                     val gcd: Geocoder = Geocoder(context, Locale.getDefault())
                     var add: List<Address>? = null
-                    loop@ for(i in 1..10){
+                    loop@ for(i in 1..2){
                         try {
                             add = gcd.getFromLocationName(silencer.address, 1)
                         }catch (e: Exception){
@@ -189,37 +202,6 @@ class SilencerFragment: Fragment(), TimePickerFragment.Callbacks {
 
 
         }
-
-        /*addressField.onFocusChangeListener = OnFocusChangeListener { v, hasFocus ->
-            if (!hasFocus) {
-                val loc: String = silencer.address.trim()
-                if(loc == null || loc == "") {
-                    Toast.makeText(context, "provide location", Toast.LENGTH_SHORT).show()
-                }
-                else{
-                    val gcd: Geocoder = Geocoder(context, Locale.getDefault())
-                    var add: List<Address>? = null
-                    loop@ for(i in 1..10){
-                        try {
-                            add = gcd.getFromLocationName(silencer.address, 1)
-                        }catch (e: Exception){
-                            e.printStackTrace()
-                        }
-
-                        if(add != null){
-                            silencer.address = add!![0].getAddressLine(0)
-                            val latLng = LatLng(add!![0].latitude, add!![0].longitude)
-                            silencer.latitude = latLng.latitude
-                            silencer.longitude = latLng.longitude
-//                            mMap!!.addMarker(MarkerOptions().position(latLng).title(location))
-//                            mMap!!.animateCamera(CameraUpdateFactory.newLatLng(latLng))
-                            updateUI()
-                            break@loop
-                        }
-                    }
-                }
-            }
-        }*/
 
         titleField.addTextChangedListener(titleWatcher)
         addressField.addTextChangedListener(addressWatcher)

@@ -16,7 +16,6 @@ class GeofenceHelper(base: Context?) : ContextWrapper(base) {
     private var pendingIntent: PendingIntent? = null
 
     fun getGeofence(id: UUID, lat: Double, lng: Double, radius: Double): Geofence{
-        //TODO somehow add this to list. for some reason i get an error, and i'm not sure how to fix it
         return Geofence.Builder()
             // Set the request ID of the geofence. This is a string to identify this
             // geofence.

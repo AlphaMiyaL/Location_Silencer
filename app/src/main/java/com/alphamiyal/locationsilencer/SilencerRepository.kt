@@ -1,7 +1,10 @@
 package com.alphamiyal.locationsilencer
 
 import android.content.Context
+import android.content.Intent
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.lifecycle.LiveData
 import androidx.room.Room
 import com.alphamiyal.locationsilencer.database.SilencerDatabase
@@ -18,7 +21,6 @@ private const val DATABASE_NAME = "silencer-database"
 //repository class encapsulates logic for accessing data from sources
 //  determines how to fetch or store set of data, whether database or remote server
 class SilencerRepository private constructor(context: Context){
-    //Builds concrete implementation of abstract CrimeDatabase
     //  Context object: need since database accessing file system
     //  database class that you want Room to create
     //  name of database file you want Room to create
@@ -29,17 +31,23 @@ class SilencerRepository private constructor(context: Context){
     ).build()
 
     private val silencerDao = database.silencerDao()
+    private lateinit var silenceLocation:SilenceLocation
     private val executor = Executors.newSingleThreadExecutor()
 
     fun getSilencers(): LiveData<List<Silencer>>{
         var silencers: LiveData<List<Silencer>> = silencerDao.getSilencers()
-//        silencers.observe(
-//            viewLifecycleOwner,
-//            Observer { silencers ->
-//                silencers?.let {
-//                    Log.i(TAG, "Got silencers ${silencers.size}")
-//                }
-//            })
+        silencers.observeForever {
+                silencers ->
+                silencers?.let {
+                    for(silencer in it){
+                        silenceLocation.addGeofence(
+                            silencer.id,
+                            silencer.latitude,
+                            silencer.longitude,
+                            silencer.radius)
+                    }
+                }
+        }
         return silencers
     }
 
@@ -49,11 +57,22 @@ class SilencerRepository private constructor(context: Context){
         executor.execute {
             silencerDao.updateSilencer(silencer)
         }
+        silenceLocation.removeGeofence(silencer.id)
+        silenceLocation.addGeofence(
+            silencer.id,
+            silencer.latitude,
+            silencer.longitude,
+            silencer.radius)
     }
     fun addSilencer(silencer: Silencer) {
         executor.execute {
             silencerDao.addSilencer(silencer)
         }
+        silenceLocation.addGeofence(
+            silencer.id,
+            silencer.latitude,
+            silencer.longitude,
+            silencer.radius)
     }
 
     companion object {
@@ -68,6 +87,10 @@ class SilencerRepository private constructor(context: Context){
         fun get(): SilencerRepository {
             return INSTANCE ?:
             throw IllegalStateException("SilencerRepository must be initialized")
+        }
+
+        fun setSilenceLocation(){
+            INSTANCE?.silenceLocation = SilenceLocation.get()
         }
     }
 }

@@ -16,12 +16,14 @@ import java.util.*
 private const val TAG = "MainActivity"
 private const val REQUEST_FOREGROUND_ONLY_PERMISSIONS_REQUEST_CODE = 34
 class MainActivity : AppCompatActivity(), SilencerListFragment.Callbacks  {
-    private lateinit var silenceLocation: SilenceLocation
     lateinit var fusedLocationProviderClient: FusedLocationProviderClient
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        SilenceLocation.initialize(this)
+        SilencerRepository.setSilenceLocation()
 
         val currentFragment =supportFragmentManager.findFragmentById(R.id.fragment_container)
 

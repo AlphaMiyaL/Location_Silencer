@@ -1,81 +1,83 @@
 package com.alphamiyal.locationsilencer
 
 import android.Manifest
-import android.app.PendingIntent
+import android.app.Activity
 import android.app.Service
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.content.res.Configuration
 import android.location.Location
-
-import android.os.Binder
-import android.os.Build
-import android.os.Bundle
-import android.os.IBinder
+import android.os.*
 import android.util.Log
-import androidx.appcompat.app.AppCompatActivity
-
+import android.widget.Toast
 import androidx.core.app.ActivityCompat
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.ViewModelProvider
-import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.location.*
-import com.google.android.gms.maps.model.LatLng
-import java.lang.Exception
+import java.lang.Process
 import java.util.*
-import java.util.concurrent.TimeUnit
+
 
 private const val TAG = "SilencerLocation"
 
-class SilenceLocation: Service(){
-//class SilenceLocation: Service(){
-//    private var configurationChange = false
-//    private var serviceRunningInForeground = false
-//    private val localBinder = LocalBinder()
-//    private lateinit var locationRequest: LocationRequest
-//    private lateinit var locationCallback: LocationCallback
-//    private lateinit var silencerRepository: SilencerRepository
-//    private lateinit var silencerListFragment: Silence
+class SilenceLocation(a: Activity)/*: Service()*/{
+    companion object {
+        private var INSTANCE: SilenceLocation? = null
 
-    private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
-    private var currentLocation: Location? = null
-    private val silencerRepository = SilencerRepository.get()
-    private val silencerListLiveData = silencerRepository.getSilencers()
+        fun initialize(a: Activity) {
+            if (INSTANCE == null) {
+                INSTANCE = SilenceLocation(a)
+            }
+        }
+
+        fun get(): SilenceLocation {
+            return INSTANCE ?:
+            throw IllegalStateException("SilenceLocation must be initialized")
+        }
+    }
 
     private lateinit var geofencingClient: GeofencingClient
     private lateinit var geofenceHelper: GeofenceHelper
+    private var activity = a
 
-    override fun onCreate() {
-        super.onCreate()
+//    override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
+//        Log.d(TAG, "onStartCommand()")
+//        geofencingClient = LocationServices.getGeofencingClient(this)
+//        geofenceHelper = GeofenceHelper(this)
+//        // Tells the system not to recreate the service after it's been killed.
+//        return START_STICKY
+//    }
+//
+//    override fun onBind(intent: Intent): IBinder? {
+//        Log.d(TAG, "onBind()")
+//        return null
+//    }
+//
+//    override fun onDestroy() {
+//        Log.d(TAG, "onDestroy()")
+//        super.onDestroy()
+//    }
 
-        geofencingClient = LocationServices.getGeofencingClient(this)
-        geofenceHelper = GeofenceHelper(this)
-    }
-
-    override fun onBind(p0: Intent?): IBinder? {
-        TODO("Not yet implemented")
+    fun initGeofencing(a: Activity){
+        geofencingClient = LocationServices.getGeofencingClient(a)
+        geofenceHelper = GeofenceHelper(a)
     }
 
     fun addGeofence(id: UUID, lat: Double, lng: Double, radius: Double){
+//        Checking permission
+        if (ActivityCompat.checkSelfPermission(
+                activity,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            return
+        }
+
+        //Creating Geofence
         val geofence = geofenceHelper.getGeofence(id, lat, lng, radius)
         val geofencingRequest = geofenceHelper.getGeofencingRequest(geofence)
         val pendingIntent = geofenceHelper.getPendingIntent()
 
-        if (ActivityCompat.checkSelfPermission(
-                this,
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return
-        }
-
+        //Adding Geofence to geofenceClient
         geofencingClient.addGeofences(geofencingRequest, pendingIntent)
             .addOnSuccessListener {
                 Log.d(TAG, "Success: Geofence Added")
@@ -85,9 +87,54 @@ class SilenceLocation: Service(){
             }
     }
 
-    fun removeGeofence(){
-        //TODO()
+     fun removeGeofence(id: UUID) {
+        if (ActivityCompat.checkSelfPermission(
+                activity,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            return
+        }
+
+        var list: List<String> = listOf(id.toString())
+        geofencingClient.removeGeofences(list)
+            .addOnSuccessListener { aVoid: Void? ->
+                Log.e(
+                    "TAG",
+                    "Geocenfences removed"
+                )
+            }
+            .addOnFailureListener { e: Exception ->
+                //val errorMessage: String = geofenceHelper.getErrorString(e)
+                //Log.e("TAG", "onFailure: $errorMessage")
+//                    Toast.makeText(
+//                        applicationContext,
+//                        "onFailure: $errorMessage",
+//                        Toast.LENGTH_SHORT
+//                    ).show()
+                e.printStackTrace()
+            }
     }
+
+//    else {
+//        Log.i(TAG, "no list provided, removing ALL geofences")
+//        geofencingClient.removeGeofences(geofenceHelper.getPendingIntent())
+//            .addOnSuccessListener { aVoid: Void? ->
+//                Log.e(
+//                    "TAG",
+//                    "Geocenfences removed"
+//                )
+//            }.addOnFailureListener { e: Exception? ->
+//                val errorMessage: String = geofenceHelper.getErrorString(e)
+//                Log.e("TAG", "onFailure: $errorMessage")
+//                Toast.makeText(
+//                    applicationContext,
+//                    "onFailure: $errorMessage",
+//                    Toast.LENGTH_SHORT
+//                ).show()
+//            }
+//    }
+
 
 //    override fun onCreate()
 //    {
