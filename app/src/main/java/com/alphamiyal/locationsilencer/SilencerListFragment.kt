@@ -112,7 +112,19 @@ class SilencerListFragment: Fragment() {
             onOffSwitch.isChecked = this.silencer.on
 
             onOffSwitch.setOnCheckedChangeListener { buttonView, isChecked ->
-                silencer.on = isChecked
+                if (isChecked) {
+                    // The toggle is enabled
+                    silencer.on = true
+                    SilenceLocation.get().addGeofence(
+                        silencer.id,
+                        silencer.latitude,
+                        silencer.longitude,
+                        silencer.radius)
+                } else {
+                    // The toggle is disabled
+                    silencer.on = false
+                    SilenceLocation.get().removeGeofence(silencer.id)
+                }
             }
         }
 
