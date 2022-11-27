@@ -71,7 +71,7 @@ class SilenceLocation(a: Activity)/*: Service()*/{
         ) {
             return
         }
-
+        initGeofencing(activity)
         //Creating Geofence
         val geofence = geofenceHelper.getGeofence(id, lat, lng, radius)
         val geofencingRequest = geofenceHelper.getGeofencingRequest(geofence)

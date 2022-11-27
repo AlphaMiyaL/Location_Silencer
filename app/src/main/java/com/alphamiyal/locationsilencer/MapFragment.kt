@@ -14,6 +14,7 @@ import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
+import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -29,11 +30,13 @@ private const val ERROR_DIALOG_REQUEST = 9001
 private const val PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 9002
 private const val PERMISSIONS_REQUEST_ENABLE_GPS = 9003
 
-class MapFragment(s: Silencer): Fragment(), OnMapReadyCallback {
+class MapFragment(s: Silencer): DialogFragment(), OnMapReadyCallback {
     var silencer = s
     private lateinit var mapView: MapView
 
     companion object{
+        const val TAG = "MapFragment"
+
         fun newInstance(s: Silencer): MapFragment{
             return MapFragment(s)
         }
@@ -44,9 +47,9 @@ class MapFragment(s: Silencer): Fragment(), OnMapReadyCallback {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.fragment_silencer, container, false)
+        val view = inflater.inflate(R.layout.map_window, container, false)
 
-        mapView = view.findViewById(R.id.map_view)
+        mapView = view.findViewById(R.id.map_view_popup)
         initGoogleMap(savedInstanceState)
         return view
     }
