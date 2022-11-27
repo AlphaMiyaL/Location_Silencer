@@ -5,16 +5,19 @@ import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.*
-import android.widget.ImageView
+import android.widget.CompoundButton
+import android.widget.Switch
 import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.lifecycle.Observer
 import kotlinx.android.synthetic.main.fragment_silencer.*
+import kotlinx.android.synthetic.main.list_item_silencer.view.*
 import java.util.*
+
 
 private const val TAG = "LocationListFragment"
 class SilencerListFragment: Fragment() {
@@ -94,6 +97,7 @@ class SilencerListFragment: Fragment() {
         private val titleTextView: TextView = itemView.findViewById(R.id.silencer_title)
         //private val radiusTextView: TextView = itemView.findViewById(R.id.radius_title)
         private val addressTextView: TextView = itemView.findViewById(R.id.silencer_address)
+        private val onOffSwitch: Switch = itemView.findViewById(R.id.onOff)
 
 
         init {
@@ -103,11 +107,13 @@ class SilencerListFragment: Fragment() {
         @RequiresApi(Build.VERSION_CODES.N)
         fun bind(silencer: Silencer) {
             this.silencer = silencer
-            //TODO Actually put in real values
             titleTextView.text = this.silencer.title
-
-            //TODO address value
             addressTextView.text = this.silencer.address
+            onOffSwitch.isChecked = this.silencer.on
+
+            onOffSwitch.setOnCheckedChangeListener { buttonView, isChecked ->
+                silencer.on = isChecked
+            }
         }
 
         override fun onClick(v: View?) {

@@ -24,5 +24,5 @@ data class Silencer(@PrimaryKey
                     var latitude: Double = 0.0,
                     var longitude: Double = 0.0,
                     //val setLocationOn: Boolean = true,
-                    //val setSilencerOn: Boolean = true
+                    var on: Boolean = true,
 )

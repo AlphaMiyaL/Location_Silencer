@@ -41,11 +41,13 @@ class SilencerRepository private constructor(context: Context){
                 silencers ->
                 silencers?.let {
                     for(silencer in it){
-                        silenceLocation.addGeofence(
-                            silencer.id,
-                            silencer.latitude,
-                            silencer.longitude,
-                            silencer.radius)
+                        if(silencer.on){
+                            silenceLocation.addGeofence(
+                                silencer.id,
+                                silencer.latitude,
+                                silencer.longitude,
+                                silencer.radius)
+                        }
                     }
                 }
         }
@@ -58,22 +60,26 @@ class SilencerRepository private constructor(context: Context){
         executor.execute {
             silencerDao.updateSilencer(silencer)
         }
-        silenceLocation.removeGeofence(silencer.id)
-        silenceLocation.addGeofence(
-            silencer.id,
-            silencer.latitude,
-            silencer.longitude,
-            silencer.radius)
+        if(silencer.on){
+            silenceLocation.removeGeofence(silencer.id)
+            silenceLocation.addGeofence(
+                silencer.id,
+                silencer.latitude,
+                silencer.longitude,
+                silencer.radius)
+        }
     }
     fun addSilencer(silencer: Silencer) {
         executor.execute {
             silencerDao.addSilencer(silencer)
         }
-        silenceLocation.addGeofence(
-            silencer.id,
-            silencer.latitude,
-            silencer.longitude,
-            silencer.radius)
+        if(silencer.on){
+            silenceLocation.addGeofence(
+                silencer.id,
+                silencer.latitude,
+                silencer.longitude,
+                silencer.radius)
+        }
     }
 
     companion object {

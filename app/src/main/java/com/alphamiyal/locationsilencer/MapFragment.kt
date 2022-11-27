@@ -143,7 +143,7 @@ class MapFragment(s: Silencer): DialogFragment(), OnMapReadyCallback {
                 silencer.latitude = latLng.latitude
                 silencer.longitude = latLng.longitude
                 //Using Geocoder to find address of latLng
-                markerLoop@ for(i in 1..10){
+                markerLoop@ for(i in 1..2){
                     try{
                         val gcd: Geocoder = Geocoder(context)
                         var loc = gcd.getFromLocation( latLng.latitude,  latLng.longitude, 1)
