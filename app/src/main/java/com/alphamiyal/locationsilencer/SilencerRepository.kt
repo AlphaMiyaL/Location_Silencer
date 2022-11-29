@@ -42,11 +42,21 @@ class SilencerRepository private constructor(context: Context){
                 silencers?.let {
                     for(silencer in it){
                         if(silencer.on){
-                            silenceLocation.addGeofence(
-                                silencer.id,
-                                silencer.latitude,
-                                silencer.longitude,
-                                silencer.radius)
+                            if(silencer.useLoc && silencer.useTime){
+                            //TODO set timed service for creating and destroying geofences
+
+                                //TODO remove geofence at certain time, maybe via service
+                            }
+                            else if(silencer.useLoc){
+                                silenceLocation.addGeofence(
+                                    silencer.id,
+                                    silencer.latitude,
+                                    silencer.longitude,
+                                    silencer.radius)
+                            }
+                            else if(silencer.useTime){
+                                //TODO service that checks time and does things
+                            }
                         }
                     }
                 }

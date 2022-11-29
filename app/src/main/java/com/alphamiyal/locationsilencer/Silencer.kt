@@ -23,6 +23,9 @@ data class Silencer(@PrimaryKey
                     var address: String = "",
                     var latitude: Double = 0.0,
                     var longitude: Double = 0.0,
-                    //val setLocationOn: Boolean = true,
+                    var startTime: Date = Date(),
+                    var endTime: Date = Date(),
+                    var useLoc: Boolean = true,
+                    var useTime: Boolean = true,
                     var on: Boolean = true,
 )

@@ -17,6 +17,9 @@
     <string name="silencer_latitude">Silencer Latitude</string>
     <string name="silencer_longitude">Silencer Longitude</string>
     <string name="silencer_location">Silencer Location</string>
+    <string name="silencer_start_time">Start Time</string>
+    <string name="silencer_end_time">End Time</string>
+    <string name="silencer_time_to">To</string>
     <string name="new_silencer">New Silencer</string>
     <string name="preference_file_key">com.example.android.while_in_use_location.PREFERENCE_FILE_KEY</string>
 </resources>

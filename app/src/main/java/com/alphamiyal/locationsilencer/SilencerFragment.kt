@@ -6,6 +6,7 @@ import android.content.pm.PackageManager
 import android.icu.util.Calendar
 import android.location.Address
 import android.location.Geocoder
+import android.os.Build
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -15,10 +16,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.View.OnFocusChangeListener
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.EditText
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.maps.SupportMapFragment
 import androidx.core.app.ActivityCompat
@@ -32,6 +31,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_silencer.*
 import kotlinx.android.synthetic.main.fragment_silencer.view.*
 import java.lang.Exception
+import java.text.DateFormat
 import java.util.*
 
 
@@ -48,7 +48,12 @@ class SilencerFragment: Fragment(), TimePickerFragment.Callbacks {
     private lateinit var latitudeField: TextView
     private lateinit var longitudeField: TextView
     private lateinit var mapButton: Button
+    private lateinit var startTimeButton: Button
+    private lateinit var endTimeButton: Button
+    private lateinit var locCheckBox: CheckBox
+    private lateinit var timeCheckBox: CheckBox
 
+    private var startTimeSelect: Boolean = true
     private val silencerDetailViewModel: SilencerDetailViewModel by lazy{
         ViewModelProvider(this)[SilencerDetailViewModel::class.java]
     }
@@ -84,7 +89,11 @@ class SilencerFragment: Fragment(), TimePickerFragment.Callbacks {
         radiusField = view.findViewById(R.id.silencer_radius) as EditText
         latitudeField = view.findViewById(R.id.silencer_latitude) as TextView
         longitudeField = view.findViewById(R.id.silencer_longitude) as TextView
+        startTimeButton = view.findViewById(R.id.silencer_time_start) as Button
+        endTimeButton = view.findViewById(R.id.silencer_time_end) as Button
         mapButton = view.findViewById(R.id.button_id) as Button
+        locCheckBox = view.findViewById(R.id.locCheckbox) as CheckBox
+        timeCheckBox = view.findViewById(R.id.timeCheckBox) as CheckBox
         return view
     }
 
@@ -211,13 +220,37 @@ class SilencerFragment: Fragment(), TimePickerFragment.Callbacks {
 
             val mapFrag = MapFragment.newInstance(silencer)
             Log.d(TAG, "Created?")
+        }
 
+        startTimeButton.setOnClickListener { view: View ->
+            TimePickerFragment.newInstance(silencer.startTime).apply {
+                setTargetFragment(this@SilencerFragment, REQUEST_TIME)
+                show(this@SilencerFragment.parentFragmentManager, DIALOG_TIME)
+            }
+            startTimeSelect = true
+        }
+        endTimeButton.setOnClickListener { view: View ->
+            TimePickerFragment.newInstance(silencer.endTime).apply {
+                setTargetFragment(this@SilencerFragment, REQUEST_TIME)
+                show(this@SilencerFragment.parentFragmentManager, DIALOG_TIME)
+            }
+            startTimeSelect = false
+        }
 
+        locCheckBox.apply {
+            setOnCheckedChangeListener { _, isChecked ->
+                silencer.useLoc = isChecked
+            }
+        }
+
+        timeCheckBox.apply {
+            setOnCheckedChangeListener { _, isChecked ->
+                silencer.useTime = isChecked
+            }
         }
 
         titleField.addTextChangedListener(titleWatcher)
         addressField.addTextChangedListener(addressWatcher)
-        //radiusField.addTextChangedListener(radiusWatcher)
         updateUI()
     }
 
@@ -238,29 +271,32 @@ class SilencerFragment: Fragment(), TimePickerFragment.Callbacks {
         super.onLowMemory()
     }
 
+    @RequiresApi(Build.VERSION_CODES.N)
+    override fun onTimeSelected(calendar: Calendar) {
+        if(startTimeSelect){
+            silencer.startTime = calendar.time
+        }
+        else{
+            silencer.endTime = calendar.time
+        }
+        updateUI()
+    }
+
     private fun updateUI() {
         titleField.setText(silencer.title)
         addressField.setText(silencer.address)
         radiusField.setText(silencer.radius.toString())
         latitudeField.setText(silencer.latitude.toString())
         longitudeField.setText(silencer.longitude.toString())
+        startTimeButton.text = DateFormat.getTimeInstance(DateFormat.SHORT).format(silencer.startTime)
+        endTimeButton.text = DateFormat.getTimeInstance(DateFormat.SHORT).format(silencer.endTime)
+        locCheckBox.apply {
+            isChecked = silencer.useLoc
+            jumpDrawablesToCurrentState()
+        }
+        timeCheckBox.apply {
+            isChecked = silencer.useTime
+            jumpDrawablesToCurrentState()
+        }
     }
-
-    override fun onTimeSelected(calendar: Calendar) {
-        TODO("Not yet implemented")
-    }
-
-    /**
-     * Button stuff
-     * val currentFragment =supportFragmentManager.findFragmentById(R.id.fragment_container)
-
-    //if fragment doesn't exist, create it
-    if(currentFragment == null){
-    val fragment = SilencerListFragment.newInstance()
-    supportFragmentManager
-    .beginTransaction()
-    .add(R.id.fragment_container, fragment)
-    .commit()
-    }
-     */
 }

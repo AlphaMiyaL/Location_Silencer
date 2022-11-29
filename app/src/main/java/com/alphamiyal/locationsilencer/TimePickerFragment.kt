@@ -1,5 +1,6 @@
 package com.alphamiyal.locationsilencer
 
+
 import android.app.Dialog
 import android.app.TimePickerDialog
 import android.icu.util.Calendar
@@ -38,7 +39,7 @@ class TimePickerFragment: DialogFragment() {
             timeListener,
             initialHour,
             initialMinute,
-        false)
+            false)
     }
 
     companion object{
