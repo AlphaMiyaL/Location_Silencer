@@ -113,6 +113,7 @@ class SilencerListFragment: Fragment() {
 
             onOffSwitch.setOnCheckedChangeListener { buttonView, isChecked ->
                 if (isChecked) {
+                    //Log.d(TAG,"adding fence")
                     // The toggle is enabled
                     silencer.on = true
                     SilenceLocation.get().addGeofence(

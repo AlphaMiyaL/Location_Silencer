@@ -15,7 +15,7 @@ import com.google.android.gms.location.GeofencingEvent
 import java.lang.reflect.Constructor
 
 
-private const val TAG = "GeoBroadcastReceive"
+private const val TAG = "GeoBroadcastReceiver"
 
 class GeofenceBroadcastReceiver: BroadcastReceiver() {
 
@@ -24,7 +24,7 @@ class GeofenceBroadcastReceiver: BroadcastReceiver() {
     //Called when BroadcastReceiver is receiving
     override fun onReceive(context: Context?, intent: Intent?) {
         Toast.makeText(context,"Geofence triggered", Toast.LENGTH_SHORT).show()
-
+        Log.d(TAG, "Received")
 
         var geofencingEvent: GeofencingEvent = GeofencingEvent.fromIntent(intent)
 

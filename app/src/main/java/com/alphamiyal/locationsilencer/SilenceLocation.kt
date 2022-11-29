@@ -36,7 +36,7 @@ class SilenceLocation(a: Activity)/*: Service()*/{
     }
 
     private lateinit var geofencingClient: GeofencingClient
-    private lateinit var geofenceHelper: GeofenceHelper
+    private var geofenceHelper: GeofenceHelper? = null
     private var activity = a
 
 //    override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
@@ -58,12 +58,14 @@ class SilenceLocation(a: Activity)/*: Service()*/{
 //    }
 
     fun initGeofencing(a: Activity){
+        Log.d(TAG, "GeofenceHelper initiallized ")
         geofencingClient = LocationServices.getGeofencingClient(a)
         geofenceHelper = GeofenceHelper(a)
     }
 
     fun addGeofence(id: UUID, lat: Double, lng: Double, radius: Double){
 //        Checking permission
+        Log.d(TAG, "Adding fence 2")
         if (ActivityCompat.checkSelfPermission(
                 activity,
                 Manifest.permission.ACCESS_FINE_LOCATION
@@ -71,11 +73,13 @@ class SilenceLocation(a: Activity)/*: Service()*/{
         ) {
             return
         }
-        initGeofencing(activity)
+        if(geofenceHelper == null) {
+            initGeofencing(activity)
+        }
         //Creating Geofence
-        val geofence = geofenceHelper.getGeofence(id, lat, lng, radius)
-        val geofencingRequest = geofenceHelper.getGeofencingRequest(geofence)
-        val pendingIntent = geofenceHelper.getPendingIntent()
+        val geofence = geofenceHelper!!.getGeofence(id, lat, lng, radius)
+        val geofencingRequest = geofenceHelper!!.getGeofencingRequest(geofence)
+        val pendingIntent = geofenceHelper!!.getPendingIntent()
 
         //Adding Geofence to geofenceClient
         geofencingClient.addGeofences(geofencingRequest, pendingIntent)
@@ -95,6 +99,9 @@ class SilenceLocation(a: Activity)/*: Service()*/{
         ) {
             return
         }
+         if(geofenceHelper == null) {
+             initGeofencing(activity)
+         }
 
         var list: List<String> = listOf(id.toString())
         geofencingClient.removeGeofences(list)

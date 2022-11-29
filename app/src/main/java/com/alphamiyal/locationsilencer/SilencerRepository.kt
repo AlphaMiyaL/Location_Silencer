@@ -18,6 +18,7 @@ import java.util.concurrent.Executors
 //  private constructor, initialize fun(for new instance), access repo fun
 
 private const val DATABASE_NAME = "silencer-database"
+private const val TAG = "Silence Repository"
 
 //repository class encapsulates logic for accessing data from sources
 //  determines how to fetch or store set of data, whether database or remote server
@@ -41,18 +42,23 @@ class SilencerRepository private constructor(context: Context){
                 silencers ->
                 silencers?.let {
                     for(silencer in it){
+                        Log.d(TAG, "silencer int it")
                         if(silencer.on){
+                            Log.d(TAG, "silencer on")
                             if(silencer.useLoc && silencer.useTime){
+                                Log.d(TAG, "time fence not added")
                             //TODO set timed service for creating and destroying geofences
 
                                 //TODO remove geofence at certain time, maybe via service
                             }
                             else if(silencer.useLoc){
+                                Log.d(TAG, "About to add fence")
                                 silenceLocation.addGeofence(
                                     silencer.id,
                                     silencer.latitude,
                                     silencer.longitude,
                                     silencer.radius)
+                                Log.d(TAG, "Finished adding fence")
                             }
                             else if(silencer.useTime){
                                 //TODO service that checks time and does things
