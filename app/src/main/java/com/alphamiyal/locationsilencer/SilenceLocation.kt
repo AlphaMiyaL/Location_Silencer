@@ -87,7 +87,8 @@ class SilenceLocation(a: Activity)/*: Service()*/{
                 Log.d(TAG, "Success: Geofence Added")
             }
             .addOnFailureListener {
-                it.printStackTrace()
+                Log.d(TAG, "Failed Geofence adding")
+                Log.d(TAG, it.toString())
             }
     }
 
