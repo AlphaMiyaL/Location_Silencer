@@ -194,29 +194,19 @@
             app:layout_constraintStart_toEndOf="@+id/locCheckbox"
             app:layout_constraintTop_toBottomOf="@+id/silencer_time_end" />
 
-        <!--        <RelativeLayout-->
-<!--            android:id="@+id/map_container"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="0dp"-->
-<!--            app:layout_constraintDimensionRatio="1:1"-->
-<!--            app:layout_constraintEnd_toEndOf="parent"-->
-<!--            app:layout_constraintHorizontal_bias="0.0"-->
-<!--            app:layout_constraintStart_toStartOf="parent"-->
-<!--            app:layout_constraintTop_toBottomOf="@+id/button_id">-->
-<!--        </RelativeLayout>-->
-
-<!--            <androidx.fragment.app.FragmentContainerView-->
-<!--                android:id="@+id/maps"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="match_parent"-->
-<!--                android:name="com.google.android.gms.maps.SupportMapFragment"-->
-<!--                tools:layout="@layout/fragment_map">-->
-<!--            </androidx.fragment.app.FragmentContainerView>-->
-
-        <!--    <Button-->
-        <!--        android:id="@+id/silencer_date"-->
-        <!--        android:layout_width="match_parent"-->
-        <!--        android:layout_height="wrap_content"-->
-        <!--        tools:text="Wed Nov 14 2018"/>-->
+        <!--TODO THIS IS THE UI OF THE BANNER-->
+        <com.google.android.gms.ads.AdView
+            android:id="@+id/adView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            app:adSize="BANNER"
+            app:adUnitId="ca-app-pub-3940256099942544/6300978111"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/locCheckbox"
+            app:layout_constraintBottom_toBottomOf="parent">
+        </com.google.android.gms.ads.AdView>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

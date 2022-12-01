@@ -48,7 +48,6 @@ class SilencerRepository private constructor(context: Context){
                             if(silencer.useLoc && silencer.useTime){
                                 //Log.d(TAG, "time fence not added")
                             //TODO set timed service for creating and destroying geofences
-
                                 //TODO remove geofence at certain time, maybe via service
                             }
                             else if(silencer.useLoc){

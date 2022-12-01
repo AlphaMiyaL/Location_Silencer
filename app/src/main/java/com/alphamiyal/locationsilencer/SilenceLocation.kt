@@ -95,7 +95,7 @@ class SilenceLocation(a: Activity)/*: Service()*/{
             .addOnSuccessListener { aVoid: Void? ->
                 Log.e(
                     "TAG",
-                    "Geocenfences removed"
+                    "Geofence removed"
                 )
             }
             .addOnFailureListener { e: Exception ->

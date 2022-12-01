@@ -1,8 +1,6 @@
 package com.alphamiyal.locationsilencer
 
-import android.Manifest
-import android.app.AlertDialog
-import android.content.pm.PackageManager
+import android.R.attr
 import android.icu.util.Calendar
 import android.location.Address
 import android.location.Geocoder
@@ -18,19 +16,17 @@ import android.view.View.OnFocusChangeListener
 import android.view.ViewGroup
 import android.widget.*
 import androidx.annotation.RequiresApi
-import androidx.appcompat.app.AppCompatActivity
-import com.google.android.gms.maps.SupportMapFragment
-import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.AdView
+import com.google.android.gms.ads.MobileAds
 import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.MarkerOptions
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_silencer.*
 import kotlinx.android.synthetic.main.fragment_silencer.view.*
-import java.lang.Exception
 import java.text.DateFormat
 import java.util.*
 
@@ -52,6 +48,7 @@ class SilencerFragment: Fragment(), TimePickerFragment.Callbacks {
     private lateinit var endTimeButton: Button
     private lateinit var locCheckBox: CheckBox
     private lateinit var timeCheckBox: CheckBox
+    private lateinit var adView: AdView
 
     private var startTimeSelect: Boolean = true
     private val silencerDetailViewModel: SilencerDetailViewModel by lazy{
@@ -94,6 +91,7 @@ class SilencerFragment: Fragment(), TimePickerFragment.Callbacks {
         mapButton = view.findViewById(R.id.button_id) as Button
         locCheckBox = view.findViewById(R.id.locCheckbox) as CheckBox
         timeCheckBox = view.findViewById(R.id.timeCheckBox) as CheckBox
+        adView = view.findViewById(R.id.adView) as AdView
         return view
     }
 
@@ -247,6 +245,13 @@ class SilencerFragment: Fragment(), TimePickerFragment.Callbacks {
                 silencer.useTime = isChecked
             }
         }
+
+        //TODO THIS INIT DOES NOT WORK DUE TO NEEDING CONTEXT IN FRAGMENT
+//        MobileAds.initialize(this) {}
+//
+        //TODO THIS IS HOW WE BUILD AN ADREQUEST AND LOAD IT INTO THE ADVIEW
+//        val adRequest = AdRequest.Builder().build()
+//        adView.loadAd(adRequest)
 
         titleField.addTextChangedListener(titleWatcher)
         addressField.addTextChangedListener(addressWatcher)

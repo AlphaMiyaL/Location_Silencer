@@ -15,6 +15,7 @@ import android.widget.Button
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.google.android.gms.ads.MobileAds
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import java.lang.Exception
@@ -31,6 +32,9 @@ class MainActivity : AppCompatActivity(), SilencerListFragment.Callbacks, Permis
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        //TODO INITALIZING MOBLILE ADS
+        //MobileAds.initialize(this) {}
 
         SilenceLocation.initialize(this)
         SilencerRepository.setSilenceLocation()
