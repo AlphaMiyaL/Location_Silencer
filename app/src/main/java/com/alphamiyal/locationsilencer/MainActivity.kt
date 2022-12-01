@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.Settings
 import android.util.Log
+import android.view.Gravity
 import android.widget.Button
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
@@ -31,10 +32,6 @@ class MainActivity : AppCompatActivity(), SilencerListFragment.Callbacks, Permis
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-
-        val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
-
-
         SilenceLocation.initialize(this)
         SilencerRepository.setSilenceLocation()
 
@@ -42,11 +39,11 @@ class MainActivity : AppCompatActivity(), SilencerListFragment.Callbacks, Permis
 
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
 
-        //if doesn't have all the required permissions
-        if(!(ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) ||
-            (Build.VERSION.SDK_INT>= Build.VERSION_CODES.M && !notificationManager.isNotificationPolicyAccessGranted)){
+        if(checkPermissions()){
+            //has all required permissions
+            //if fragment doesn't exist, create it
             if(currentFragment == null){
-                val fragment = PermissionsFragment.newInstance()
+                val fragment = SilencerListFragment.newInstance()
                 supportFragmentManager
                     .beginTransaction()
                     .add(R.id.fragment_container, fragment)
@@ -54,9 +51,9 @@ class MainActivity : AppCompatActivity(), SilencerListFragment.Callbacks, Permis
             }
         }
         else{
-            //if fragment doesn't exist, create it
+            //if doesn't have all the required permissions
             if(currentFragment == null){
-                val fragment = SilencerListFragment.newInstance()
+                val fragment = PermissionsFragment.newInstance()
                 supportFragmentManager
                     .beginTransaction()
                     .add(R.id.fragment_container, fragment)
@@ -75,28 +72,21 @@ class MainActivity : AppCompatActivity(), SilencerListFragment.Callbacks, Permis
     }
 
     override fun onContinueSelected(){
-        val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
-        if(!(ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) ||
-            (Build.VERSION.SDK_INT>= Build.VERSION_CODES.M && !notificationManager.isNotificationPolicyAccessGranted)){
-            Toast.makeText(this,"Permissions are not all enabled.", Toast.LENGTH_SHORT).show()
+        if(checkPermissions()){
+            val fragment = SilencerListFragment.newInstance()
+            supportFragmentManager
+                .beginTransaction()
+                .replace(R.id.fragment_container, fragment)
+                .commit()
         }
         else{
-            if(SilenceLocation.get().testGeofencing()){
-                val fragment = SilencerListFragment.newInstance()
-                supportFragmentManager
-                    .beginTransaction()
-                    .replace(R.id.fragment_container, fragment)
-                    .commit()
-            }
-            else{
-                Toast.makeText(this,"Permissions are not all enabled.", Toast.LENGTH_SHORT).show()
-            }
+            Toasty("Permissions are not all enabled.")
         }
     }
 
     override fun onLocSelected(){
         if(ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED){
-            Toast.makeText(this,"Location Services are enabled", Toast.LENGTH_SHORT).show()
+            Toasty("Location Services are enabled")
         }
         else {
             if(ActivityCompat.shouldShowRequestPermissionRationale(this,
@@ -117,17 +107,29 @@ class MainActivity : AppCompatActivity(), SilencerListFragment.Callbacks, Permis
             startActivity(intent)
         }
         else{
-            Toast.makeText(this,"Do Not Disturb permissions are enabled", Toast.LENGTH_SHORT).show()
+            Toasty("Do Not Disturb permissions are enabled")
         }
     }
 
     override fun onHighAccSelected() {
         //sends user to the closest spot to google location accuracy
         if(SilenceLocation.get().testGeofencing()){
-            Toast.makeText(this,"High Accuracy Location is enabled", Toast.LENGTH_SHORT).show()
+            Toasty("High Accuracy Location is enabled")
         }
         else{
             startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
         }
+    }
+
+    private fun checkPermissions(): Boolean{
+        val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+        return !(!(ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) ||
+                (Build.VERSION.SDK_INT>= Build.VERSION_CODES.M && !notificationManager.isNotificationPolicyAccessGranted || !SilenceLocation.get().testGeofencing()))
+    }
+
+    private fun Toasty(str: String){
+        var toast = Toast.makeText(this,str, Toast.LENGTH_SHORT)
+        toast.setGravity(Gravity.TOP, 0, 0)
+        toast.show()
     }
 }
