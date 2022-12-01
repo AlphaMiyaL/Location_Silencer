@@ -58,11 +58,14 @@ class SilencerRepository private constructor(context: Context){
                                 catch (e: Exception){
                                     Log.d(TAG, "Old silencer didn't exist or was erased.")
                                 }
+
+
+                                var newRadius = changeToMeters(silencer.radius, silencer.unit)
                                 silenceLocation.addGeofence(
                                     silencer.id,
                                     silencer.latitude,
                                     silencer.longitude,
-                                    silencer.radius)
+                                    newRadius)
                                 Log.d(TAG, "Finished adding fence")
 
                             }
@@ -74,6 +77,16 @@ class SilencerRepository private constructor(context: Context){
                 }
         }
         return silencers
+    }
+
+    private fun changeToMeters(radius: Double, unit: String): Double {
+        when(unit){
+            "Meters" -> return radius
+            "Kilometers" -> return radius * 1000
+            "FEET" -> return radius * .305
+            "Miles" -> return radius * 1600
+        }
+        return 0.1
     }
 
     fun getSilencer(id: UUID): LiveData<Silencer?> = silencerDao.getSilencer(id)

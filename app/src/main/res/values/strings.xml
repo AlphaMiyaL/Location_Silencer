@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Location Silencer</string>
     <string name="silencer_title_hint">Enter title of the silencer</string>
-    <string name="silencer_radius_hint">Enter radius of the silencer</string>
+    <string name="silencer_radius_hint">Enter silencer radius</string>
     <string name="silencer_address_hint">Enter address of the silencer</string>
     <string name="silencer_longitude_hint">Enter longitude of the silencer</string>
     <string name="silencer_latitude_hint">Enter latitude of the silencer</string>
@@ -40,4 +40,10 @@
     <string name="enable">Enable</string>
     <string name="enabled_all_perms">Continue</string>
     <string name="preference_file_key">com.example.android.while_in_use_location.PREFERENCE_FILE_KEY</string>
+    <string-array name="units">
+        <item>Meters</item>
+        <item>Kilometers</item>
+        <item>FEET</item>
+        <item>Miles</item>
+    </string-array>
 </resources>

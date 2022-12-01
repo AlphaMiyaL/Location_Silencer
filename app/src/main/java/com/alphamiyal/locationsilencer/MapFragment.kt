@@ -203,13 +203,25 @@ class MapFragment(s: Silencer): DialogFragment(), OnMapReadyCallback {
     private fun setCircleLocation(map: GoogleMap, latLng: LatLng, radius: Double){
         //Initialize circle options
         val circleOptions: CircleOptions = CircleOptions()
+        //update to meters
+        val newRadius = changeToMeters(radius, silencer.unit)
         //Set position of marker
         circleOptions.center(latLng)
-        circleOptions.radius(radius)
+        circleOptions.radius(newRadius)
         circleOptions.strokeColor(Color.argb(255, 200, 0, 200))
         circleOptions.fillColor(Color.argb(64, 200, 0, 200))
         circleOptions.strokeWidth(4F)
         map.addCircle(circleOptions)
+    }
+
+    private fun changeToMeters(radius: Double, unit: String): Double {
+        when(unit){
+            "Meters" -> return radius
+            "Kilometers" -> return radius * 1000
+            "FEET" -> return radius * .305
+            "Miles" -> return radius * 1600
+        }
+        return 0.1
     }
 
     private fun round(num: Double): Double{

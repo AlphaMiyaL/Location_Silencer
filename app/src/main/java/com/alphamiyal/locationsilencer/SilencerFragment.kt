@@ -22,12 +22,14 @@ import androidx.lifecycle.ViewModelProvider
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdView
 import com.google.android.gms.ads.MobileAds
+import com.google.android.gms.ads.RequestConfiguration
 import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.LatLng
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_silencer.*
 import kotlinx.android.synthetic.main.fragment_silencer.view.*
 import java.text.DateFormat
+import java.text.FieldPosition
 import java.util.*
 
 
@@ -41,6 +43,7 @@ class SilencerFragment: Fragment(), TimePickerFragment.Callbacks {
     private lateinit var titleField: EditText
     private lateinit var addressField: EditText
     private lateinit var radiusField: EditText
+    private lateinit var unitDropdown: Spinner
     private lateinit var latitudeField: TextView
     private lateinit var longitudeField: TextView
     private lateinit var mapButton: Button
@@ -72,6 +75,7 @@ class SilencerFragment: Fragment(), TimePickerFragment.Callbacks {
         val silencerId: UUID = arguments?.getSerializable(ARG_SILENCER_ID) as UUID
 
         silencerDetailViewModel.loadSilencer(silencerId)
+
     }
 
     override fun onCreateView(
@@ -84,6 +88,7 @@ class SilencerFragment: Fragment(), TimePickerFragment.Callbacks {
         titleField = view.findViewById(R.id.silencer_title) as EditText
         addressField = view.findViewById(R.id.silencer_address) as EditText
         radiusField = view.findViewById(R.id.silencer_radius) as EditText
+        unitDropdown = view.findViewById(R.id.units) as Spinner
         latitudeField = view.findViewById(R.id.silencer_latitude) as TextView
         longitudeField = view.findViewById(R.id.silencer_longitude) as TextView
         startTimeButton = view.findViewById(R.id.silencer_time_start) as Button
@@ -123,16 +128,6 @@ class SilencerFragment: Fragment(), TimePickerFragment.Callbacks {
             }
         }
 
-//        val radiusWatcher = object : TextWatcher {
-//            override fun beforeTextChanged(sequence: CharSequence?, start: Int, count: Int, after: Int) {
-//            }
-//            override fun onTextChanged(sequence: CharSequence?, start: Int, count: Int, after: Int) {
-//                silencer.radius = sequence.toString().toDouble()
-//            }
-//            override fun afterTextChanged(sequence: Editable?) {
-//            }
-//        }
-
         radiusField.onFocusChangeListener = OnFocusChangeListener { v, hasFocus ->
             if (!hasFocus) {
                 try {
@@ -145,6 +140,24 @@ class SilencerFragment: Fragment(), TimePickerFragment.Callbacks {
                 }
             }
         }
+        val units = resources.getStringArray(R.array.units)
+       val adapter = context?.let { ArrayAdapter(it, android.R.layout.simple_spinner_item, units) }
+        unitDropdown.adapter = adapter
+
+        unitDropdown.onItemSelectedListener = object :
+        AdapterView.OnItemSelectedListener {
+           override fun onItemSelected(p0: AdapterView<*>?, view: View?, position: Int, id: Long) {
+               silencer.unit = units[position]
+               Log.d(TAG, "Unit is " + silencer.unit)
+
+           }
+
+            override fun onNothingSelected(p0: AdapterView<*>?) {
+                //nothing :p
+            }
+        }
+
+
 
         val addressWatcher = object : TextWatcher {
             override fun beforeTextChanged(sequence: CharSequence?, start: Int, count: Int, after: Int) {
@@ -247,11 +260,12 @@ class SilencerFragment: Fragment(), TimePickerFragment.Callbacks {
         }
 
         //TODO THIS INIT DOES NOT WORK DUE TO NEEDING CONTEXT IN FRAGMENT
-//        MobileAds.initialize(this) {}
+//        MobileAds.initialize(get) {}
 //
         //TODO THIS IS HOW WE BUILD AN ADREQUEST AND LOAD IT INTO THE ADVIEW
 //        val adRequest = AdRequest.Builder().build()
 //        adView.loadAd(adRequest)
+
 
         titleField.addTextChangedListener(titleWatcher)
         addressField.addTextChangedListener(addressWatcher)
@@ -290,6 +304,14 @@ class SilencerFragment: Fragment(), TimePickerFragment.Callbacks {
         titleField.setText(silencer.title)
         addressField.setText(silencer.address)
         radiusField.setText(silencer.radius.toString())
+
+        when(silencer.unit){
+            "Meters" -> unitDropdown.setSelection(0)
+            "Kilometers" -> unitDropdown.setSelection(1)
+            "FEET" -> unitDropdown.setSelection(2)
+            "Miles" -> unitDropdown.setSelection(3)
+        }
+
         latitudeField.setText(silencer.latitude.toString())
         longitudeField.setText(silencer.longitude.toString())
         startTimeButton.text = DateFormat.getTimeInstance(DateFormat.SHORT).format(silencer.startTime)

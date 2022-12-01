@@ -42,17 +42,30 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/silencer_title" />
 
+
+
         <EditText
             android:id="@+id/silencer_radius"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:hint="@string/silencer_radius_hint"
             android:inputType="numberDecimal"
             android:minHeight="48dp"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/units"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/radiusTextView"
             tools:ignore="TextContrastCheck" />
+
+        <Spinner
+            android:id="@+id/units"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:spinnerMode="dropdown"
+            android:textSize="30dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/silencer_radius"
+            app:layout_constraintTop_toBottomOf="@id/radiusTextView"
+            app:layout_constraintBottom_toTopOf="@id/addressTextView"/>
 
         <TextView
             android:id="@+id/addressTextView"
@@ -194,7 +207,6 @@
             app:layout_constraintStart_toEndOf="@+id/locCheckbox"
             app:layout_constraintTop_toBottomOf="@+id/silencer_time_end" />
 
-        <!--TODO THIS IS THE UI OF THE BANNER-->
         <com.google.android.gms.ads.AdView
             android:id="@+id/adView"
             android:layout_width="wrap_content"
