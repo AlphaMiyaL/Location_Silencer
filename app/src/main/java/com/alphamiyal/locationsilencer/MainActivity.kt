@@ -36,6 +36,8 @@ class MainActivity : AppCompatActivity(), SilencerListFragment.Callbacks, Permis
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        MobileAds.initialize(this){}
+
         SilenceLocation.initialize(this)
         SilencerRepository.setSilenceLocation()
 

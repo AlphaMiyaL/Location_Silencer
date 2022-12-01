@@ -263,8 +263,8 @@ class SilencerFragment: Fragment(), TimePickerFragment.Callbacks {
 //        MobileAds.initialize(get) {}
 //
         //TODO THIS IS HOW WE BUILD AN ADREQUEST AND LOAD IT INTO THE ADVIEW
-//        val adRequest = AdRequest.Builder().build()
-//        adView.loadAd(adRequest)
+        val adRequest = AdRequest.Builder().build()
+        adView.loadAd(adRequest)
 
 
         titleField.addTextChangedListener(titleWatcher)
