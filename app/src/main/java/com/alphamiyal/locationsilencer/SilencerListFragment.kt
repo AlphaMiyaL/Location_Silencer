@@ -156,14 +156,14 @@ class SilencerListFragment: Fragment() {
 
     }
 
+    private fun updateUI(silencers:List<Silencer>){
+        adapter = SilencerAdapter(silencers)
+        silencerRecyclerView.adapter = adapter
+    }
+
     companion object{
         fun newInstance(): SilencerListFragment{
             return SilencerListFragment()
         }
-    }
-
-    private fun updateUI(silencers:List<Silencer>){
-        adapter = SilencerAdapter(silencers)
-        silencerRecyclerView.adapter = adapter
     }
 }

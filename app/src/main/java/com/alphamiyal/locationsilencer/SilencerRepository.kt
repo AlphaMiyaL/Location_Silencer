@@ -9,6 +9,7 @@ import androidx.annotation.RequiresApi
 import androidx.lifecycle.LiveData
 import androidx.room.Room
 import com.alphamiyal.locationsilencer.database.SilencerDatabase
+import java.lang.Exception
 import java.util.*
 import java.util.concurrent.Executors
 
@@ -42,23 +43,29 @@ class SilencerRepository private constructor(context: Context){
                 silencers ->
                 silencers?.let {
                     for(silencer in it){
-                        Log.d(TAG, "silencer int it")
                         if(silencer.on){
                             Log.d(TAG, "silencer on")
                             if(silencer.useLoc && silencer.useTime){
-                                Log.d(TAG, "time fence not added")
+                                //Log.d(TAG, "time fence not added")
                             //TODO set timed service for creating and destroying geofences
 
                                 //TODO remove geofence at certain time, maybe via service
                             }
                             else if(silencer.useLoc){
                                 Log.d(TAG, "About to add fence")
+                                try{
+                                    silenceLocation.removeGeofence(silencer.id)
+                                }
+                                catch (e: Exception){
+                                    Log.d(TAG, "Old silencer didn't exist or was erased.")
+                                }
                                 silenceLocation.addGeofence(
                                     silencer.id,
                                     silencer.latitude,
                                     silencer.longitude,
                                     silencer.radius)
                                 Log.d(TAG, "Finished adding fence")
+
                             }
                             else if(silencer.useTime){
                                 //TODO service that checks time and does things

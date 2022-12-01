@@ -38,24 +38,8 @@ class SilenceLocation(a: Activity)/*: Service()*/{
     private lateinit var geofencingClient: GeofencingClient
     private var geofenceHelper: GeofenceHelper? = null
     private var activity = a
-
-//    override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
-//        Log.d(TAG, "onStartCommand()")
-//        geofencingClient = LocationServices.getGeofencingClient(this)
-//        geofenceHelper = GeofenceHelper(this)
-//        // Tells the system not to recreate the service after it's been killed.
-//        return START_STICKY
-//    }
-//
-//    override fun onBind(intent: Intent): IBinder? {
-//        Log.d(TAG, "onBind()")
-//        return null
-//    }
-//
-//    override fun onDestroy() {
-//        Log.d(TAG, "onDestroy()")
-//        super.onDestroy()
-//    }
+    private var testUUID = UUID.randomUUID()
+    private var geofenceSuccess = true
 
     fun initGeofencing(a: Activity){
         Log.d(TAG, "GeofenceHelper initiallized ")
@@ -65,7 +49,7 @@ class SilenceLocation(a: Activity)/*: Service()*/{
 
     fun addGeofence(id: UUID, lat: Double, lng: Double, radius: Double){
 //        Checking permission
-        Log.d(TAG, "Adding fence 2")
+        Log.d(TAG, "Adding fence to client")
         if (ActivityCompat.checkSelfPermission(
                 activity,
                 Manifest.permission.ACCESS_FINE_LOCATION
@@ -85,8 +69,10 @@ class SilenceLocation(a: Activity)/*: Service()*/{
         geofencingClient.addGeofences(geofencingRequest, pendingIntent)
             .addOnSuccessListener {
                 Log.d(TAG, "Success: Geofence Added")
+                geofenceSuccess = true
             }
             .addOnFailureListener {
+                geofenceSuccess = false
                 Log.d(TAG, "Failed Geofence adding")
                 Log.d(TAG, it.toString())
             }
@@ -124,81 +110,13 @@ class SilenceLocation(a: Activity)/*: Service()*/{
             }
     }
 
-//    else {
-//        Log.i(TAG, "no list provided, removing ALL geofences")
-//        geofencingClient.removeGeofences(geofenceHelper.getPendingIntent())
-//            .addOnSuccessListener { aVoid: Void? ->
-//                Log.e(
-//                    "TAG",
-//                    "Geocenfences removed"
-//                )
-//            }.addOnFailureListener { e: Exception? ->
-//                val errorMessage: String = geofenceHelper.getErrorString(e)
-//                Log.e("TAG", "onFailure: $errorMessage")
-//                Toast.makeText(
-//                    applicationContext,
-//                    "onFailure: $errorMessage",
-//                    Toast.LENGTH_SHORT
-//                ).show()
-//            }
-//    }
-
-
-//    override fun onCreate()
-//    {
-//        Log.d(TAG, "Created")
-//        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
-//        locationRequest = LocationRequest.create().apply {
-//            interval = TimeUnit.SECONDS.toMillis(60)
-//            fastestInterval = TimeUnit.SECONDS.toMillis(30)
-//            maxWaitTime = TimeUnit.MINUTES.toMillis(2)
-//            priority = LocationRequest.PRIORITY_HIGH_ACCURACY
-//        }
-//        locationCallback = object : LocationCallback() {
-//            override fun onLocationResult(locationResult: LocationResult) {
-//                super.onLocationResult(locationResult)
-//                currentLocation = locationResult.lastLocation
-//            }
-//        }
-//
-//    }
-//    override fun onCreate(savedInstanceState: Bundle?){
-//        super.onCreate(savedInstanceState)
-//        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
-//    }this
-
-//    fun getCurrentLocation(context: Context){
-//        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION)
-//            != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
-//            != PackageManager.PERMISSION_GRANTED
-//        ){
-//            return
-//        }
-//        fusedLocationProviderClient.lastLocation
-//            .addOnSuccessListener { location : Location? ->
-//                // Got last known location. In some rare situations this can be null.
-//                if(location != null){
-//                    val textLatitude = "Latitude " + location.latitude.toString()
-//                    val textLongitude = "longitude " + location.longitude.toString()
-//                    Log.d(TAG, textLatitude)
-//                    Log.d(TAG, textLongitude)
-//                }
-//            }
-//    }
-
-//    /**
-//     * Class used for the client Binder.  Since this service runs in the same process as its
-//     * clients, we don't need to deal with IPC.
-//     */
-//    inner class LocalBinder : Binder() {
-//        internal val service: SilenceLocation
-//            get() = this@SilenceLocation
-//    }
-//
-//    override fun onBind(p0: Intent?): IBinder? {
-//        Log.d(TAG, "onBind()")
-//
-//        return localBinder
-//    }
+    fun testGeofencing(): Boolean{
+        addGeofence(testUUID, 0.0, 0.0, 1.0)
+        if(geofenceSuccess){
+            removeGeofence(testUUID)
+            return true
+        }
+        return false
+    }
 
 }

@@ -16,11 +16,12 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
+import java.lang.Exception
 import java.util.*
 
 private const val TAG = "MainActivity"
 private const val REQUEST_FOREGROUND_ONLY_PERMISSIONS_REQUEST_CODE = 34
-class MainActivity : AppCompatActivity(), SilencerListFragment.Callbacks  {
+class MainActivity : AppCompatActivity(), SilencerListFragment.Callbacks, PermissionsFragment.Callbacks  {
     lateinit var fusedLocationProviderClient: FusedLocationProviderClient
     private val locationCode = 2000
     private val locationCode1 = 2001
@@ -31,29 +32,7 @@ class MainActivity : AppCompatActivity(), SilencerListFragment.Callbacks  {
         setContentView(R.layout.activity_main)
 
 
-
-        if(ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED){
-        }
-        else {
-            if(ActivityCompat.shouldShowRequestPermissionRationale(this,
-                    Manifest.permission.ACCESS_FINE_LOCATION
-                )){
-                ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),locationCode)
-            }
-            else {
-                ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),locationCode)
-            }
-        }
-
-
         val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
-        if(Build.VERSION.SDK_INT>= Build.VERSION_CODES.M && !notificationManager.isNotificationPolicyAccessGranted){
-            val intent = Intent(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS)
-            startActivity(intent)
-        }
-
-        //sends user to the closest spot to google location accuracy  
-        //startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
 
 
         SilenceLocation.initialize(this)
@@ -63,17 +42,26 @@ class MainActivity : AppCompatActivity(), SilencerListFragment.Callbacks  {
 
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
 
-
-        //fetchLocation()
-
-
-        //if fragment doesn't exist, create it
-        if(currentFragment == null){
-            val fragment = SilencerListFragment.newInstance()
-            supportFragmentManager
-                .beginTransaction()
-                .add(R.id.fragment_container, fragment)
-                .commit()
+        //if doesn't have all the required permissions
+        if(!(ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) ||
+            (Build.VERSION.SDK_INT>= Build.VERSION_CODES.M && !notificationManager.isNotificationPolicyAccessGranted)){
+            if(currentFragment == null){
+                val fragment = PermissionsFragment.newInstance()
+                supportFragmentManager
+                    .beginTransaction()
+                    .add(R.id.fragment_container, fragment)
+                    .commit()
+            }
+        }
+        else{
+            //if fragment doesn't exist, create it
+            if(currentFragment == null){
+                val fragment = SilencerListFragment.newInstance()
+                supportFragmentManager
+                    .beginTransaction()
+                    .add(R.id.fragment_container, fragment)
+                    .commit()
+            }
         }
     }
 
@@ -85,56 +73,61 @@ class MainActivity : AppCompatActivity(), SilencerListFragment.Callbacks  {
             .addToBackStack(null)
             .commit()
     }
-//    override fun onRequestPermissionsResult(
-//        requestCode: Int,
-//        permissions: Array<out String>,
-//        grantResults: IntArray
-//    ) {
-//        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-//        if(requestCode==locationCode){
-//            if(grantResults.isNotEmpty()&&grantResults[0]==PackageManager.PERMISSION_GRANTED){
-//                if(ActivityCompat.checkSelfPermission(this,
-//                        Manifest.permission.ACCESS_FINE_LOCATION
-//                    )!=PackageManager.PERMISSION_GRANTED&&ActivityCompat.checkSelfPermission(
-//                        this,android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED
-//                ) {
-//                    return
-//                }
-//            }
-//        }
-//        if(requestCode==locationCode1){
-//            if(grantResults.isNotEmpty()&& grantResults[0]==PackageManager.PERMISSION_GRANTED){
-//                if(ActivityCompat.checkSelfPermission(
-//                        this, Manifest.permission.ACCESS_BACKGROUND_LOCATION
-//                    ) !=PackageManager.PERMISSION_GRANTED&&ActivityCompat.checkSelfPermission(this,android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED
-//                ){
-//                    return
-//                }
-//                Toast.makeText(this@MainActivity, "You Can Add Geofences", Toast.LENGTH_LONG).show()
-//            }
-//        }
-//    }
 
+    override fun onContinueSelected(){
+        val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+        if(!(ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) ||
+            (Build.VERSION.SDK_INT>= Build.VERSION_CODES.M && !notificationManager.isNotificationPolicyAccessGranted)){
+            Toast.makeText(this,"Permissions are not all enabled.", Toast.LENGTH_SHORT).show()
+        }
+        else{
+            if(SilenceLocation.get().testGeofencing()){
+                val fragment = SilencerListFragment.newInstance()
+                supportFragmentManager
+                    .beginTransaction()
+                    .replace(R.id.fragment_container, fragment)
+                    .commit()
+            }
+            else{
+                Toast.makeText(this,"Permissions are not all enabled.", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
 
+    override fun onLocSelected(){
+        if(ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED){
+            Toast.makeText(this,"Location Services are enabled", Toast.LENGTH_SHORT).show()
+        }
+        else {
+            if(ActivityCompat.shouldShowRequestPermissionRationale(this,
+                    Manifest.permission.ACCESS_FINE_LOCATION
+                )){
+                ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),locationCode)
+            }
+            else {
+                ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),locationCode)
+            }
+        }
+    }
 
+    override fun onDNDSelected() {
+        val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+        if(Build.VERSION.SDK_INT>= Build.VERSION_CODES.M && !notificationManager.isNotificationPolicyAccessGranted){
+            val intent = Intent(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS)
+            startActivity(intent)
+        }
+        else{
+            Toast.makeText(this,"Do Not Disturb permissions are enabled", Toast.LENGTH_SHORT).show()
+        }
+    }
 
-//    private fun fetchLocation(){
-//        val task = fusedLocationProviderClient.lastLocation
-//
-//        if(ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
-//            != PackageManager.PERMISSION_GRANTED
-//            && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION)
-//            != PackageManager.PERMISSION_GRANTED){
-//            ActivityCompat.requestPermissions(this, arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION), 101)
-//            return
-//        }
-//        task.addOnSuccessListener {
-//            if(it != null){
-//                Log.d(TAG, "${it.latitude} ${it.longitude}")
-//                Toast.makeText(applicationContext, "${it.latitude} ${it.longitude}", Toast.LENGTH_SHORT).show()
-//
-//            }
-//        }
-//
-//    }
+    override fun onHighAccSelected() {
+        //sends user to the closest spot to google location accuracy
+        if(SilenceLocation.get().testGeofencing()){
+            Toast.makeText(this,"High Accuracy Location is enabled", Toast.LENGTH_SHORT).show()
+        }
+        else{
+            startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
+        }
+    }
 }

@@ -24,11 +24,6 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyAxbkas6Wqdmy1xqAo3ydn_DJcxsrQ3k7c"/>
-        <service
-        android:name="com.alphamiyal.locationsilencer.ForegroundOnlyLocationService"
-        android:enabled="true"
-        android:exported="false"
-        android:foregroundServiceType="location" />
         <receiver
             android:name=".GeofenceBroadcastReceiver"
             android:exported="false"/>

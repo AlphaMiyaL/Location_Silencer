@@ -23,7 +23,7 @@ class GeofenceBroadcastReceiver: BroadcastReceiver() {
 
     //Called when BroadcastReceiver is receiving
     override fun onReceive(context: Context?, intent: Intent?) {
-        Toast.makeText(context,"Geofence triggered", Toast.LENGTH_SHORT).show()
+        //Toast.makeText(context,"Geofence triggered", Toast.LENGTH_SHORT).show()
         Log.d(TAG, "Received")
 
         var geofencingEvent: GeofencingEvent = GeofencingEvent.fromIntent(intent)
