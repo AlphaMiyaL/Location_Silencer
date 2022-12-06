@@ -41,6 +41,9 @@ class SilenceTime(a: Activity, context: Context) {
         val intent = Intent(context, TimeBroadcastReceiver::class.java)
         intent.putExtra("Type", type)
         //TODO Changed current Time Millis here to id or something other later
+        Log.d(TAG, "time at add long" + timeInMillis)
+        Log.d(TAG, "time at add int " + timeInMillis.toInt())
+        Log.d(TAG, "Current time " + System.currentTimeMillis())
         val pendingIntent = PendingIntent.getBroadcast(context, timeInMillis.toInt(), intent, 0)
         alarmManager.setRepeating(
             AlarmManager.RTC,

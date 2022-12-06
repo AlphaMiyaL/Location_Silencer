@@ -12,7 +12,10 @@ import androidx.lifecycle.LiveData
 import androidx.room.Room
 import com.alphamiyal.locationsilencer.database.SilencerDatabase
 import java.lang.Exception
+import java.time.Month
+import java.time.Year
 import java.util.*
+import java.util.Calendar.*
 import java.util.concurrent.Executors
 
 //This class is a singleton: There will only ever be one instance of it in app process
@@ -183,9 +186,20 @@ class SilencerRepository private constructor(context: Context){
             am.ringerMode = AudioManager.RINGER_MODE_SILENT
         }
         //Add Time Silencer
-        silenceTime.addTimeSilencer(0, silencer.startTime.time)
-        silenceTime.addTimeSilencer(1, silencer.endTime.time)
+        silenceTime.addTimeSilencer(0, changeDateToToday(silencer.startTime).time)
+        silenceTime.addTimeSilencer(1, changeDateToToday(silencer.endTime).time)
         Log.d(TAG, "Finished adding time silencer")
+    }
+
+    private fun changeDateToToday(date: Date): Date{
+        var calendar: Calendar = Calendar.getInstance()
+        var currentCalendar: Calendar = Calendar.getInstance()
+        calendar.time = date
+        calendar.set(YEAR, currentCalendar.get(Calendar.YEAR))
+        calendar.set(MONTH, currentCalendar.get(Calendar.MONTH))
+        calendar.set(DAY_OF_MONTH, currentCalendar.get(Calendar.DAY_OF_MONTH))
+        Log.d(TAG, calendar.time.time.toString())
+        return calendar.time
     }
 
     companion object {
