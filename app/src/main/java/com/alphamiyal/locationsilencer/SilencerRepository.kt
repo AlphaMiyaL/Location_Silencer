@@ -48,6 +48,7 @@ class SilencerRepository private constructor(context: Context){
             silencers?.let {
                 for(silencer in it){
                     if(silencer.on){
+                        deleteOldSilencer(silencer)
                         if(silencer.useLoc && silencer.useTime){
                             addTimeAndLocSilencer(silencer)
                         }
@@ -71,6 +72,7 @@ class SilencerRepository private constructor(context: Context){
             silencerDao.updateSilencer(silencer)
         }
         if(silencer.on){
+            deleteOldSilencer(silencer)
             if(silencer.useTime && silencer.useLoc){
                 addTimeAndLocSilencer(silencer)
             }
@@ -105,8 +107,8 @@ class SilencerRepository private constructor(context: Context){
         return 0.1
     }
 
-    private fun addTimeAndLocSilencer(silencer:Silencer){
-        Log.d(TAG, "About to add time and location silencer")
+    private fun deleteOldSilencer(silencer: Silencer){
+        Log.d(TAG, "Check Delete Time and Loc Silencer")
         var newRadius = changeToMeters(silencer.radius, silencer.unit)
         try{
             silenceLocation.removeGeofence(silencer.id)
@@ -126,6 +128,27 @@ class SilencerRepository private constructor(context: Context){
         catch (e: Exception){
             Log.d(TAG, "Old time-geofence silencer didn't exist or was erased.")
         }
+
+        Log.d(TAG, "Check Delete Geofence Silencer")
+        try{
+            silenceLocation.removeGeofence(silencer.id)
+        }
+        catch (e: Exception){
+            Log.d(TAG, "Old geofence silencer didn't exist or was erased.")
+        }
+
+        Log.d(TAG, "Check Delete Time Silencer")
+        try{
+            silenceTime.deleteTimeSilencer(0, silencer.startTime.time)
+            silenceTime.deleteTimeSilencer(1, silencer.endTime.time)
+        }
+        catch (e: Exception){
+            Log.d(TAG, "Old time silencer didn't exist or was erased.")
+        }
+    }
+
+    private fun addTimeAndLocSilencer(silencer:Silencer){
+        var newRadius = changeToMeters(silencer.radius, silencer.unit)
         silenceTime.addTimeAndLocSilencer(0,
             silencer.startTime.time,
             silencer.id,
@@ -142,14 +165,6 @@ class SilencerRepository private constructor(context: Context){
     }
 
     private fun addGeofenceSilencer(silencer: Silencer){
-        Log.d(TAG, "About to add fence")
-        try{
-            silenceLocation.removeGeofence(silencer.id)
-        }
-        catch (e: Exception){
-            Log.d(TAG, "Old geofence silencer didn't exist or was erased.")
-        }
-
         var newRadius = changeToMeters(silencer.radius, silencer.unit)
         silenceLocation.addGeofence(
             silencer.id,
@@ -161,14 +176,6 @@ class SilencerRepository private constructor(context: Context){
 
     private fun addTimeSilencer(silencer: Silencer){
         var am = c.getSystemService(Context.AUDIO_SERVICE) as AudioManager
-        Log.d(TAG, "About to add time silencer")
-        try{
-            silenceTime.deleteTimeSilencer(0, silencer.startTime.time)
-            silenceTime.deleteTimeSilencer(1, silencer.endTime.time)
-        }
-        catch (e: Exception){
-            Log.d(TAG, "Old time silencer didn't exist or was erased.")
-        }
 
         //If between time, silence
         var current = Date()
