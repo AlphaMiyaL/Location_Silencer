@@ -26,6 +26,7 @@ class SilenceLocation(a: Activity)/*: Service()*/{
         fun initialize(a: Activity) {
             if (INSTANCE == null) {
                 INSTANCE = SilenceLocation(a)
+                INSTANCE!!.initGeofencing(a)
             }
         }
 
@@ -36,20 +37,19 @@ class SilenceLocation(a: Activity)/*: Service()*/{
     }
 
     private lateinit var geofencingClient: GeofencingClient
-    private var geofenceHelper: GeofenceHelper? = null
+    private lateinit var geofenceHelper: GeofenceHelper//? = null
     private var activity = a
     private var testUUID = UUID.randomUUID()
     private var geofenceSuccess = true
 
-    fun initGeofencing(a: Activity){
-        Log.d(TAG, "GeofenceHelper initiallized ")
+    private fun initGeofencing(a: Activity){
+        Log.d(TAG, "GeofenceHelper initialized ")
         geofencingClient = LocationServices.getGeofencingClient(a)
         geofenceHelper = GeofenceHelper(a)
     }
 
     fun addGeofence(id: UUID, lat: Double, lng: Double, radius: Double){
 //        Checking permission
-        Log.d(TAG, "Adding fence to client")
         if (ActivityCompat.checkSelfPermission(
                 activity,
                 Manifest.permission.ACCESS_FINE_LOCATION
@@ -57,13 +57,13 @@ class SilenceLocation(a: Activity)/*: Service()*/{
         ) {
             return
         }
-        if(geofenceHelper == null) {
-            initGeofencing(activity)
-        }
+//        if(geofenceHelper == null) {
+//            initGeofencing(activity)
+//        }
         //Creating Geofence
-        val geofence = geofenceHelper!!.getGeofence(id, lat, lng, radius)
-        val geofencingRequest = geofenceHelper!!.getGeofencingRequest(geofence)
-        val pendingIntent = geofenceHelper!!.getPendingIntent()
+        val geofence = geofenceHelper.getGeofence(id, lat, lng, radius)
+        val geofencingRequest = geofenceHelper.getGeofencingRequest(geofence)
+        val pendingIntent = geofenceHelper.getPendingIntent()
 
         //Adding Geofence to geofenceClient
         geofencingClient.addGeofences(geofencingRequest, pendingIntent)
@@ -86,17 +86,14 @@ class SilenceLocation(a: Activity)/*: Service()*/{
         ) {
             return
         }
-         if(geofenceHelper == null) {
-             initGeofencing(activity)
-         }
+//         if(geofenceHelper == null) {
+//             initGeofencing(activity)
+//         }
 
         var list: List<String> = listOf(id.toString())
         geofencingClient.removeGeofences(list)
-            .addOnSuccessListener { aVoid: Void? ->
-                Log.e(
-                    "TAG",
-                    "Geofence removed"
-                )
+            .addOnSuccessListener {
+                Log.d(TAG, "Geofence removed")
             }
             .addOnFailureListener { e: Exception ->
                 //val errorMessage: String = geofenceHelper.getErrorString(e)
@@ -111,6 +108,7 @@ class SilenceLocation(a: Activity)/*: Service()*/{
     }
 
     fun testGeofencing(): Boolean{
+        Log.d(TAG, "TESTING GEOFENCE")
         addGeofence(testUUID, 0.0, 0.0, 1.0)
         if(geofenceSuccess){
             removeGeofence(testUUID)

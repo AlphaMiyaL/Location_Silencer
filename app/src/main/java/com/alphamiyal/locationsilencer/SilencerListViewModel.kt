@@ -9,4 +9,8 @@ class SilencerListViewModel: ViewModel() {
     fun addSilencer(silencer: Silencer){
         silencerRepository.addSilencer(silencer)
     }
+
+    fun saveSilencer(silencer: Silencer){
+        silencerRepository.updateSilencer(silencer)
+    }
 }

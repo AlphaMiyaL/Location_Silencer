@@ -1,6 +1,7 @@
 package com.alphamiyal.locationsilencer
 
 import android.Manifest
+import android.app.AlarmManager
 import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
@@ -37,8 +38,9 @@ class MainActivity : AppCompatActivity(), SilencerListFragment.Callbacks, Permis
         setContentView(R.layout.activity_main)
 
         MobileAds.initialize(this){}
-
+        SilenceTime.initialize(this, this.applicationContext)
         SilenceLocation.initialize(this)
+        SilencerRepository.setSilenceTime()
         SilencerRepository.setSilenceLocation()
 
         val currentFragment =supportFragmentManager.findFragmentById(R.id.fragment_container)

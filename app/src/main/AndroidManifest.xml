@@ -32,6 +32,12 @@
         <receiver
             android:name=".GeofenceBroadcastReceiver"
             android:exported="false"/>
+        <receiver
+            android:name=".TimeBroadcastReceiver"
+            android:exported="false"/>
+        <receiver
+            android:name=".TimeLocBroadcastReceiver"
+            android:exported="false"/>
         <activity
             android:name=".MainActivity"
             android:exported="true">
