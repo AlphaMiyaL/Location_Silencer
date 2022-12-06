@@ -13,11 +13,11 @@ class TimeBroadcastReceiver : BroadcastReceiver(){
             var am = context!!.getSystemService(Context.AUDIO_SERVICE) as AudioManager
             if(intent.getIntExtra("Type", 2) == 0){
                 am.ringerMode = AudioManager.RINGER_MODE_SILENT
-                Log.d(TAG, "Phone Silenced")
+                Log.d(TAG, "Phone Silenced " + intent.getStringExtra("Name"))
             }
             else if(intent.getIntExtra("Type", 2) == 1){
                 am.ringerMode = AudioManager.RINGER_MODE_NORMAL
-                Log.d(TAG, "Phone not silenced")
+                Log.d(TAG, "Phone Un-Silenced " + intent.getStringExtra("Name"))
             }
         }
 }

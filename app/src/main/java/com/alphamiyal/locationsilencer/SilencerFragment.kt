@@ -206,27 +206,6 @@ class SilencerFragment: Fragment(), TimePickerFragment.Callbacks {
         })
 
         mapButton.setOnClickListener { view: View ->
-//           childFragmentManager?.findFragmentById(R.id.map_view)
-//            Log.d(TAG, "Hello2")
-//
-//            //if fragment doesn't exist, create it
-//            if(mapFragment == null){
-//                Log.d(TAG, "Hello")
-//                val mapFrag = MapFragment.newInstance(silencer)
-//                requireParentFragment().childFragmentManager
-//                    .beginTransaction()
-//                    .add(R.id.map_view, mapFrag)
-//                    .commit()
-//            }
-//            val mMapView = LayoutInflater.from(context).inflate(R.layout.map_window, null)
-//            val mBuilder = AlertDialog.Builder(context)
-//                .setView(mMapView)
-//                .setTitle("Map")
-//            val mAlertDialog = mBuilder.show()
-
-//            val mapPopUp = MapFragment(silencer)
-//            mapPopUp.show((activity as AppCompatActivity).supportFragmentManager, "")
-
             MapFragment(silencer).show(childFragmentManager, "MapFragment")
 
             val mapFrag = MapFragment.newInstance(silencer)
@@ -259,10 +238,6 @@ class SilencerFragment: Fragment(), TimePickerFragment.Callbacks {
             }
         }
 
-        //TODO THIS INIT DOES NOT WORK DUE TO NEEDING CONTEXT IN FRAGMENT
-//        MobileAds.initialize(get) {}
-//
-        //TODO THIS IS HOW WE BUILD AN ADREQUEST AND LOAD IT INTO THE ADVIEW
         val adRequest = AdRequest.Builder().build()
         adView.loadAd(adRequest)
 
@@ -291,9 +266,10 @@ class SilencerFragment: Fragment(), TimePickerFragment.Callbacks {
 
     @RequiresApi(Build.VERSION_CODES.N)
     override fun onTimeSelected(calendar: Calendar) {
-        Log.d(TAG, "Calendar time " + calendar.time)
-        Log.d(TAG, calendar.timeInMillis.toString())
-        Log.d(TAG, calendar.time.time.toString())
+//        Log.d(TAG, "Calendar time " + calendar.time)
+//        Log.d(TAG, calendar.timeInMillis.toString())
+//        Log.d(TAG, calendar.time.time.toString())
+        calendar.add(Calendar.MINUTE, 8)
         if(startTimeSelect){
             silencer.startTime = calendar.time
         }

@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.media.AudioManager
 import android.os.Build
+import android.os.SystemClock
 import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat.getSystemService
@@ -24,7 +25,7 @@ import java.util.concurrent.Executors
 //  private constructor, initialize fun(for new instance), access repo fun
 
 private const val DATABASE_NAME = "silencer-database"
-private const val TAG = "Silence Repository"
+private const val TAG = "Silencer Repository"
 
 //repository class encapsulates logic for accessing data from sources
 //  determines how to fetch or store set of data, whether database or remote server
@@ -70,6 +71,7 @@ class SilencerRepository private constructor(context: Context){
 
     fun getSilencer(id: UUID): LiveData<Silencer?> = silencerDao.getSilencer(id)
 
+    @RequiresApi(Build.VERSION_CODES.N)
     fun updateSilencer(silencer: Silencer) {
         executor.execute {
             silencerDao.updateSilencer(silencer)
@@ -91,13 +93,13 @@ class SilencerRepository private constructor(context: Context){
         executor.execute {
             silencerDao.addSilencer(silencer)
         }
-        if(silencer.on){
-            silenceLocation.addGeofence(
-                silencer.id,
-                silencer.latitude,
-                silencer.longitude,
-                silencer.radius)
-        }
+//        if(silencer.on){
+//            silenceLocation.addGeofence(
+//                silencer.id,
+//                silencer.latitude,
+//                silencer.longitude,
+//                silencer.radius)
+//        }
     }
 
     private fun changeToMeters(radius: Double, unit: String): Double {
@@ -111,7 +113,7 @@ class SilencerRepository private constructor(context: Context){
     }
 
     private fun deleteOldSilencer(silencer: Silencer){
-        Log.d(TAG, "Check Delete Time and Loc Silencer")
+        Log.d(TAG, "Deleting Old Silencer")
         var newRadius = changeToMeters(silencer.radius, silencer.unit)
         try{
             silenceLocation.removeGeofence(silencer.id)
@@ -122,30 +124,25 @@ class SilencerRepository private constructor(context: Context){
                 silencer.longitude,
                 newRadius)
             silenceTime.deleteTimeAndLoc(1,
-                silencer.startTime.time,
+                silencer.endTime.time,
                 silencer.id,
                 silencer.latitude,
                 silencer.longitude,
                 newRadius)
-        }
-        catch (e: Exception){
+        } catch (e: Exception){
             Log.d(TAG, "Old time-geofence silencer didn't exist or was erased.")
         }
 
-        Log.d(TAG, "Check Delete Geofence Silencer")
         try{
             silenceLocation.removeGeofence(silencer.id)
-        }
-        catch (e: Exception){
+        } catch (e: Exception){
             Log.d(TAG, "Old geofence silencer didn't exist or was erased.")
         }
 
-        Log.d(TAG, "Check Delete Time Silencer")
         try{
             silenceTime.deleteTimeSilencer(0, silencer.startTime.time)
             silenceTime.deleteTimeSilencer(1, silencer.endTime.time)
-        }
-        catch (e: Exception){
+        } catch (e: Exception){
             Log.d(TAG, "Old time silencer didn't exist or was erased.")
         }
     }
@@ -159,7 +156,7 @@ class SilencerRepository private constructor(context: Context){
             silencer.longitude,
             newRadius)
         silenceTime.addTimeAndLocSilencer(1,
-            silencer.startTime.time,
+            silencer.endTime.time,
             silencer.id,
             silencer.latitude,
             silencer.longitude,
@@ -174,7 +171,7 @@ class SilencerRepository private constructor(context: Context){
             silencer.latitude,
             silencer.longitude,
             newRadius)
-        Log.d(TAG, "Finished adding fence")
+        Log.d(TAG, "Finished adding geofence")
     }
 
     private fun addTimeSilencer(silencer: Silencer){
@@ -186,20 +183,23 @@ class SilencerRepository private constructor(context: Context){
             am.ringerMode = AudioManager.RINGER_MODE_SILENT
         }
         //Add Time Silencer
-        silenceTime.addTimeSilencer(0, changeDateToToday(silencer.startTime).time)
-        silenceTime.addTimeSilencer(1, changeDateToToday(silencer.endTime).time)
+        silenceTime.addTimeSilencer(0, currentDayCalendar(silencer.startTime), silencer.title)
+        //silenceTime.addTimeSilencer(1, currentDayCalendar(silencer.endTime), silencer.title)
         Log.d(TAG, "Finished adding time silencer")
     }
 
-    private fun changeDateToToday(date: Date): Date{
-        var calendar: Calendar = Calendar.getInstance()
-        var currentCalendar: Calendar = Calendar.getInstance()
+    private fun currentDayCalendar(date: Date): Calendar{
+        var calendar: Calendar = getInstance()
+        var currentCalendar: Calendar = getInstance()
         calendar.time = date
-        calendar.set(YEAR, currentCalendar.get(Calendar.YEAR))
-        calendar.set(MONTH, currentCalendar.get(Calendar.MONTH))
-        calendar.set(DAY_OF_MONTH, currentCalendar.get(Calendar.DAY_OF_MONTH))
-        Log.d(TAG, calendar.time.time.toString())
-        return calendar.time
+        currentCalendar.set(HOUR_OF_DAY, calendar.get(HOUR_OF_DAY))
+        currentCalendar.set(MINUTE, calendar.get(MINUTE))
+        currentCalendar.set(SECOND, 0)
+        if(currentCalendar.before(getInstance())){
+            currentCalendar.add(DATE, 1)
+        }
+        Log.d(TAG, currentCalendar.time.toString())
+        return calendar
     }
 
     companion object {

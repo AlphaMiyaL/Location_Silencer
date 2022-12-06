@@ -7,7 +7,7 @@ import android.icu.util.Calendar
 import android.icu.util.GregorianCalendar
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
+import android.text.format.DateFormat
 import android.widget.TimePicker
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.DialogFragment
@@ -27,8 +27,6 @@ class TimePickerFragment: DialogFragment() {
         val timeListener = TimePickerDialog.OnTimeSetListener{
                 _: TimePicker, hour: Int, minute: Int->
             val resultTime: Calendar = GregorianCalendar(0, 0,0, hour, minute)
-            Log.d(TAG, resultTime.time.toString())
-
             targetFragment?.let { fragment ->
                 (fragment as Callbacks).onTimeSelected(resultTime)
             }
@@ -38,17 +36,17 @@ class TimePickerFragment: DialogFragment() {
         calendar.time = date
         val initialHour = calendar.get(Calendar.HOUR_OF_DAY)
         var initialMinute = calendar.get(Calendar.MINUTE)
-        Log.d(TAG, calendar.time.toString())
 
-        Log.d(TAG, calendar.get(Calendar.HOUR_OF_DAY).toString())
-        Log.d(TAG, calendar.get(Calendar.MINUTE).toString())
+//        Log.d(TAG, calendar.time.toString())
+//        Log.d(TAG, calendar.get(Calendar.HOUR_OF_DAY).toString())
+//        Log.d(TAG, calendar.get(Calendar.MINUTE).toString())
 
         return TimePickerDialog(
             requireContext(),
             timeListener,
             initialHour,
             initialMinute - 8,
-            false)
+            DateFormat.is24HourFormat(activity))
     }
 
     companion object{

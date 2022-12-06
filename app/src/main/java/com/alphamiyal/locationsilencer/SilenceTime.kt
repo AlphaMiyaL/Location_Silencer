@@ -5,7 +5,9 @@ import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat.getSystemService
 import java.lang.Exception
 import java.util.*
@@ -37,18 +39,19 @@ class SilenceTime(a: Activity, context: Context) {
         alarmManager = a.getSystemService(Context.ALARM_SERVICE) as AlarmManager
     }
 
-    fun addTimeSilencer(type: Int, timeInMillis: Long){
+    fun addTimeSilencer(type: Int, calendar: Calendar, name: String){
         val intent = Intent(context, TimeBroadcastReceiver::class.java)
         intent.putExtra("Type", type)
-        //TODO Changed current Time Millis here to id or something other later
-        Log.d(TAG, "time at add long" + timeInMillis)
-        Log.d(TAG, "time at add int " + timeInMillis.toInt())
-        Log.d(TAG, "Current time " + System.currentTimeMillis())
-        val pendingIntent = PendingIntent.getBroadcast(context, timeInMillis.toInt(), intent, 0)
-        alarmManager.setRepeating(
-            AlarmManager.RTC,
-            timeInMillis,
-            AlarmManager.INTERVAL_DAY,
+        intent.putExtra("Name", name)
+//        Log.d(TAG, "time at add long" + timeInMillis)
+//        Log.d(TAG, "time at add int " + timeInMillis.toInt())
+//        Log.d(TAG, "Current time " + System.currentTimeMillis())
+        val pendingIntent= PendingIntent.getBroadcast(context, type, intent, 0)
+        Log.d("TAG", calendar.timeInMillis.toString())
+        alarmManager.setExact(
+            AlarmManager.RTC_WAKEUP,
+            calendar.timeInMillis,
+            //AlarmManager.INTERVAL_DAY,
             pendingIntent
         )
     }
@@ -56,29 +59,29 @@ class SilenceTime(a: Activity, context: Context) {
     fun  deleteTimeSilencer(type: Int, timeInMillis: Long){
         val intent = Intent(context, TimeBroadcastReceiver::class.java)
         intent.putExtra("Type", type)
-        val pendingIntent = PendingIntent.getBroadcast(context, timeInMillis.toInt(), intent, 0)
+        val pendingIntent = PendingIntent.getBroadcast(context, 0, intent, 0)
         alarmManager.cancel(pendingIntent)
     }
 
     fun addTimeAndLocSilencer(type: Int, timeInMillis: Long, id: UUID, lat: Double, lng: Double, radius: Double){
-        val intent = Intent(context, TimeBroadcastReceiver::class.java)
+        val intent = Intent(context, TimeLocBroadcastReceiver::class.java)
         intent.putExtra("Type", type)
         intent.putExtra("id", id.toString())
         intent.putExtra("lat", lat)
         intent.putExtra("long", lng)
         intent.putExtra("radius", radius)
 
-        val pendingIntent = PendingIntent.getBroadcast(context, timeInMillis.toInt(), intent, 0)
-        alarmManager.setRepeating(
-            AlarmManager.RTC,
-            timeInMillis,
-            AlarmManager.INTERVAL_DAY,
-            pendingIntent
-        )
+//        val pendingIntent = PendingIntent.getBroadcast(context, timeInMillis.toInt(), intent, 0)
+//        alarmManager.setInexactRepeating(
+//            AlarmManager.RTC,
+//            timeInMillis,
+//            AlarmManager.INTERVAL_DAY,
+//            pendingIntent
+//        )
     }
 
     fun  deleteTimeAndLoc(type: Int, timeInMillis: Long, id: UUID, lat: Double, lng: Double, radius: Double){
-        val intent = Intent(context, TimeBroadcastReceiver::class.java)
+        val intent = Intent(context, TimeLocBroadcastReceiver::class.java)
         intent.putExtra("Type", type)
         intent.putExtra("id", id.toString())
         intent.putExtra("lat", lat.toString())

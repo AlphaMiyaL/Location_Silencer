@@ -27,6 +27,6 @@ data class Silencer(@PrimaryKey
                     var startTime: Date = Date(),
                     var endTime: Date = Date(),
                     var useLoc: Boolean = true,
-                    var useTime: Boolean = true,
+                    var useTime: Boolean = false,
                     var on: Boolean = true,
 )

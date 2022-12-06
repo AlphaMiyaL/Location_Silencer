@@ -73,7 +73,7 @@ class SilenceLocation(a: Activity)/*: Service()*/{
             }
             .addOnFailureListener {
                 geofenceSuccess = false
-                Log.d(TAG, "Failed Geofence adding")
+                Log.d(TAG, "Failed: Geofence not Added")
                 Log.d(TAG, it.toString())
             }
     }
@@ -93,7 +93,7 @@ class SilenceLocation(a: Activity)/*: Service()*/{
         var list: List<String> = listOf(id.toString())
         geofencingClient.removeGeofences(list)
             .addOnSuccessListener {
-                Log.d(TAG, "Geofence removed")
+                Log.d(TAG, "Geofence Removed")
             }
             .addOnFailureListener { e: Exception ->
                 //val errorMessage: String = geofenceHelper.getErrorString(e)
