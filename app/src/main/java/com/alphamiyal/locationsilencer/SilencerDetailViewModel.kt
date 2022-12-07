@@ -1,7 +1,10 @@
 package com.alphamiyal.locationsilencer
 
 
+import android.annotation.SuppressLint
+import android.os.Build
 import android.view.animation.Transformation
+import androidx.annotation.RequiresApi
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
@@ -21,6 +24,7 @@ class SilencerDetailViewModel:ViewModel() {
         silencerIdLiveData.value = silencerId
     }
 
+    @RequiresApi(value = 24)
     fun saveSilencer(silencer: Silencer){
         silencerRepository.updateSilencer(silencer)
     }

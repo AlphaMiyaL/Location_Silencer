@@ -40,6 +40,9 @@ class SilenceTime(a: Activity, context: Context) {
     }
 
     fun addTimeSilencer(type: Int, calendar: Calendar){
+//        val globalID = GlobalID()
+//        globalID.getID(activity)
+
         val intent = Intent(context, TimeBroadcastReceiver::class.java)
         intent.putExtra("Type", type)
 //        Log.d(TAG, "HEY3" + calendar.timeInMillis)

@@ -47,17 +47,6 @@ class SilencerListFragment: Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
-
-//        val swipeToDeleteCallback = object: SwipeToDeleteCallback(){
-//            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-//                //val position = viewHolder.adapterPosition
-//
-//            }
-//
-//        }
-//        val itemTouchHelper = ItemTouchHelper(swipeToDeleteCallback)
-//        itemTouchHelper.attachToRecyclerView(silencerRecyclerView)
-
     }
 
     override fun onCreateView(
@@ -83,6 +72,13 @@ class SilencerListFragment: Fragment() {
                     updateUI(silencers)
                 }
             })
+        val swipeToDeleteCallback = object: SwipeToDeleteCallback(){
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                TODO("Not yet implemented")
+            }
+        }
+        val itemTouchHelper = ItemTouchHelper(swipeToDeleteCallback)
+        itemTouchHelper.attachToRecyclerView(silencerRecyclerView)
     }
 
     override fun onDetach() {
@@ -114,7 +110,6 @@ class SilencerListFragment: Fragment() {
         //private val radiusTextView: TextView = itemView.findViewById(R.id.radius_title)
         private val addressTextView: TextView = itemView.findViewById(R.id.silencer_address)
         private val onOffSwitch: Switch = itemView.findViewById(R.id.onOff)
-        private val deleteButton: Button = itemView.findViewById(R.id.deleteButton)
 
 
         init {
@@ -148,7 +143,7 @@ class SilencerListFragment: Fragment() {
                 }
             }
 
-            //deleteButton.setOnClickListener()
+
         }
 
         override fun onClick(v: View?) {
