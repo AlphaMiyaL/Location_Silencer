@@ -16,9 +16,11 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.google.android.material.behavior.SwipeDismissBehavior
 import kotlinx.android.synthetic.main.fragment_silencer.*
 import kotlinx.android.synthetic.main.list_item_silencer.view.*
+import kotlinx.coroutines.newFixedThreadPoolContext
 import java.util.*
 
 
@@ -74,7 +76,17 @@ class SilencerListFragment: Fragment() {
             })
         val swipeToDeleteCallback = object: SwipeToDeleteCallback(){
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                TODO("Not yet implemented")
+                val position = viewHolder.adapterPosition
+
+                Log.d(TAG, "Position " + position)
+                val currSilencer = adapter?.silencers?.get(position)
+
+                if (currSilencer != null) {
+                    silencerListViewModel.deleteSilencer(currSilencer)
+                }
+                 //   .adapter?.silencers.
+                adapter?.notifyItemRemoved(position)
+
             }
         }
         val itemTouchHelper = ItemTouchHelper(swipeToDeleteCallback)

@@ -11,6 +11,7 @@ import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat.getSystemService
 import androidx.lifecycle.LiveData
 import androidx.room.Room
+import com.alphamiyal.locationsilencer.database.SilencerDao
 import com.alphamiyal.locationsilencer.database.SilencerDatabase
 import java.lang.Exception
 import java.sql.Time
@@ -101,6 +102,13 @@ class SilencerRepository private constructor(context: Context){
 //                silencer.longitude,
 //                silencer.radius)
 //        }
+    }
+
+    fun deleteSilencer(silencer: Silencer){
+        deleteOldSilencer(silencer)
+        executor.execute{
+            silencerDao.deleteSilencer(silencer)
+        }
     }
 
     private fun changeToMeters(radius: Double, unit: String): Double {

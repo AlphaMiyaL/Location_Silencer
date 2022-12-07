@@ -12,6 +12,11 @@ class SilencerListViewModel: ViewModel() {
         silencerRepository.addSilencer(silencer)
     }
 
+    fun deleteSilencer(silencer: Silencer){
+        silencerRepository.deleteSilencer(silencer)
+
+    }
+
     @RequiresApi(Build.VERSION_CODES.N)
     fun saveSilencer(silencer: Silencer){
         silencerRepository.updateSilencer(silencer)

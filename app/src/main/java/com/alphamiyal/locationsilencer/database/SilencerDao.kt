@@ -2,6 +2,7 @@ package com.alphamiyal.locationsilencer.database
 
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
@@ -22,4 +23,7 @@ interface SilencerDao {
     fun updateSilencer(silencer: Silencer)
     @Insert
     fun addSilencer(silencer: Silencer)
+
+    @Delete
+    fun deleteSilencer(silencer: Silencer)
 }
