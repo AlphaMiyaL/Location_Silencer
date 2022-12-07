@@ -74,6 +74,9 @@ class SilencerFragment: Fragment(), TimePickerFragment.Callbacks {
         silencer = Silencer()
         val silencerId: UUID = arguments?.getSerializable(ARG_SILENCER_ID) as UUID
 
+
+
+
         silencerDetailViewModel.loadSilencer(silencerId)
 
     }
@@ -247,6 +250,7 @@ class SilencerFragment: Fragment(), TimePickerFragment.Callbacks {
         updateUI()
     }
 
+    @RequiresApi(Build.VERSION_CODES.N)
     override fun onStop() {
         super.onStop()
         silencerDetailViewModel.saveSilencer(silencer)

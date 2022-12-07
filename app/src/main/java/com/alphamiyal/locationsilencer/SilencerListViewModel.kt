@@ -1,5 +1,7 @@
 package com.alphamiyal.locationsilencer
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
 
 class SilencerListViewModel: ViewModel() {
@@ -10,6 +12,7 @@ class SilencerListViewModel: ViewModel() {
         silencerRepository.addSilencer(silencer)
     }
 
+    @RequiresApi(Build.VERSION_CODES.N)
     fun saveSilencer(silencer: Silencer){
         silencerRepository.updateSilencer(silencer)
     }

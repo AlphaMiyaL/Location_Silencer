@@ -95,6 +95,8 @@ class SilencerListFragment: Fragment() {
         return when(item.itemId){
             R.id.new_silencer -> {
                 val silencer = Silencer()
+                val globalID = GlobalID()
+                silencer.idInt  = context?.let { globalID.getID(it) }!!
                 silencerListViewModel.addSilencer(silencer)
                 callbacks?.onSilencerSelected(silencer.id)
                 true

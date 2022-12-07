@@ -15,6 +15,7 @@ import java.util.*
 private const val TAG = "TimeBroadcastReceiver"
 
 class TimeBroadcastReceiver : BroadcastReceiver(){
+    //private lateinit var am: AudioManager
         override fun onReceive(context: Context, intent: Intent) {
             var am = context!!.getSystemService(Context.AUDIO_SERVICE) as AudioManager
             var type = intent.getIntExtra("Type", 2)
