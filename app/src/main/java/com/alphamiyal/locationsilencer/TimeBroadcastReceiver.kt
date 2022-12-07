@@ -18,13 +18,13 @@ class TimeBroadcastReceiver : BroadcastReceiver(){
     //private lateinit var am: AudioManager
         override fun onReceive(context: Context, intent: Intent) {
             var am = context!!.getSystemService(Context.AUDIO_SERVICE) as AudioManager
-            var type = intent.getIntExtra("Type", 2)
-            if(type == 0){
+            var type = intent.getIntExtra("Type", -1)
+            if(type%2 == 0){
                 am.ringerMode = AudioManager.RINGER_MODE_SILENT
                 setNextAlarm(context, type, intent)
                 Log.d(TAG, "Phone Silenced")
             }
-            else if(type == 1){
+            else if(type%2 == 1){
                 am.ringerMode = AudioManager.RINGER_MODE_NORMAL
                 setNextAlarm(context, type, intent)
                 Log.d(TAG, "Phone Un-Silenced")

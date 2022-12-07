@@ -126,14 +126,14 @@ class SilencerRepository private constructor(context: Context){
         var newRadius = changeToMeters(silencer.radius, silencer.unit)
         try{
             silenceLocation.removeGeofence(silencer.id)
-            silenceTime.deleteTimeAndLoc(0,
-                silencer.startTime.time,
+            silenceTime.deleteTimeAndLoc(
+                silencer.idInt,
                 silencer.id,
                 silencer.latitude,
                 silencer.longitude,
                 newRadius)
-            silenceTime.deleteTimeAndLoc(1,
-                silencer.endTime.time,
+            silenceTime.deleteTimeAndLoc(
+                silencer.idInt+1,
                 silencer.id,
                 silencer.latitude,
                 silencer.longitude,
@@ -149,8 +149,8 @@ class SilencerRepository private constructor(context: Context){
         }
 
         try{
-            silenceTime.deleteTimeSilencer(0, silencer.startTime.time)
-            silenceTime.deleteTimeSilencer(1, silencer.endTime.time)
+            silenceTime.deleteTimeSilencer(silencer.idInt)
+            silenceTime.deleteTimeSilencer(silencer.idInt+1)
         } catch (e: Exception){
             Log.d(TAG, "Old time silencer didn't exist or was erased.")
         }
@@ -158,14 +158,16 @@ class SilencerRepository private constructor(context: Context){
 
     private fun addTimeAndLocSilencer(silencer:Silencer){
         var newRadius = changeToMeters(silencer.radius, silencer.unit)
-        silenceTime.addTimeAndLocSilencer(0,
-            silencer.startTime.time,
+        silenceTime.addTimeAndLocSilencer(
+            silencer.idInt,
+            currentDayCalendar(silencer.startTime),
             silencer.id,
             silencer.latitude,
             silencer.longitude,
             newRadius)
-        silenceTime.addTimeAndLocSilencer(1,
-            silencer.endTime.time,
+        silenceTime.addTimeAndLocSilencer(
+            silencer.idInt+1,
+            currentDayCalendar(silencer.endTime),
             silencer.id,
             silencer.latitude,
             silencer.longitude,
@@ -187,15 +189,15 @@ class SilencerRepository private constructor(context: Context){
         var am = c.getSystemService(Context.AUDIO_SERVICE) as AudioManager
 
         //If between time, silence
-        var current = Date()
-        if(current.after(silencer.startTime) && current.before(silencer.endTime)){
-            am.ringerMode = AudioManager.RINGER_MODE_SILENT
-        }
+//        var current = Date()
+//        if(current.after(silencer.startTime) && current.before(silencer.endTime)){
+//            am.ringerMode = AudioManager.RINGER_MODE_SILENT
+//        }
         //Add Time Silencer
         var startCalendar = currentDayCalendar(silencer.startTime)
         var endCalendar = currentDayCalendar(silencer.endTime)
-        silenceTime.addTimeSilencer(0, startCalendar)
-        silenceTime.addTimeSilencer(1, endCalendar)
+        silenceTime.addTimeSilencer(silencer.idInt, startCalendar)
+        silenceTime.addTimeSilencer(silencer.idInt+1, endCalendar)
         Log.d(TAG, "Finished adding time silencer")
     }
 

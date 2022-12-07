@@ -40,14 +40,11 @@ class SilenceTime(a: Activity, context: Context) {
     }
 
     fun addTimeSilencer(type: Int, calendar: Calendar){
-//        val globalID = GlobalID()
-//        globalID.getID(activity)
-
         val intent = Intent(context, TimeBroadcastReceiver::class.java)
         intent.putExtra("Type", type)
 //        Log.d(TAG, "HEY3" + calendar.timeInMillis)
         val pendingIntent= PendingIntent.getBroadcast(context, type, intent, 0)
-        Log.d(TAG, calendar.timeInMillis.toString())
+        //Log.d(TAG, calendar.timeInMillis.toString())
         alarmManager.setExact(
             AlarmManager.RTC_WAKEUP,
             calendar.timeInMillis,
@@ -56,14 +53,14 @@ class SilenceTime(a: Activity, context: Context) {
         )
     }
 
-    fun  deleteTimeSilencer(type: Int, timeInMillis: Long){
+    fun  deleteTimeSilencer(type: Int){
         val intent = Intent(context, TimeBroadcastReceiver::class.java)
         intent.putExtra("Type", type)
-        val pendingIntent = PendingIntent.getBroadcast(context, 0, intent, 0)
+        val pendingIntent = PendingIntent.getBroadcast(context, type, intent, 0)
         alarmManager.cancel(pendingIntent)
     }
 
-    fun addTimeAndLocSilencer(type: Int, timeInMillis: Long, id: UUID, lat: Double, lng: Double, radius: Double){
+    fun addTimeAndLocSilencer(type: Int, calendar: Calendar, id: UUID, lat: Double, lng: Double, radius: Double){
         val intent = Intent(context, TimeLocBroadcastReceiver::class.java)
         intent.putExtra("Type", type)
         intent.putExtra("id", id.toString())
@@ -71,16 +68,17 @@ class SilenceTime(a: Activity, context: Context) {
         intent.putExtra("long", lng)
         intent.putExtra("radius", radius)
 
-//        val pendingIntent = PendingIntent.getBroadcast(context, timeInMillis.toInt(), intent, 0)
-//        alarmManager.setInexactRepeating(
-//            AlarmManager.RTC,
-//            timeInMillis,
-//            AlarmManager.INTERVAL_DAY,
-//            pendingIntent
-//        )
+        val pendingIntent= PendingIntent.getBroadcast(context, type, intent, 0)
+        //Log.d(TAG, calendar.timeInMillis.toString())
+        alarmManager.setExact(
+            AlarmManager.RTC_WAKEUP,
+            calendar.timeInMillis,
+            //AlarmManager.INTERVAL_DAY,
+            pendingIntent
+        )
     }
 
-    fun  deleteTimeAndLoc(type: Int, timeInMillis: Long, id: UUID, lat: Double, lng: Double, radius: Double){
+    fun  deleteTimeAndLoc(type: Int, id: UUID, lat: Double, lng: Double, radius: Double){
         val intent = Intent(context, TimeLocBroadcastReceiver::class.java)
         intent.putExtra("Type", type)
         intent.putExtra("id", id.toString())
@@ -88,7 +86,7 @@ class SilenceTime(a: Activity, context: Context) {
         intent.putExtra("long", lng.toString())
         intent.putExtra("radius", radius.toString())
 
-        val pendingIntent = PendingIntent.getBroadcast(context, timeInMillis.toInt(), intent, 0)
+        val pendingIntent = PendingIntent.getBroadcast(context, type, intent, 0)
         alarmManager.cancel(pendingIntent)
     }
 }
