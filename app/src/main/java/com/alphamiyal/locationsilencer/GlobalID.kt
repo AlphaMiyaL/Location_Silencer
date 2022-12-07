@@ -13,7 +13,7 @@ class GlobalID (){
         val globalID = sharedPreferences.getInt("GlobalID", 0)
         val editor = sharedPreferences.edit()
         editor.apply{
-            putInt("GlobalID", globalID + 1)
+            putInt("GlobalID", globalID + 2)
         }.apply()
         //Log.d(TAG, "Current ID " + globalID)
         return globalID
