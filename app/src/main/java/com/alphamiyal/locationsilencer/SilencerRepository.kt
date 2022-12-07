@@ -13,6 +13,7 @@ import androidx.lifecycle.LiveData
 import androidx.room.Room
 import com.alphamiyal.locationsilencer.database.SilencerDatabase
 import java.lang.Exception
+import java.sql.Time
 import java.time.Month
 import java.time.Year
 import java.util.*
@@ -183,8 +184,10 @@ class SilencerRepository private constructor(context: Context){
             am.ringerMode = AudioManager.RINGER_MODE_SILENT
         }
         //Add Time Silencer
-        silenceTime.addTimeSilencer(0, currentDayCalendar(silencer.startTime), silencer.title)
-        //silenceTime.addTimeSilencer(1, currentDayCalendar(silencer.endTime), silencer.title)
+        var startCalendar = currentDayCalendar(silencer.startTime)
+        var endCalendar = currentDayCalendar(silencer.endTime)
+        silenceTime.addTimeSilencer(0, startCalendar)
+        silenceTime.addTimeSilencer(1, endCalendar)
         Log.d(TAG, "Finished adding time silencer")
     }
 
@@ -192,14 +195,16 @@ class SilencerRepository private constructor(context: Context){
         var calendar: Calendar = getInstance()
         var currentCalendar: Calendar = getInstance()
         calendar.time = date
+//        Log.d(TAG, "HEY0 " + calendar.timeInMillis.toString())
+//        Log.d(TAG, "HEY1 " + currentCalendar.timeInMillis.toString())
         currentCalendar.set(HOUR_OF_DAY, calendar.get(HOUR_OF_DAY))
         currentCalendar.set(MINUTE, calendar.get(MINUTE))
         currentCalendar.set(SECOND, 0)
-        if(currentCalendar.before(getInstance())){
-            currentCalendar.add(DATE, 1)
-        }
-        Log.d(TAG, currentCalendar.time.toString())
-        return calendar
+//        if(currentCalendar.before(getInstance())){
+//            currentCalendar.add(DATE, 1)
+//        }
+//        Log.d(TAG, "HEY2 " +currentCalendar.timeInMillis.toString())
+        return currentCalendar
     }
 
     companion object {

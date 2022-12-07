@@ -39,15 +39,12 @@ class SilenceTime(a: Activity, context: Context) {
         alarmManager = a.getSystemService(Context.ALARM_SERVICE) as AlarmManager
     }
 
-    fun addTimeSilencer(type: Int, calendar: Calendar, name: String){
+    fun addTimeSilencer(type: Int, calendar: Calendar){
         val intent = Intent(context, TimeBroadcastReceiver::class.java)
         intent.putExtra("Type", type)
-        intent.putExtra("Name", name)
-//        Log.d(TAG, "time at add long" + timeInMillis)
-//        Log.d(TAG, "time at add int " + timeInMillis.toInt())
-//        Log.d(TAG, "Current time " + System.currentTimeMillis())
+//        Log.d(TAG, "HEY3" + calendar.timeInMillis)
         val pendingIntent= PendingIntent.getBroadcast(context, type, intent, 0)
-        Log.d("TAG", calendar.timeInMillis.toString())
+        Log.d(TAG, calendar.timeInMillis.toString())
         alarmManager.setExact(
             AlarmManager.RTC_WAKEUP,
             calendar.timeInMillis,

@@ -6,6 +6,7 @@ import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -36,6 +37,12 @@ class MainActivity : AppCompatActivity(), SilencerListFragment.Callbacks, Permis
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        //TODO Supposed to lead to ignore battery optimizations permissions
+//        val i = Intent()
+//        i.action = Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS
+//        i.data = Uri.parse("package:com.alphamiyal.locationsilencer")
+//        startActivity(i)
 
         MobileAds.initialize(this){}
         SilenceTime.initialize(this, this.applicationContext)
