@@ -9,6 +9,7 @@ import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat.getSystemService
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import java.lang.Exception
 import java.util.*
 
@@ -34,6 +35,8 @@ class SilenceTime(a: Activity, context: Context) {
     private var activity: Activity = a
     private var context: Context = context
     private lateinit var alarmManager: AlarmManager
+    private var existingPendingIntents = mutableMapOf<Int, Any?>()
+
 
     private fun initSilenceTime(a:Activity){
         alarmManager = a.getSystemService(Context.ALARM_SERVICE) as AlarmManager
@@ -61,14 +64,20 @@ class SilenceTime(a: Activity, context: Context) {
     }
 
     fun addTimeAndLocSilencer(type: Int, calendar: Calendar, id: UUID, lat: Double, lng: Double, radius: Double){
-        val intent = Intent(context, TimeLocBroadcastReceiver::class.java)
+        var intent = Intent(context, TimeLocBroadcastReceiver::class.java)
         intent.putExtra("Type", type)
         intent.putExtra("id", id.toString())
         intent.putExtra("lat", lat)
         intent.putExtra("long", lng)
         intent.putExtra("radius", radius)
 
-        val pendingIntent= PendingIntent.getBroadcast(context, type, intent, 0)
+        Log.d(TAG, "lat: " + lat)
+        Log.d(TAG, "lng: " + lng)
+        Log.d(TAG, intent.getDoubleExtra("lat", 0.0).toString())
+        Log.d(TAG, intent.getDoubleExtra("long", 0.0).toString())
+
+        var pendingIntent= PendingIntent.getBroadcast(context, type, intent, 0)
+        existingPendingIntents[type] = pendingIntent
         //Log.d(TAG, calendar.timeInMillis.toString())
         alarmManager.setExact(
             AlarmManager.RTC_WAKEUP,
@@ -78,15 +87,17 @@ class SilenceTime(a: Activity, context: Context) {
         )
     }
 
-    fun  deleteTimeAndLoc(type: Int, id: UUID, lat: Double, lng: Double, radius: Double){
-        val intent = Intent(context, TimeLocBroadcastReceiver::class.java)
-        intent.putExtra("Type", type)
-        intent.putExtra("id", id.toString())
-        intent.putExtra("lat", lat.toString())
-        intent.putExtra("long", lng.toString())
-        intent.putExtra("radius", radius.toString())
+    fun  deleteTimeAndLoc(type: Int){
+//        val intent = Intent(context, TimeLocBroadcastReceiver::class.java)
+//        intent.putExtra("Type", type)
+//        intent.putExtra("id", id.toString())
+//        intent.putExtra("lat", lat.toString())
+//        intent.putExtra("long", lng.toString())
+//        intent.putExtra("radius", radius.toString())
 
-        val pendingIntent = PendingIntent.getBroadcast(context, type, intent, 0)
+        //LocalBroadcastManager.getInstance(context).unregisterReceiver(timeLocBroadcastReceiver)
+        val pendingIntent = existingPendingIntents[type] as PendingIntent
+        //val pendingIntent = PendingIntent.getBroadcast(context, type, intent, 0)
         alarmManager.cancel(pendingIntent)
     }
 }

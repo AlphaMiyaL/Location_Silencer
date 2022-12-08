@@ -15,12 +15,16 @@ private const val TAG = "TimeLocBroadcastReceiver"
 class TimeLocBroadcastReceiver: BroadcastReceiver(){
     @SuppressLint("LongLogTag")
     override fun onReceive(context: Context, intent: Intent) {
-        var am = context!!.getSystemService(Context.AUDIO_SERVICE) as AudioManager
+       // var am = context!!.getSystemService(Context.AUDIO_SERVICE) as AudioManager
         val type = intent.getIntExtra("Type", -1)
         val id = intent.getStringExtra("id")
-        val lat = intent.getStringExtra("lat")?.toDouble()
-        val long = intent.getStringExtra("lng")?.toDouble()
-        val radius = intent.getStringExtra("radius")?.toDouble()
+        val lat = intent.getDoubleExtra("lat", 0.0)
+        val long =  intent.getDoubleExtra("long", 0.0)
+        val radius = intent.getDoubleExtra("radius", 0.0)
+
+        Log.d(TAG, lat.toString())
+        Log.d(TAG, long.toString())
+        Log.d(TAG, radius.toString())
 
         if(type%2 == 0){
             Log.d(TAG, "Starting Time")

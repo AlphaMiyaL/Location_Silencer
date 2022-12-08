@@ -123,30 +123,19 @@ class SilencerRepository private constructor(context: Context){
 
     private fun deleteOldSilencer(silencer: Silencer){
         Log.d(TAG, "Deleting Old Silencer")
-        var newRadius = changeToMeters(silencer.radius, silencer.unit)
         try{
             silenceLocation.removeGeofence(silencer.id)
-            silenceTime.deleteTimeAndLoc(
-                silencer.idInt,
-                silencer.id,
-                silencer.latitude,
-                silencer.longitude,
-                newRadius)
-            silenceTime.deleteTimeAndLoc(
-                silencer.idInt+1,
-                silencer.id,
-                silencer.latitude,
-                silencer.longitude,
-                newRadius)
+            silenceTime.deleteTimeAndLoc(silencer.idInt)
+            silenceTime.deleteTimeAndLoc(silencer.idInt+1)
         } catch (e: Exception){
             Log.d(TAG, "Old time-geofence silencer didn't exist or was erased.")
         }
 
-        try{
-            silenceLocation.removeGeofence(silencer.id)
-        } catch (e: Exception){
-            Log.d(TAG, "Old geofence silencer didn't exist or was erased.")
-        }
+//        try{
+//            silenceLocation.removeGeofence(silencer.id)
+//        } catch (e: Exception){
+//            Log.d(TAG, "Old geofence silencer didn't exist or was erased.")
+//        }
 
         try{
             silenceTime.deleteTimeSilencer(silencer.idInt)
@@ -172,6 +161,9 @@ class SilencerRepository private constructor(context: Context){
             silencer.latitude,
             silencer.longitude,
             newRadius)
+
+        Log.d(TAG, "newlat" + silencer.latitude )
+        Log.d(TAG, "newlong" + silencer.longitude )
         Log.d(TAG, "Finished adding time-loc silencer")
     }
 
