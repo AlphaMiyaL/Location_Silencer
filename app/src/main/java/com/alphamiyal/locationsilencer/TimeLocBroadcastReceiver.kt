@@ -24,11 +24,11 @@ class TimeLocBroadcastReceiver: BroadcastReceiver(){
 
         if(type%2 == 0){
             Log.d(TAG, "Starting Time")
-            var intent = Intent(context,GeofenceForegroundService()::class.java)
-            intent.putExtra("id", id)
-            intent.putExtra("lat", lat)
-            intent.putExtra("long", long)
-            intent.putExtra("radius", radius)
+            var geoIntent = Intent(context,GeofenceForegroundService()::class.java)
+            geoIntent.putExtra("id", id)
+            geoIntent.putExtra("lat", lat)
+            geoIntent.putExtra("long", long)
+            geoIntent.putExtra("radius", radius)
             setNextAlarm(context, type, intent)
         }
         else if(type%2 == 1){
