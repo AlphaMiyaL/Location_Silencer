@@ -3,6 +3,7 @@ package com.alphamiyal.locationsilencer
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.*
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.pm.ServiceInfo
@@ -23,14 +24,22 @@ class GeofenceForegroundService: Service() {
     private lateinit var pendingIntent: PendingIntent
     private lateinit var locationClient: FusedLocationProviderClient
     private lateinit var locationCallback: LocationCallback
+    private lateinit var context:Context
     private val geofenceId = "Some_Geofence_Id"
     private val geofenceRadius = 200.0
+
 
     private val TAG = "GeofenceForegroundServi"
 
     override fun onBind(p0: Intent?): IBinder? {
         return null
     }
+
+    override fun onCreate() {
+        super.onCreate()
+        context = this
+    }
+
 
     @SuppressLint("MissingPermission")
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -39,7 +48,7 @@ class GeofenceForegroundService: Service() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel =
                 NotificationChannel("Geofence", "Geofence Loc", NotificationManager.IMPORTANCE_NONE)
-            val manager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+            val manager = context.getSystemService(NOTIFICATION_SERVICE) as NotificationManager
             manager.createNotificationChannel(channel)
         }
 
@@ -96,6 +105,7 @@ class GeofenceForegroundService: Service() {
 
         return START_STICKY
     }
+
 
     override fun onDestroy() {
         Log.i(TAG, "onDestroy: RUN")

@@ -2,6 +2,7 @@ package com.alphamiyal.locationsilencer
 
 import android.Manifest
 import android.app.Activity
+import android.app.PendingIntent
 import android.app.Service
 import android.content.Context
 import android.content.Intent
@@ -57,6 +58,9 @@ class SilenceLocation(a: Activity)/*: Service()*/{
         ) {
             return
         }
+
+
+
 
         //Creating Geofence
         val geofence = geofenceHelper.getGeofence(id, lat, lng, radius)

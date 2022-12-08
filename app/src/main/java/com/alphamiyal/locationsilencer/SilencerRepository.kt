@@ -177,11 +177,18 @@ class SilencerRepository private constructor(context: Context){
 
     private fun addGeofenceSilencer(silencer: Silencer){
         var newRadius = changeToMeters(silencer.radius, silencer.unit)
-        silenceLocation.addGeofence(
-            silencer.id,
-            silencer.latitude,
-            silencer.longitude,
-            newRadius)
+
+        var intent = Intent(c,GeofenceForegroundService()::class.java)
+        intent.putExtra("id", silencer.id.toString())
+        intent.putExtra("lat", silencer.latitude)
+        intent.putExtra("long", silencer.longitude)
+        intent.putExtra("radius", newRadius)
+        c.startService(intent)
+//        silenceLocation.addGeofence(
+//            silencer.id,
+//            silencer.latitude,
+//            silencer.longitude,
+//            newRadius)
         Log.d(TAG, "Finished adding geofence")
     }
 
