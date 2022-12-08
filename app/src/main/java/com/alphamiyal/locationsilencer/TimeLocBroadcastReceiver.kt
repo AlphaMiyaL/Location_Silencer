@@ -29,6 +29,7 @@ class TimeLocBroadcastReceiver: BroadcastReceiver(){
             geoIntent.putExtra("lat", lat)
             geoIntent.putExtra("long", long)
             geoIntent.putExtra("radius", radius)
+            context.startService(geoIntent)
             setNextAlarm(context, type, intent)
         }
         else if(type%2 == 1){
