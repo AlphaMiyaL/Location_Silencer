@@ -57,9 +57,7 @@ class SilenceLocation(a: Activity)/*: Service()*/{
         ) {
             return
         }
-//        if(geofenceHelper == null) {
-//            initGeofencing(activity)
-//        }
+
         //Creating Geofence
         val geofence = geofenceHelper.getGeofence(id, lat, lng, radius)
         val geofencingRequest = geofenceHelper.getGeofencingRequest(geofence)
@@ -86,9 +84,6 @@ class SilenceLocation(a: Activity)/*: Service()*/{
         ) {
             return
         }
-//         if(geofenceHelper == null) {
-//             initGeofencing(activity)
-//         }
 
         var list: List<String> = listOf(id.toString())
         geofencingClient.removeGeofences(list)
