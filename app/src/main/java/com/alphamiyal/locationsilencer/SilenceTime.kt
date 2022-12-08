@@ -36,7 +36,10 @@ class SilenceTime(a: Activity, context: Context) {
     private var context: Context = context
     private lateinit var alarmManager: AlarmManager
     private var existingPendingIntents = mutableMapOf<Int, Any?>()
-
+    var idDictionary = mutableMapOf<Int, Any?>()
+    var latDictionary = mutableMapOf<Int, Any?>()
+    var longDictionary = mutableMapOf<Int, Any?>()
+    var radiusDictionary = mutableMapOf<Int, Any?>()
 
     private fun initSilenceTime(a:Activity){
         alarmManager = a.getSystemService(Context.ALARM_SERVICE) as AlarmManager
@@ -66,10 +69,10 @@ class SilenceTime(a: Activity, context: Context) {
     fun addTimeAndLocSilencer(type: Int, calendar: Calendar, id: UUID, lat: Double, lng: Double, radius: Double){
         var intent = Intent(context, TimeLocBroadcastReceiver::class.java)
         intent.putExtra("Type", type)
-        intent.putExtra("id", id.toString())
-        intent.putExtra("lat", lat)
-        intent.putExtra("long", lng)
-        intent.putExtra("radius", radius)
+        idDictionary[type] = id.toString()
+        latDictionary[type] = lat
+        longDictionary[type] = lng
+        radiusDictionary[type] = radius
 
         Log.d(TAG, "lat: " + lat)
         Log.d(TAG, "lng: " + lng)
