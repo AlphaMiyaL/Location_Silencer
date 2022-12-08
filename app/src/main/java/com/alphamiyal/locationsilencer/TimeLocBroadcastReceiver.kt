@@ -6,7 +6,6 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.media.AudioManager
-import android.util.Log
 import java.util.*
 
 private const val TAG = "TimeLocBroadcastReceiver"
@@ -18,10 +17,15 @@ class TimeLocBroadcastReceiver: BroadcastReceiver(){
         val id = intent.getStringExtra("id")
         val lat = intent.getDoubleExtra("lat", 0.0)
         val long = intent.getDoubleExtra("lng", 0.0)
+        //intent.getStringExtra("radius", 1.0)?.let { Log.d(TAG, it) }
         val radius = intent.getDoubleExtra("radius", 1.0)
 
         if(type%2 == 0){
-            SilenceLocation.get().addGeofence(UUID.fromString(id), lat, long, radius)
+            var intent = Intent(context,GeofenceForegroundService()::class.java)
+            intent.putExtra("id", id)
+            intent.putExtra("lat", lat)
+            intent.putExtra("long", long)
+            intent.putExtra("radius", radius)
             setNextAlarm(context, type, intent)
         }
         else if(type%2 == 1){
