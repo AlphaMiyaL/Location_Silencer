@@ -32,7 +32,7 @@ class GeofenceForegroundService: Service() {
     private val TAG = "GeofenceForegroundServi"
 
     override fun onBind(p0: Intent?): IBinder? {
-        return null
+        return null // (._.)
     }
 
     override fun onCreate() {
@@ -78,7 +78,7 @@ class GeofenceForegroundService: Service() {
         locationCallback = object : LocationCallback() {
             override fun onLocationResult(locationResult: LocationResult) {
                 super.onLocationResult(locationResult)
-                Log.d(TAG, "${locationResult.lastLocation.latitude} ${locationResult.lastLocation.longitude}")
+                //Log.d(TAG, "${locationResult.lastLocation.latitude} ${locationResult.lastLocation.longitude}")
             }
         }
         Looper.myLooper()?.let {

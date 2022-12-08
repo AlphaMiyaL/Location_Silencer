@@ -78,14 +78,14 @@ class SilencerListFragment: Fragment() {
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 val position = viewHolder.adapterPosition
 
-                Log.d(TAG, "Position " + position)
-                val currSilencer = adapter?.silencers?.get(position)
-
-                if (currSilencer != null) {
-                    silencerListViewModel.deleteSilencer(currSilencer)
-                }
-                 //   .adapter?.silencers.
-                adapter?.notifyItemRemoved(position)
+//                Log.d(TAG, "Position " + position)
+//                val currSilencer = adapter?.silencers?.get(position)
+//
+//                if (currSilencer != null) {
+//                    silencerListViewModel.deleteSilencer(currSilencer)
+//                }
+//                 //   .adapter?.silencers.
+//                adapter?.notifyItemRemoved(position)
 
             }
         }
@@ -124,6 +124,7 @@ class SilencerListFragment: Fragment() {
         //private val radiusTextView: TextView = itemView.findViewById(R.id.radius_title)
         private val addressTextView: TextView = itemView.findViewById(R.id.silencer_address)
         private val onOffSwitch: Switch = itemView.findViewById(R.id.onOff)
+        private val deleteButton: Button = itemView.findViewById(R.id.delete_button)
 
 
         init {
@@ -155,6 +156,10 @@ class SilencerListFragment: Fragment() {
                     SilenceLocation.get().removeGeofence(silencer.id)
                     silencerListViewModel.saveSilencer(silencer)
                 }
+            }
+
+            deleteButton.setOnClickListener{
+                silencerListViewModel.deleteSilencer(silencer)
             }
 
 

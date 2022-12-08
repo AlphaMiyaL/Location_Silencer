@@ -38,6 +38,7 @@
                                 time or location specified. To enable, enable Do Not
                                 Disturb access for this app with the button below.</string>
     <string name="enable">Enable</string>
+    <string name="delete_text">Delete</string>
     <string name="enabled_all_perms">Continue</string>
     <string name="preference_file_key">com.example.android.while_in_use_location.PREFERENCE_FILE_KEY</string>
     <string-array name="units">
