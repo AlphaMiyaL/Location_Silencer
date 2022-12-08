@@ -123,19 +123,19 @@ class SilencerRepository private constructor(context: Context){
 
     private fun deleteOldSilencer(silencer: Silencer){
         Log.d(TAG, "Deleting Old Silencer")
-        try{
-            silenceLocation.removeGeofence(silencer.id)
-            silenceTime.deleteTimeAndLoc(silencer.idInt)
-            silenceTime.deleteTimeAndLoc(silencer.idInt+1)
-        } catch (e: Exception){
-            Log.d(TAG, "Old time-geofence silencer didn't exist or was erased.")
-        }
-
 //        try{
 //            silenceLocation.removeGeofence(silencer.id)
+//            silenceTime.deleteTimeAndLoc(silencer.idInt)
+//            silenceTime.deleteTimeAndLoc(silencer.idInt+1)
 //        } catch (e: Exception){
-//            Log.d(TAG, "Old geofence silencer didn't exist or was erased.")
+//            Log.d(TAG, "Old time-geofence silencer didn't exist or was erased.")
 //        }
+
+        try{
+            silenceLocation.removeGeofence(silencer.id)
+        } catch (e: Exception){
+            Log.d(TAG, "Old geofence silencer didn't exist or was erased.")
+        }
 
         try{
             silenceTime.deleteTimeSilencer(silencer.idInt)
