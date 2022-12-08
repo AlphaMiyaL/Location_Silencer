@@ -193,7 +193,7 @@ class SilencerRepository private constructor(context: Context){
     }
 
     private fun addTimeSilencer(silencer: Silencer){
-        var am = c.getSystemService(Context.AUDIO_SERVICE) as AudioManager
+//        var am = c.getSystemService(Context.AUDIO_SERVICE) as AudioManager
 
         //If between time, silence
 //        var current = Date()

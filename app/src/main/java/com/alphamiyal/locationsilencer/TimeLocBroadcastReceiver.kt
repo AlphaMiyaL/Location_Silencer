@@ -1,26 +1,29 @@
 package com.alphamiyal.locationsilencer
 
+import android.annotation.SuppressLint
 import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.media.AudioManager
+import android.util.Log
 import java.util.*
 
 private const val TAG = "TimeLocBroadcastReceiver"
 
 class TimeLocBroadcastReceiver: BroadcastReceiver(){
+    @SuppressLint("LongLogTag")
     override fun onReceive(context: Context, intent: Intent) {
         var am = context!!.getSystemService(Context.AUDIO_SERVICE) as AudioManager
         val type = intent.getIntExtra("Type", -1)
         val id = intent.getStringExtra("id")
-        val lat = intent.getDoubleExtra("lat", 0.0)
-        val long = intent.getDoubleExtra("lng", 0.0)
-        //intent.getStringExtra("radius", 1.0)?.let { Log.d(TAG, it) }
-        val radius = intent.getDoubleExtra("radius", 1.0)
+        val lat = intent.getStringExtra("lat")?.toDouble()
+        val long = intent.getStringExtra("lng")?.toDouble()
+        val radius = intent.getStringExtra("radius")?.toDouble()
 
         if(type%2 == 0){
+            Log.d(TAG, "Starting Time")
             var intent = Intent(context,GeofenceForegroundService()::class.java)
             intent.putExtra("id", id)
             intent.putExtra("lat", lat)
@@ -29,6 +32,7 @@ class TimeLocBroadcastReceiver: BroadcastReceiver(){
             setNextAlarm(context, type, intent)
         }
         else if(type%2 == 1){
+            Log.d(TAG, "Ending Time")
             SilenceLocation.get().removeGeofence(UUID.fromString(id))
             setNextAlarm(context, type, intent)
         }
