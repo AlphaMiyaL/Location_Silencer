@@ -16,6 +16,7 @@ import android.view.View.OnFocusChangeListener
 import android.view.ViewGroup
 import android.widget.*
 import androidx.annotation.RequiresApi
+import androidx.constraintlayout.widget.Group
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -52,6 +53,8 @@ class SilencerFragment: Fragment(), TimePickerFragment.Callbacks {
     private lateinit var locCheckBox: CheckBox
     private lateinit var timeCheckBox: CheckBox
     private lateinit var adView: AdView
+    private lateinit var locGroup: Group
+    private lateinit var timeGroup: Group
 
     private var startTimeSelect: Boolean = true
     private val silencerDetailViewModel: SilencerDetailViewModel by lazy{
@@ -97,9 +100,11 @@ class SilencerFragment: Fragment(), TimePickerFragment.Callbacks {
         startTimeButton = view.findViewById(R.id.silencer_time_start) as Button
         endTimeButton = view.findViewById(R.id.silencer_time_end) as Button
         mapButton = view.findViewById(R.id.button_id) as Button
-        locCheckBox = view.findViewById(R.id.locCheckbox) as CheckBox
-        timeCheckBox = view.findViewById(R.id.timeCheckBox) as CheckBox
-        adView = view.findViewById(R.id.adView) as AdView
+        locCheckBox = view.findViewById(R.id.loc_checkbox) as CheckBox
+        timeCheckBox = view.findViewById(R.id.time_checkbox) as CheckBox
+        adView = view.findViewById(R.id.ad_view) as AdView
+        locGroup = view.findViewById(R.id.loc_group) as Group
+        timeGroup = view.findViewById(R.id.time_group) as Group
         return view
     }
 
@@ -144,7 +149,7 @@ class SilencerFragment: Fragment(), TimePickerFragment.Callbacks {
             }
         }
         val units = resources.getStringArray(R.array.units)
-       val adapter = context?.let { ArrayAdapter(it, android.R.layout.simple_spinner_item, units) }
+        val adapter = context?.let { ArrayAdapter(it, android.R.layout.simple_spinner_item, units) }
         unitDropdown.adapter = adapter
 
         unitDropdown.onItemSelectedListener = object :
@@ -160,7 +165,32 @@ class SilencerFragment: Fragment(), TimePickerFragment.Callbacks {
             }
         }
 
+        locCheckBox.apply {
+            setOnCheckedChangeListener { _, isChecked ->
+                silencer.useLoc = isChecked
+                if(isChecked){
+                    locGroup.visibility = View.VISIBLE
+                }
+                else{
+                    locGroup.visibility = View.GONE
+                }
+            }
+        }
 
+        timeCheckBox.apply {
+            setOnCheckedChangeListener { _, isChecked ->
+                silencer.useTime = isChecked
+                if(isChecked){
+                    timeGroup.visibility = View.VISIBLE
+                }
+                else{
+                    timeGroup.visibility = View.GONE
+                }
+            }
+        }
+
+        val adRequest = AdRequest.Builder().build()
+        adView.loadAd(adRequest)
 
         val addressWatcher = object : TextWatcher {
             override fun beforeTextChanged(sequence: CharSequence?, start: Int, count: Int, after: Int) {
@@ -229,22 +259,6 @@ class SilencerFragment: Fragment(), TimePickerFragment.Callbacks {
             startTimeSelect = false
         }
 
-        locCheckBox.apply {
-            setOnCheckedChangeListener { _, isChecked ->
-                silencer.useLoc = isChecked
-            }
-        }
-
-        timeCheckBox.apply {
-            setOnCheckedChangeListener { _, isChecked ->
-                silencer.useTime = isChecked
-            }
-        }
-
-        val adRequest = AdRequest.Builder().build()
-        adView.loadAd(adRequest)
-
-
         titleField.addTextChangedListener(titleWatcher)
         addressField.addTextChangedListener(addressWatcher)
         updateUI()
@@ -302,10 +316,22 @@ class SilencerFragment: Fragment(), TimePickerFragment.Callbacks {
         locCheckBox.apply {
             isChecked = silencer.useLoc
             jumpDrawablesToCurrentState()
+            if(isChecked){
+                locGroup.visibility = View.VISIBLE
+            }
+            else{
+                locGroup.visibility = View.GONE
+            }
         }
         timeCheckBox.apply {
             isChecked = silencer.useTime
             jumpDrawablesToCurrentState()
+            if(isChecked){
+                timeGroup.visibility = View.VISIBLE
+            }
+            else{
+                timeGroup.visibility = View.GONE
+            }
         }
     }
 }

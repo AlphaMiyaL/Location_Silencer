@@ -43,7 +43,6 @@
             app:layout_constraintTop_toBottomOf="@+id/silencer_title" />
 
 
-
         <EditText
             android:id="@+id/silencer_radius"
             android:layout_width="0dp"
@@ -62,10 +61,40 @@
             android:layout_height="wrap_content"
             android:spinnerMode="dropdown"
             android:textSize="30dp"
+            app:layout_constraintBottom_toTopOf="@id/addressTextView"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/silencer_radius"
-            app:layout_constraintTop_toBottomOf="@id/radiusTextView"
-            app:layout_constraintBottom_toTopOf="@id/addressTextView"/>
+            app:layout_constraintTop_toBottomOf="@id/radiusTextView" />
+
+        <CheckBox
+            android:id="@+id/loc_checkbox"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Silence By Location"
+            app:layout_constraintEnd_toStartOf="@+id/time_checkbox"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/silencer_radius" />
+
+        <CheckBox
+            android:id="@+id/time_checkbox"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Silence By Time"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/loc_checkbox"
+            app:layout_constraintTop_toBottomOf="@+id/silencer_radius" />
+
+        <com.google.android.gms.ads.AdView
+            android:id="@+id/ad_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            app:adSize="BANNER"
+            app:adUnitId="ca-app-pub-3940256099942544/6300978111"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/loc_checkbox"/>
 
         <TextView
             android:id="@+id/addressTextView"
@@ -75,16 +104,16 @@
             android:text="@string/silencer_address_label"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/silencer_radius" />
+            app:layout_constraintTop_toBottomOf="@+id/ad_view" />
 
         <EditText
             android:id="@+id/silencer_address"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/silencer_address_hint"
-            android:minHeight="48dp"
             android:ems="10"
+            android:hint="@string/silencer_address_hint"
             android:inputType="textPostalAddress"
+            android:minHeight="48dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/addressTextView"
@@ -189,36 +218,22 @@
             app:layout_constraintTop_toBottomOf="@+id/end_time"
             tools:text="11:56 EST" />
 
-        <CheckBox
-            android:id="@+id/locCheckbox"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="Silence By Location"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/timeCheckBox"
-            app:layout_constraintTop_toBottomOf="@+id/silencer_time_start" />
-
-        <CheckBox
-            android:id="@+id/timeCheckBox"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="Silence By Time"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/locCheckbox"
-            app:layout_constraintTop_toBottomOf="@+id/silencer_time_end" />
-
-        <com.google.android.gms.ads.AdView
-            android:id="@+id/adView"
+        <androidx.constraintlayout.widget.Group
+            android:id="@+id/loc_group"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"
-            app:adSize="BANNER"
-            app:adUnitId="ca-app-pub-3940256099942544/6300978111"
-            app:layout_constraintEnd_toEndOf="parent"
+            android:visibility="visible"
+            app:constraint_referenced_ids="button_id,silencer_latitude,longitudeTextView,silencer_address,latitudeTextView,addressTextView,silencer_longitude"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/locCheckbox"
-            app:layout_constraintBottom_toBottomOf="parent">
-        </com.google.android.gms.ads.AdView>
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.constraintlayout.widget.Group
+            android:id="@+id/time_group"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="visible"
+            app:constraint_referenced_ids="end_time,timeTo,start_time,silencer_time_start,silencer_time_end"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>
