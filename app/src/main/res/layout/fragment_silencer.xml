@@ -61,7 +61,6 @@
             android:layout_height="wrap_content"
             android:spinnerMode="dropdown"
             android:textSize="30dp"
-            app:layout_constraintBottom_toTopOf="@id/addressTextView"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/silencer_radius"
             app:layout_constraintTop_toBottomOf="@id/radiusTextView" />
@@ -101,12 +100,13 @@
             style="?android:listSeparatorTextViewStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
             android:text="@string/silencer_address_label"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/ad_view" />
 
-        <EditText
+        <AutoCompleteTextView
             android:id="@+id/silencer_address"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -173,6 +173,7 @@
             style="?android:listSeparatorTextViewStyle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
             android:text="@string/silencer_start_time"
             app:layout_constraintEnd_toStartOf="@+id/end_time"
             app:layout_constraintStart_toStartOf="parent"
@@ -183,6 +184,7 @@
             style="?android:listSeparatorTextViewStyle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
             android:text="@string/silencer_end_time"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/start_time"

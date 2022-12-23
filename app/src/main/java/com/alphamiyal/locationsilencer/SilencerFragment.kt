@@ -42,7 +42,7 @@ private const val REQUEST_TIME = 0
 class SilencerFragment: Fragment(), TimePickerFragment.Callbacks {
     private lateinit var silencer: Silencer
     private lateinit var titleField: EditText
-    private lateinit var addressField: EditText
+    private lateinit var addressField: AutoCompleteTextView
     private lateinit var radiusField: EditText
     private lateinit var unitDropdown: Spinner
     private lateinit var latitudeField: TextView
@@ -92,7 +92,7 @@ class SilencerFragment: Fragment(), TimePickerFragment.Callbacks {
         val view = inflater.inflate(R.layout.fragment_silencer, container, false)
 
         titleField = view.findViewById(R.id.silencer_title) as EditText
-        addressField = view.findViewById(R.id.silencer_address) as EditText
+        addressField = view.findViewById(R.id.silencer_address) as AutoCompleteTextView
         radiusField = view.findViewById(R.id.silencer_radius) as EditText
         unitDropdown = view.findViewById(R.id.units) as Spinner
         latitudeField = view.findViewById(R.id.silencer_latitude) as TextView
@@ -197,6 +197,32 @@ class SilencerFragment: Fragment(), TimePickerFragment.Callbacks {
             }
             override fun onTextChanged(sequence: CharSequence?, start: Int, count: Int, after: Int) {
                 //TODO list out possible addresses
+                val loc: String = silencer.address.trim()
+                if(loc != null && loc != "") {
+
+                    val gcd = Geocoder(context, Locale.getDefault())
+                    var addList: List<Address>? = null
+                    try {
+                        addList = gcd.getFromLocationName(silencer.address, 5)
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
+                    if (addList != null) {
+                        if (addList.isNotEmpty()) {
+                            var addListString = mutableListOf<String>()
+                            for (adds in addList){
+                                addListString.add(adds.getAddressLine(0))
+                            }
+
+                            val arrayAdapter = context?.let { ArrayAdapter<String>(it, android.R.layout.simple_list_item_1, addListString) }
+                            //val arrayAdapter = context?.let { ArrayAdapter<String>(it, android.R.layout.simple_list_item_1, units) }
+                            addressField.setAdapter(arrayAdapter)
+                        }
+                    }
+                }
+
+
+
                 //gcd.getFromLocationName(sequence.toString(), 5)
                 silencer.address = sequence.toString()
             }
@@ -213,22 +239,28 @@ class SilencerFragment: Fragment(), TimePickerFragment.Callbacks {
                 else{
                     val gcd: Geocoder = Geocoder(context, Locale.getDefault())
                     var add: List<Address>? = null
-                    loop@ for(i in 1..2){
-                        try {
-                            add = gcd.getFromLocationName(silencer.address, 1)
-                        }catch (e: Exception){
-                            e.printStackTrace()
-                        }
 
-                        if(add != null){
+                    try {
+                        add = gcd.getFromLocationName(silencer.address, 1)
+                        Log.d(TAG, "Got here")
+                    }catch (e: Exception){
+                        e.printStackTrace()
+                    }
+                    if (add != null) {
+                        if(add.isNotEmpty()) {
                             silencer.address = add!![0].getAddressLine(0)
                             val latLng = LatLng(add!![0].latitude, add!![0].longitude)
                             silencer.latitude = latLng.latitude
                             silencer.longitude = latLng.longitude
-//                            mMap!!.addMarker(MarkerOptions().position(latLng).title(location))
-//                            mMap!!.animateCamera(CameraUpdateFactory.newLatLng(latLng))
+                            //mMap!!.addMarker(MarkerOptions().position(latLng).title(location))
+                            //mMap!!.animateCamera(CameraUpdateFactory.newLatLng(latLng))
                             updateUI()
-                            break@loop
+                        }
+                        else{
+                            Toast.makeText(context, "invalid location", Toast.LENGTH_SHORT).show()
+                            silencer.address = ""
+                            silencer.latitude = 0.0
+                            silencer.longitude = 0.0
                         }
                     }
                 }
