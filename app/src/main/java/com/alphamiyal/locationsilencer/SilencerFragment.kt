@@ -302,8 +302,10 @@ class SilencerFragment: Fragment(), TimePickerFragment.Callbacks {
         silencerDetailViewModel.saveSilencer(silencer)
     }
 
+    @RequiresApi(Build.VERSION_CODES.N)
     override fun onPause() {
         super.onPause()
+        silencerDetailViewModel.saveSilencer(silencer)
     }
 
     override fun onDestroy() {
