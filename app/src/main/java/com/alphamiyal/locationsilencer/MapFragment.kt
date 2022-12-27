@@ -1,34 +1,23 @@
 package com.alphamiyal.locationsilencer
 
 import android.Manifest
-import android.content.Context
 import android.content.pm.PackageManager
 import android.graphics.Color
-import android.location.Address
 import android.location.Geocoder
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.EditText
-import android.widget.TextView
-import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
-import androidx.fragment.app.Fragment
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.OnMapReadyCallback
-import com.google.android.gms.maps.model.Circle
 import com.google.android.gms.maps.model.CircleOptions
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
-import java.lang.Exception
-import java.util.*
 
 private const val MAPVIEW_BUNDLE_KEY = "MapViewBundleKey"
 private const val ERROR_DIALOG_REQUEST = 9001
@@ -111,11 +100,10 @@ class MapFragment(s: Silencer): DialogFragment(), OnMapReadyCallback {
                 }
             }
             else{
-//                map.animateCamera(
-//                    CameraUpdateFactory.newLatLngZoom(
-//                        latLng, 10F
-//                    )
-//                )
+                map.isMyLocationEnabled = true
+                val location = map.myLocation
+                val myLocation = LatLng(location.latitude, location.longitude)
+                map.animateCamera(CameraUpdateFactory.newLatLngZoom(myLocation, 15F))
             }
         }
         map.setOnMapClickListener { latLng ->
@@ -134,7 +122,6 @@ class MapFragment(s: Silencer): DialogFragment(), OnMapReadyCallback {
                     if (loc.isNotEmpty()) {
                         silencer.address = loc[0].getAddressLine(0)
                     }
-                    //updateUI()
                     break@markerLoop
                 } catch (e: Exception) {
                     e.printStackTrace()
