@@ -15,24 +15,30 @@ import java.util.*
 private const val TAG = "TimeBroadcastReceiver"
 
 class TimeBroadcastReceiver : BroadcastReceiver(){
-    //private lateinit var am: AudioManager
+        private lateinit var audioManager: AudioManager
+        private lateinit var alarmManager: AlarmManager
+
         override fun onReceive(context: Context, intent: Intent) {
-            var am = context!!.getSystemService(Context.AUDIO_SERVICE) as AudioManager
+            if (audioManager == null){
+                audioManager = context!!.getSystemService(Context.AUDIO_SERVICE) as AudioManager
+            }
             var type = intent.getIntExtra("Type", -1)
             if(type%2 == 0){
-                am.ringerMode = AudioManager.RINGER_MODE_SILENT
+                audioManager.ringerMode = AudioManager.RINGER_MODE_SILENT
                 setNextAlarm(context, type, intent)
                 Log.d(TAG, "Phone Silenced")
             }
             else if(type%2 == 1){
-                am.ringerMode = AudioManager.RINGER_MODE_NORMAL
+                audioManager.ringerMode = AudioManager.RINGER_MODE_NORMAL
                 setNextAlarm(context, type, intent)
                 Log.d(TAG, "Phone Un-Silenced")
             }
         }
 
         private fun setNextAlarm(context:Context, type: Int, intent: Intent){
-            var alarmManager = context!!.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+            if (alarmManager == null){
+                alarmManager = context!!.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+            }
             var calendar = Calendar.getInstance()
             calendar.add(Calendar.DATE, 1)
             val pendingIntent = PendingIntent.getBroadcast(context, type, intent, 0)
