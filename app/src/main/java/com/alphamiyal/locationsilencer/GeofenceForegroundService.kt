@@ -1,17 +1,14 @@
 package com.alphamiyal.locationsilencer
 
-import android.Manifest
 import android.annotation.SuppressLint
 import android.app.*
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.content.pm.ServiceInfo
 import android.os.Build
 import android.os.IBinder
 import android.os.Looper
 import android.util.Log
-import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import com.google.android.gms.location.*
 import com.google.android.gms.maps.model.LatLng
@@ -25,9 +22,6 @@ class GeofenceForegroundService: Service() {
     private lateinit var locationClient: FusedLocationProviderClient
     private lateinit var locationCallback: LocationCallback
     private lateinit var context:Context
-    private val geofenceId = "Some_Geofence_Id"
-    private val geofenceRadius = 200.0
-
 
     private val TAG = "GeofenceForegroundServi"
 
@@ -78,7 +72,6 @@ class GeofenceForegroundService: Service() {
         locationCallback = object : LocationCallback() {
             override fun onLocationResult(locationResult: LocationResult) {
                 super.onLocationResult(locationResult)
-                //Log.d(TAG, "${locationResult.lastLocation.latitude} ${locationResult.lastLocation.longitude}")
             }
         }
         Looper.myLooper()?.let {

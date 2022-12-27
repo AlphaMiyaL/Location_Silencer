@@ -2,25 +2,16 @@ package com.alphamiyal.locationsilencer
 
 import android.Manifest
 import android.app.Activity
-import android.app.PendingIntent
-import android.app.Service
-import android.content.Context
-import android.content.Intent
 import android.content.pm.PackageManager
-import android.content.res.Configuration
-import android.location.Location
-import android.os.*
 import android.util.Log
-import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import com.google.android.gms.location.*
-import java.lang.Process
 import java.util.*
 
 
 private const val TAG = "SilencerLocation"
 
-class SilenceLocation(a: Activity)/*: Service()*/{
+class SilenceLocation(a: Activity){
     companion object {
         private var INSTANCE: SilenceLocation? = null
 
@@ -38,7 +29,7 @@ class SilenceLocation(a: Activity)/*: Service()*/{
     }
 
     private lateinit var geofencingClient: GeofencingClient
-    private lateinit var geofenceHelper: GeofenceHelper//? = null
+    private lateinit var geofenceHelper: GeofenceHelper
     private var activity = a
     private var testUUID = UUID.randomUUID()
     private var geofenceSuccess = true
@@ -95,13 +86,6 @@ class SilenceLocation(a: Activity)/*: Service()*/{
                 Log.d(TAG, "Geofence Removed")
             }
             .addOnFailureListener { e: Exception ->
-                //val errorMessage: String = geofenceHelper.getErrorString(e)
-                //Log.e("TAG", "onFailure: $errorMessage")
-//                    Toast.makeText(
-//                        applicationContext,
-//                        "onFailure: $errorMessage",
-//                        Toast.LENGTH_SHORT
-//                    ).show()
                 e.printStackTrace()
             }
     }

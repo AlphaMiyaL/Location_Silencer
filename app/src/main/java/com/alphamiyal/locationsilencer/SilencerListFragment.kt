@@ -6,23 +6,18 @@ import android.os.Bundle
 import android.util.Log
 import android.view.*
 import android.widget.Button
-import android.widget.CompoundButton
 import android.widget.Switch
 import android.widget.TextView
 import androidx.annotation.RequiresApi
+import androidx.appcompat.widget.SwitchCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdView
-import com.google.android.material.behavior.SwipeDismissBehavior
-import kotlinx.android.synthetic.main.fragment_silencer.*
-import kotlinx.android.synthetic.main.list_item_silencer.view.*
-import kotlinx.coroutines.newFixedThreadPoolContext
 import java.util.*
 
 
@@ -87,16 +82,6 @@ class SilencerListFragment: Fragment() {
         val swipeToDeleteCallback = object: SwipeToDeleteCallback(){
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 val position = viewHolder.adapterPosition
-
-//                Log.d(TAG, "Position " + position)
-//                val currSilencer = adapter?.silencers?.get(position)
-//
-//                if (currSilencer != null) {
-//                    silencerListViewModel.deleteSilencer(currSilencer)
-//                }
-//                 //   .adapter?.silencers.
-//                adapter?.notifyItemRemoved(position)
-
             }
         }
         val itemTouchHelper = ItemTouchHelper(swipeToDeleteCallback)
@@ -131,9 +116,8 @@ class SilencerListFragment: Fragment() {
         private lateinit var silencer: Silencer
 
         private val titleTextView: TextView = itemView.findViewById(R.id.silencer_title)
-        //private val radiusTextView: TextView = itemView.findViewById(R.id.radius_title)
         private val addressTextView: TextView = itemView.findViewById(R.id.silencer_address)
-        private val onOffSwitch: Switch = itemView.findViewById(R.id.onOff)
+        private val onOffSwitch: SwitchCompat = itemView.findViewById(R.id.onOff)
         private val deleteButton: Button = itemView.findViewById(R.id.delete_button)
 
 

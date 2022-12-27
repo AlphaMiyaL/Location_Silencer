@@ -5,12 +5,7 @@ import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import android.os.Build
 import android.util.Log
-import androidx.annotation.RequiresApi
-import androidx.core.content.ContextCompat.getSystemService
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import java.lang.Exception
 import java.util.*
 
 private const val TAG = "SilenceTime"
@@ -48,13 +43,10 @@ class SilenceTime(a: Activity, context: Context) {
     fun addTimeSilencer(type: Int, calendar: Calendar){
         val intent = Intent(context, TimeBroadcastReceiver::class.java)
         intent.putExtra("Type", type)
-//        Log.d(TAG, "HEY3" + calendar.timeInMillis)
         val pendingIntent= PendingIntent.getBroadcast(context, type, intent, 0)
-        //Log.d(TAG, calendar.timeInMillis.toString())
         alarmManager.setExact(
             AlarmManager.RTC_WAKEUP,
             calendar.timeInMillis,
-            //AlarmManager.INTERVAL_DAY,
             pendingIntent
         )
     }
@@ -81,26 +73,15 @@ class SilenceTime(a: Activity, context: Context) {
 
         var pendingIntent= PendingIntent.getBroadcast(context, type, intent, 0)
         existingPendingIntents[type] = pendingIntent
-        //Log.d(TAG, calendar.timeInMillis.toString())
         alarmManager.setExact(
             AlarmManager.RTC_WAKEUP,
             calendar.timeInMillis,
-            //AlarmManager.INTERVAL_DAY,
             pendingIntent
         )
     }
 
     fun  deleteTimeAndLoc(type: Int){
-//        val intent = Intent(context, TimeLocBroadcastReceiver::class.java)
-//        intent.putExtra("Type", type)
-//        intent.putExtra("id", id.toString())
-//        intent.putExtra("lat", lat.toString())
-//        intent.putExtra("long", lng.toString())
-//        intent.putExtra("radius", radius.toString())
-
-        //LocalBroadcastManager.getInstance(context).unregisterReceiver(timeLocBroadcastReceiver)
         val pendingIntent = existingPendingIntents[type] as PendingIntent
-        //val pendingIntent = PendingIntent.getBroadcast(context, type, intent, 0)
         alarmManager.cancel(pendingIntent)
     }
 }

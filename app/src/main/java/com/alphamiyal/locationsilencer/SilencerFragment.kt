@@ -1,6 +1,6 @@
 package com.alphamiyal.locationsilencer
 
-import android.R.attr
+
 import android.icu.util.Calendar
 import android.location.Address
 import android.location.Geocoder
@@ -22,15 +22,8 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdView
-import com.google.android.gms.ads.MobileAds
-import com.google.android.gms.ads.RequestConfiguration
-import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.LatLng
-import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.fragment_silencer.*
-import kotlinx.android.synthetic.main.fragment_silencer.view.*
 import java.text.DateFormat
-import java.text.FieldPosition
 import java.util.*
 
 
@@ -117,10 +110,6 @@ class SilencerFragment: Fragment(), TimePickerFragment.Callbacks {
                     updateUI()
                 }
             })
-    }
-
-    override fun onResume() {
-        super.onResume()
     }
 
     override fun onStart() {
@@ -215,15 +204,11 @@ class SilencerFragment: Fragment(), TimePickerFragment.Callbacks {
                             }
 
                             val arrayAdapter = context?.let { ArrayAdapter<String>(it, android.R.layout.simple_list_item_1, addListString) }
-                            //val arrayAdapter = context?.let { ArrayAdapter<String>(it, android.R.layout.simple_list_item_1, units) }
                             addressField.setAdapter(arrayAdapter)
                         }
                     }
                 }
 
-
-
-                //gcd.getFromLocationName(sequence.toString(), 5)
                 silencer.address = sequence.toString()
             }
             override fun afterTextChanged(sequence: Editable?) {
@@ -237,7 +222,7 @@ class SilencerFragment: Fragment(), TimePickerFragment.Callbacks {
                     Toast.makeText(context, "provide location", Toast.LENGTH_SHORT).show()
                 }
                 else{
-                    val gcd: Geocoder = Geocoder(context, Locale.getDefault())
+                    val gcd = Geocoder(context, Locale.getDefault())
                     var add: List<Address>? = null
 
                     try {
@@ -252,8 +237,6 @@ class SilencerFragment: Fragment(), TimePickerFragment.Callbacks {
                             val latLng = LatLng(add!![0].latitude, add!![0].longitude)
                             silencer.latitude = latLng.latitude
                             silencer.longitude = latLng.longitude
-                            //mMap!!.addMarker(MarkerOptions().position(latLng).title(location))
-                            //mMap!!.animateCamera(CameraUpdateFactory.newLatLng(latLng))
                             updateUI()
                         }
                         else{
@@ -308,19 +291,8 @@ class SilencerFragment: Fragment(), TimePickerFragment.Callbacks {
         silencerDetailViewModel.saveSilencer(silencer)
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-    }
-
-    override fun onLowMemory() {
-        super.onLowMemory()
-    }
-
     @RequiresApi(Build.VERSION_CODES.N)
     override fun onTimeSelected(calendar: Calendar) {
-//        Log.d(TAG, "Calendar time " + calendar.time)
-//        Log.d(TAG, calendar.timeInMillis.toString())
-//        Log.d(TAG, calendar.time.time.toString())
         calendar.add(Calendar.MINUTE, 8)
         if(startTimeSelect){
             silencer.startTime = calendar.time

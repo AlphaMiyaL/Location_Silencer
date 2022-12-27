@@ -1,44 +1,32 @@
 package com.alphamiyal.locationsilencer
 
 import android.Manifest
-import android.app.AlarmManager
 import android.app.NotificationManager
-import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.net.Uri
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.Settings
-import android.util.Log
 import android.view.Gravity
-import android.widget.Button
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import com.google.android.gms.ads.AdRequest
-import com.google.android.gms.ads.AdView
 import com.google.android.gms.ads.MobileAds
-import com.google.android.gms.ads.RequestConfiguration
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
-import java.lang.Exception
 import java.util.*
 
-private const val TAG = "MainActivity"
-private const val REQUEST_FOREGROUND_ONLY_PERMISSIONS_REQUEST_CODE = 34
 class MainActivity : AppCompatActivity(), SilencerListFragment.Callbacks, PermissionsFragment.Callbacks  {
     lateinit var fusedLocationProviderClient: FusedLocationProviderClient
     private val locationCode = 2000
-    private val locationCode1 = 2001
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        //TODO Supposed to lead to ignore battery optimizations permissions
+//        TODO Supposed to lead to ignore battery optimizations permissions
 //        val i = Intent()
 //        i.action = Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS
 //        i.data = Uri.parse("package:com.alphamiyal.locationsilencer")

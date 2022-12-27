@@ -1,7 +1,6 @@
 package com.alphamiyal.locationsilencer
 
 import android.app.Application
-import android.content.Intent
 import android.os.Build
 import androidx.annotation.RequiresApi
 
@@ -12,9 +11,6 @@ class LocationSilencerApplication: Application() {
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(){
         super.onCreate()
-//        val silenceLocation = SilenceLocation()
-//        silenceLocation.initGeofencing()
-        //startService( Intent(this, SilenceLocation::class.java))
         SilencerRepository.initialize(this)
     }
 }

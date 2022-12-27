@@ -1,9 +1,5 @@
 package com.alphamiyal.locationsilencer
 
-import android.location.Address
-import android.location.Location
-import android.location.LocationManager
-import androidx.core.location.LocationManagerCompat.getCurrentLocation
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import java.util.*

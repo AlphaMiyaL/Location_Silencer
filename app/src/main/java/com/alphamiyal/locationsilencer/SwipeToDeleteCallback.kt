@@ -1,6 +1,5 @@
 package com.alphamiyal.locationsilencer
 
-import android.content.Context
 import android.graphics.Canvas
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
@@ -85,8 +84,4 @@ abstract class SwipeToDeleteCallback : ItemTouchHelper.Callback(){
             viewHolder.itemView.scrollTo(0,0)
         }
     }
-
-//    private fun dipToPx(dipValue: Float, context: Context): Int{
-//        return (dipValue * context.resources.displayMetrics.density).toInt()
-//    }
 }

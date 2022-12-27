@@ -1,9 +1,5 @@
 package com.alphamiyal.locationsilencer
 
-
-import android.annotation.SuppressLint
-import android.os.Build
-import android.view.animation.Transformation
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

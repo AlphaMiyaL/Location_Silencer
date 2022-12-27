@@ -103,7 +103,6 @@ class MapFragment(s: Silencer): DialogFragment(), OnMapReadyCallback {
 
     override fun onMapReady(map: GoogleMap) {
         map.setOnMapLoadedCallback {
-            //enableUserLocation(map)
             if(!(silencer.latitude == 0.0 && silencer.longitude == 0.0)) {
                 val latLng = LatLng(silencer.latitude, silencer.longitude)
                 setMarkerLocation(map, latLng)

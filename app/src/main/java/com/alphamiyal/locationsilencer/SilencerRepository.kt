@@ -1,22 +1,14 @@
 package com.alphamiyal.locationsilencer
 
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.media.AudioManager
 import android.os.Build
-import android.os.SystemClock
 import android.util.Log
 import androidx.annotation.RequiresApi
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.lifecycle.LiveData
 import androidx.room.Room
-import com.alphamiyal.locationsilencer.database.SilencerDao
 import com.alphamiyal.locationsilencer.database.SilencerDatabase
 import java.lang.Exception
-import java.sql.Time
-import java.time.Month
-import java.time.Year
 import java.util.*
 import java.util.Calendar.*
 import java.util.concurrent.Executors
@@ -95,13 +87,6 @@ class SilencerRepository private constructor(context: Context){
         executor.execute {
             silencerDao.addSilencer(silencer)
         }
-//        if(silencer.on){
-//            silenceLocation.addGeofence(
-//                silencer.id,
-//                silencer.latitude,
-//                silencer.longitude,
-//                silencer.radius)
-//        }
     }
 
     fun deleteSilencer(silencer: Silencer){
@@ -123,14 +108,6 @@ class SilencerRepository private constructor(context: Context){
 
     private fun deleteOldSilencer(silencer: Silencer){
         Log.d(TAG, "Deleting Old Silencer")
-//        try{
-//            silenceLocation.removeGeofence(silencer.id)
-//            silenceTime.deleteTimeAndLoc(silencer.idInt)
-//            silenceTime.deleteTimeAndLoc(silencer.idInt+1)
-//        } catch (e: Exception){
-//            Log.d(TAG, "Old time-geofence silencer didn't exist or was erased.")
-//        }
-
         try{
             silenceLocation.removeGeofence(silencer.id)
         } catch (e: Exception){
@@ -176,22 +153,10 @@ class SilencerRepository private constructor(context: Context){
         intent.putExtra("long", silencer.longitude)
         intent.putExtra("radius", newRadius)
         c.startService(intent)
-//        silenceLocation.addGeofence(
-//            silencer.id,
-//            silencer.latitude,
-//            silencer.longitude,
-//            newRadius)
         Log.d(TAG, "Finished adding geofence")
     }
 
     private fun addTimeSilencer(silencer: Silencer){
-//        var am = c.getSystemService(Context.AUDIO_SERVICE) as AudioManager
-
-        //If between time, silence
-//        var current = Date()
-//        if(current.after(silencer.startTime) && current.before(silencer.endTime)){
-//            am.ringerMode = AudioManager.RINGER_MODE_SILENT
-//        }
         //Add Time Silencer
         var startCalendar = currentDayCalendar(silencer.startTime)
         var endCalendar = currentDayCalendar(silencer.endTime)
@@ -204,15 +169,9 @@ class SilencerRepository private constructor(context: Context){
         var calendar: Calendar = getInstance()
         var currentCalendar: Calendar = getInstance()
         calendar.time = date
-//        Log.d(TAG, "HEY0 " + calendar.timeInMillis.toString())
-//        Log.d(TAG, "HEY1 " + currentCalendar.timeInMillis.toString())
         currentCalendar.set(HOUR_OF_DAY, calendar.get(HOUR_OF_DAY))
         currentCalendar.set(MINUTE, calendar.get(MINUTE))
         currentCalendar.set(SECOND, 0)
-//        if(currentCalendar.before(getInstance())){
-//            currentCalendar.add(DATE, 1)
-//        }
-//        Log.d(TAG, "HEY2 " +currentCalendar.timeInMillis.toString())
         return currentCalendar
     }
 

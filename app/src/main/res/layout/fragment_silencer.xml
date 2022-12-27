@@ -237,7 +237,5 @@
             app:constraint_referenced_ids="end_time,timeTo,start_time,silencer_time_start,silencer_time_end"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
-
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

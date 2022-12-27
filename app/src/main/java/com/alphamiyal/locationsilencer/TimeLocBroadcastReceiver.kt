@@ -6,7 +6,6 @@ import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.media.AudioManager
 import android.util.Log
 import java.util.*
 
@@ -15,7 +14,6 @@ private const val TAG = "TimeLocBroadcastReceiver"
 class TimeLocBroadcastReceiver: BroadcastReceiver(){
     @SuppressLint("LongLogTag")
     override fun onReceive(context: Context, intent: Intent) {
-       // var am = context!!.getSystemService(Context.AUDIO_SERVICE) as AudioManager
         val silenceTime = SilenceTime.get()
         val type = intent.getIntExtra("Type", -1)
         val id = silenceTime.idDictionary[type] as String
