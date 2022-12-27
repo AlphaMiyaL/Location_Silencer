@@ -17,6 +17,8 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.AdView
 import com.google.android.material.behavior.SwipeDismissBehavior
 import kotlinx.android.synthetic.main.fragment_silencer.*
 import kotlinx.android.synthetic.main.list_item_silencer.view.*
@@ -33,6 +35,7 @@ class SilencerListFragment: Fragment() {
     private var callbacks: Callbacks? = null
 
     private lateinit var silencerRecyclerView:RecyclerView
+    private lateinit var adView: AdView
     private var adapter: SilencerAdapter? = SilencerAdapter(emptyList())
 
     private val silencerListViewModel: SilencerListViewModel by lazy {
@@ -49,6 +52,8 @@ class SilencerListFragment: Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
+
+
     }
 
     override fun onCreateView(
@@ -61,6 +66,8 @@ class SilencerListFragment: Fragment() {
         //RecyclerView requires a layoutManager to function, else it crash
         silencerRecyclerView.layoutManager = LinearLayoutManager(context)
         silencerRecyclerView.adapter = adapter
+
+        adView = view.findViewById(R.id.ad_view_2) as AdView
         return view
     }
 
@@ -74,6 +81,9 @@ class SilencerListFragment: Fragment() {
                     updateUI(silencers)
                 }
             })
+        val adRequest = AdRequest.Builder().build()
+        adView.loadAd(adRequest)
+
         val swipeToDeleteCallback = object: SwipeToDeleteCallback(){
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 val position = viewHolder.adapterPosition
