@@ -178,12 +178,12 @@ class MapFragment(s: Silencer): DialogFragment(), OnMapReadyCallback {
                 round(latLng.longitude))
         //Remove all previous markers
         map.clear()
-        //Animate zoom to the marker(MOVED TO CIRCLELOCATION)
-//        map.animateCamera(
-//            CameraUpdateFactory.newLatLngZoom(
-//                latLng, 10F
-//            )
-//        )
+        //Animate zoom to the marker
+        map.animateCamera(
+            CameraUpdateFactory.newLatLngZoom(
+                latLng, 10F
+            )
+        )
         //Add marker on map
         map.addMarker(markerOptions)
     }

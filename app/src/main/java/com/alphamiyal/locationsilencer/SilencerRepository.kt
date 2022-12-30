@@ -48,10 +48,14 @@ class SilencerRepository private constructor(context: Context){
                     if(silencer.on){
                         deleteOldSilencer(silencer)
                         if(silencer.useLoc && silencer.useTime){
-                            addTimeAndLocSilencer(silencer)
+                            if(silencer.radius!=0.0){
+                                addTimeAndLocSilencer(silencer)
+                            }
                         }
                         else if(silencer.useLoc){
-                            addGeofenceSilencer(silencer)
+                            if(silencer.radius!=0.0){
+                                addGeofenceSilencer(silencer)
+                            }
                         }
                         else if(silencer.useTime){
                             addTimeSilencer(silencer)
@@ -83,6 +87,7 @@ class SilencerRepository private constructor(context: Context){
             }
         }
     }
+
     fun addSilencer(silencer: Silencer) {
         executor.execute {
             silencerDao.addSilencer(silencer)
