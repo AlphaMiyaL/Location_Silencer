@@ -266,9 +266,9 @@ class SilencerFragment: Fragment(), TimePickerFragment.Callbacks {
         })
 
         mapButton.setOnClickListener { view: View ->
-            MapFragment(silencer).show(childFragmentManager, "MapFragment")
+            MapFragment(silencer, addressField).show(childFragmentManager, "MapFragment")
 
-            val mapFrag = MapFragment.newInstance(silencer)
+            val mapFrag = MapFragment.newInstance(silencer, addressField)
         }
 
         startTimeButton.setOnClickListener { view: View ->

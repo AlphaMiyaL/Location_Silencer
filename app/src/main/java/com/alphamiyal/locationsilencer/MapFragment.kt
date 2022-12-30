@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AutoCompleteTextView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
@@ -26,15 +27,16 @@ private const val ERROR_DIALOG_REQUEST = 9001
 private const val PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 9002
 private const val PERMISSIONS_REQUEST_ENABLE_GPS = 9003
 
-class MapFragment(s: Silencer): DialogFragment(), OnMapReadyCallback {
+class MapFragment(s: Silencer, adrTextView: AutoCompleteTextView): DialogFragment(), OnMapReadyCallback {
     var silencer = s
+    var addressField = adrTextView
     private lateinit var mapView: MapView
 
     companion object{
         const val TAG = "MapFragment"
 
-        fun newInstance(s: Silencer): MapFragment{
-            return MapFragment(s)
+        fun newInstance(s: Silencer, adrTextView: AutoCompleteTextView): MapFragment{
+            return MapFragment(s, adrTextView)
         }
     }
 
@@ -124,6 +126,10 @@ class MapFragment(s: Silencer): DialogFragment(), OnMapReadyCallback {
                     if (loc.isNotEmpty()) {
                         silencer.address = loc[0].getAddressLine(0)
                     }
+//                    else{
+//                        silencer.address = "Ocean"
+//                    }
+                    addressField.setText(silencer.address)
                     break@markerLoop
                 } catch (e: Exception) {
                     e.printStackTrace()
