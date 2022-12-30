@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AutoCompleteTextView
+import android.widget.TextView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
@@ -20,6 +21,7 @@ import com.google.android.gms.maps.model.Circle
 import com.google.android.gms.maps.model.CircleOptions
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import kotlin.math.ln
 
 
 private const val MAPVIEW_BUNDLE_KEY = "MapViewBundleKey"
@@ -27,16 +29,20 @@ private const val ERROR_DIALOG_REQUEST = 9001
 private const val PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 9002
 private const val PERMISSIONS_REQUEST_ENABLE_GPS = 9003
 
-class MapFragment(s: Silencer, adrTextView: AutoCompleteTextView): DialogFragment(), OnMapReadyCallback {
+class MapFragment(s: Silencer, adrTextView: AutoCompleteTextView, latTextView: TextView,
+                  lngTextView: TextView): DialogFragment(), OnMapReadyCallback {
     var silencer = s
     var addressField = adrTextView
+    var latitudeField = latTextView
+    var longitudeField = lngTextView
     private lateinit var mapView: MapView
 
     companion object{
         const val TAG = "MapFragment"
 
-        fun newInstance(s: Silencer, adrTextView: AutoCompleteTextView): MapFragment{
-            return MapFragment(s, adrTextView)
+        fun newInstance(s: Silencer, adrTextView: AutoCompleteTextView,
+                        latTextView: TextView, lngTextView: TextView): MapFragment{
+            return MapFragment(s, adrTextView, latTextView, lngTextView)
         }
     }
 
@@ -126,10 +132,12 @@ class MapFragment(s: Silencer, adrTextView: AutoCompleteTextView): DialogFragmen
                     if (loc.isNotEmpty()) {
                         silencer.address = loc[0].getAddressLine(0)
                     }
-//                    else{
-//                        silencer.address = "Ocean"
-//                    }
+                    else{
+                        silencer.address = "Ocean"
+                    }
                     addressField.setText(silencer.address)
+                    latitudeField.text = silencer.latitude.toString()
+                    longitudeField.text = silencer.longitude.toString()
                     break@markerLoop
                 } catch (e: Exception) {
                     e.printStackTrace()

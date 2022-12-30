@@ -266,9 +266,10 @@ class SilencerFragment: Fragment(), TimePickerFragment.Callbacks {
         })
 
         mapButton.setOnClickListener { view: View ->
-            MapFragment(silencer, addressField).show(childFragmentManager, "MapFragment")
+            MapFragment(silencer, addressField, latitudeField, longitudeField)
+                .show(childFragmentManager, "MapFragment")
 
-            val mapFrag = MapFragment.newInstance(silencer, addressField)
+            val mapFrag = MapFragment.newInstance(silencer, addressField, latitudeField, longitudeField)
         }
 
         startTimeButton.setOnClickListener { view: View ->
@@ -327,8 +328,8 @@ class SilencerFragment: Fragment(), TimePickerFragment.Callbacks {
             "Miles" -> unitDropdown.setSelection(3)
         }
 
-        latitudeField.setText(silencer.latitude.toString())
-        longitudeField.setText(silencer.longitude.toString())
+        latitudeField.text = silencer.latitude.toString()
+        longitudeField.text = silencer.longitude.toString()
         startTimeButton.text = DateFormat.getTimeInstance(DateFormat.SHORT).format(silencer.startTime)
         endTimeButton.text = DateFormat.getTimeInstance(DateFormat.SHORT).format(silencer.endTime)
         locCheckBox.apply {
