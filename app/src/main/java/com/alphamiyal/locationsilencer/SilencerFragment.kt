@@ -185,7 +185,6 @@ class SilencerFragment: Fragment(), TimePickerFragment.Callbacks {
             override fun beforeTextChanged(sequence: CharSequence?, start: Int, count: Int, after: Int) {
             }
             override fun onTextChanged(sequence: CharSequence?, start: Int, count: Int, after: Int) {
-                //TODO list out possible addresses
                 val loc: String = silencer.address.trim()
                 if(loc != null && loc != "") {
 
@@ -208,18 +207,30 @@ class SilencerFragment: Fragment(), TimePickerFragment.Callbacks {
                         }
                     }
                 }
-
                 silencer.address = sequence.toString()
             }
             override fun afterTextChanged(sequence: Editable?) {
             }
         }
+        addressField.setOnItemClickListener{parent, view, position, id ->
+            val gcd = Geocoder(context, Locale.getDefault())
+            val add = gcd.getFromLocationName(silencer.address, 1)
+            val latLng = LatLng(add!![0].latitude, add!![0].longitude)
+            silencer.latitude = latLng.latitude
+            silencer.longitude = latLng.longitude
+            updateUI()
+        }
+
 
         addressField.setOnKeyListener(View.OnKeyListener { v, keyCode, event ->
             if (keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_UP) {
                 val loc: String = silencer.address.trim()
                 if(loc == null || loc == "") {
                     Toast.makeText(context, "provide location", Toast.LENGTH_SHORT).show()
+                    silencer.address = ""
+                    silencer.latitude = 0.0
+                    silencer.longitude = 0.0
+                    updateUI()
                 }
                 else{
                     val gcd = Geocoder(context, Locale.getDefault())
@@ -227,7 +238,6 @@ class SilencerFragment: Fragment(), TimePickerFragment.Callbacks {
 
                     try {
                         add = gcd.getFromLocationName(silencer.address, 1)
-                        Log.d(TAG, "Got here")
                     }catch (e: Exception){
                         e.printStackTrace()
                     }
@@ -244,6 +254,7 @@ class SilencerFragment: Fragment(), TimePickerFragment.Callbacks {
                             silencer.address = ""
                             silencer.latitude = 0.0
                             silencer.longitude = 0.0
+                            updateUI()
                         }
                     }
                 }
