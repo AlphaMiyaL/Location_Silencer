@@ -48,14 +48,10 @@ class SilencerRepository private constructor(context: Context){
                     if(silencer.on){
                         deleteOldSilencer(silencer)
                         if(silencer.useLoc && silencer.useTime){
-                            if(silencer.radius!=0.0){
-                                addTimeAndLocSilencer(silencer)
-                            }
+                            addTimeAndLocSilencer(silencer)
                         }
                         else if(silencer.useLoc){
-                            if(silencer.radius!=0.0){
-                                addGeofenceSilencer(silencer)
-                            }
+                            addGeofenceSilencer(silencer)
                         }
                         else if(silencer.useTime){
                             addTimeSilencer(silencer)
@@ -128,6 +124,9 @@ class SilencerRepository private constructor(context: Context){
     }
 
     private fun addTimeAndLocSilencer(silencer:Silencer){
+        if(silencer.radius == 0.0){
+            return
+        }
         var newRadius = changeToMeters(silencer.radius, silencer.unit)
         silenceTime.addTimeAndLocSilencer(
             silencer.idInt,
@@ -150,6 +149,9 @@ class SilencerRepository private constructor(context: Context){
     }
 
     private fun addGeofenceSilencer(silencer: Silencer){
+        if(silencer.radius == 0.0){
+            return
+        }
         var newRadius = changeToMeters(silencer.radius, silencer.unit)
 
         var intent = Intent(c,GeofenceForegroundService()::class.java)
