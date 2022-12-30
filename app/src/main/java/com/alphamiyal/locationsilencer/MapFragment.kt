@@ -15,9 +15,11 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.OnMapReadyCallback
+import com.google.android.gms.maps.model.Circle
 import com.google.android.gms.maps.model.CircleOptions
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+
 
 private const val MAPVIEW_BUNDLE_KEY = "MapViewBundleKey"
 private const val ERROR_DIALOG_REQUEST = 9001
@@ -176,12 +178,12 @@ class MapFragment(s: Silencer): DialogFragment(), OnMapReadyCallback {
                 round(latLng.longitude))
         //Remove all previous markers
         map.clear()
-        //Animate zoom to the marker
-        map.animateCamera(
-            CameraUpdateFactory.newLatLngZoom(
-                latLng, 10F
-            )
-        )
+        //Animate zoom to the marker(MOVED TO CIRCLELOCATION)
+//        map.animateCamera(
+//            CameraUpdateFactory.newLatLngZoom(
+//                latLng, 10F
+//            )
+//        )
         //Add marker on map
         map.addMarker(markerOptions)
     }
@@ -197,7 +199,19 @@ class MapFragment(s: Silencer): DialogFragment(), OnMapReadyCallback {
         circleOptions.strokeColor(Color.argb(255, 200, 0, 200))
         circleOptions.fillColor(Color.argb(64, 200, 0, 200))
         circleOptions.strokeWidth(4F)
-        map.addCircle(circleOptions)
+        val circle:Circle = map.addCircle(circleOptions)
+        map.animateCamera(CameraUpdateFactory.newLatLngZoom(
+            circleOptions.getCenter()!!, getZoomLevel(circle)))
+    }
+
+    private fun getZoomLevel(circle: Circle?): Float {
+        var zoomLevel = 11F
+        if (circle != null) {
+            val radius = circle.radius + circle.radius / 2
+            val scale = radius / 500
+            zoomLevel = (15.5 - Math.log(scale) / Math.log(2.0)).toFloat() //.toInt()
+        }
+        return zoomLevel
     }
 
     private fun changeToMeters(radius: Double, unit: String): Double {
