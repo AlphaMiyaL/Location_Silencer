@@ -129,6 +129,7 @@ class MapFragment(s: Silencer): DialogFragment(), OnMapReadyCallback {
                     e.printStackTrace()
                 }
             }
+
         }
         if (ActivityCompat.checkSelfPermission(requireActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
             != PackageManager.PERMISSION_GRANTED

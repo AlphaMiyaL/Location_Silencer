@@ -185,13 +185,13 @@ class SilencerFragment: Fragment(), TimePickerFragment.Callbacks {
             override fun beforeTextChanged(sequence: CharSequence?, start: Int, count: Int, after: Int) {
             }
             override fun onTextChanged(sequence: CharSequence?, start: Int, count: Int, after: Int) {
-                val loc: String = silencer.address.trim()
+                val loc: String = addressField.text.toString().trim()
                 if(loc != null && loc != "") {
 
                     val gcd = Geocoder(context, Locale.getDefault())
                     var addList: List<Address>? = null
                     try {
-                        addList = gcd.getFromLocationName(silencer.address, 5)
+                        addList = gcd.getFromLocationName(addressField.text.toString(), 5)
                     } catch (e: Exception) {
                         e.printStackTrace()
                     }
@@ -207,24 +207,25 @@ class SilencerFragment: Fragment(), TimePickerFragment.Callbacks {
                         }
                     }
                 }
-                silencer.address = sequence.toString()
+                //silencer.address = sequence.toString()
             }
             override fun afterTextChanged(sequence: Editable?) {
             }
         }
+
         addressField.setOnItemClickListener{parent, view, position, id ->
             val gcd = Geocoder(context, Locale.getDefault())
-            val add = gcd.getFromLocationName(silencer.address, 1)
+            val add = gcd.getFromLocationName(addressField.text.toString(), 1)
+            silencer.address = add!![0].getAddressLine(0)
             val latLng = LatLng(add!![0].latitude, add!![0].longitude)
             silencer.latitude = latLng.latitude
             silencer.longitude = latLng.longitude
             updateUI()
         }
 
-
         addressField.setOnKeyListener(View.OnKeyListener { v, keyCode, event ->
             if (keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_UP) {
-                val loc: String = silencer.address.trim()
+                val loc: String = addressField.text.toString().trim()
                 if(loc == null || loc == "") {
                     Toast.makeText(context, "provide location", Toast.LENGTH_SHORT).show()
                     silencer.address = ""
@@ -237,7 +238,7 @@ class SilencerFragment: Fragment(), TimePickerFragment.Callbacks {
                     var add: List<Address>? = null
 
                     try {
-                        add = gcd.getFromLocationName(silencer.address, 1)
+                        add = gcd.getFromLocationName(addressField.text.toString(), 1)
                     }catch (e: Exception){
                         e.printStackTrace()
                     }
