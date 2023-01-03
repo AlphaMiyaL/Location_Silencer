@@ -39,10 +39,6 @@ class GeofenceBroadcastReceiver: BroadcastReceiver() {
                 Log.d(TAG, "Entered Silencing Zone")
                 am.ringerMode = AudioManager.RINGER_MODE_SILENT
             }
-            Geofence.GEOFENCE_TRANSITION_DWELL -> {
-                Log.d(TAG, "Dwelling Silencing Zone")
-                am.ringerMode = AudioManager.RINGER_MODE_SILENT
-            }
             Geofence.GEOFENCE_TRANSITION_EXIT -> {
                 Log.d(TAG, "Exited Silencing Zone")
                 am.ringerMode = AudioManager.RINGER_MODE_NORMAL

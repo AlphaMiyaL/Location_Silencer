@@ -30,7 +30,7 @@ class GeofenceHelper(base: Context?) : ContextWrapper(base) {
             .setLoiteringDelay(1)
             // Set the transition types of interest. Alerts are only generated for these
             // transition. We track entry dwell and exit
-            .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER or Geofence.GEOFENCE_TRANSITION_EXIT or Geofence.GEOFENCE_TRANSITION_DWELL)
+            .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER or Geofence.GEOFENCE_TRANSITION_EXIT)
             // Create the geofence.
             .build()
     }
@@ -38,9 +38,8 @@ class GeofenceHelper(base: Context?) : ContextWrapper(base) {
     fun getGeofencingRequest(geofence: Geofence): GeofencingRequest {
         return GeofencingRequest.Builder()
             .addGeofence(geofence)
-            .setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_ENTER)
-            .setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_DWELL)
-            .setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_EXIT)
+//            .setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_ENTER)
+//            .setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_EXIT)
             .build()
     }
 
