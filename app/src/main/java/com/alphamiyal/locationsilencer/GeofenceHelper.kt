@@ -18,7 +18,7 @@ class GeofenceHelper(base: Context?) : ContextWrapper(base) {
             // Set the request ID of the geofence. This is a string to identify this
             // geofence.
             .setRequestId(id.toString())
-            // Set the circular region of this geofence.
+            // Set the circular region of this geofence
             .setCircularRegion(
                 lat,
                 lng,
@@ -27,9 +27,10 @@ class GeofenceHelper(base: Context?) : ContextWrapper(base) {
             // Set the expiration duration of the geofence. This geofence gets automatically
             // removed after this period of time.
             .setExpirationDuration(Geofence.NEVER_EXPIRE)
+            .setLoiteringDelay(1)
             // Set the transition types of interest. Alerts are only generated for these
-            // transition. We track entry and exit transitions in this sample.
-            .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER or Geofence.GEOFENCE_TRANSITION_EXIT)
+            // transition. We track entry dwell and exit
+            .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER or Geofence.GEOFENCE_TRANSITION_EXIT or Geofence.GEOFENCE_TRANSITION_DWELL)
             // Create the geofence.
             .build()
     }
@@ -38,6 +39,7 @@ class GeofenceHelper(base: Context?) : ContextWrapper(base) {
         return GeofencingRequest.Builder()
             .addGeofence(geofence)
             .setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_ENTER)
+            .setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_DWELL)
             .setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_EXIT)
             .build()
     }

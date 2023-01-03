@@ -6,12 +6,15 @@ import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import java.util.*
 
 private const val TAG = "TimeLocBroadcastReceiver"
 
 class TimeLocBroadcastReceiver: BroadcastReceiver(){
+    @RequiresApi(Build.VERSION_CODES.O)
     @SuppressLint("LongLogTag")
     override fun onReceive(context: Context, intent: Intent) {
         val silenceTime = SilenceTime.get()
@@ -32,7 +35,7 @@ class TimeLocBroadcastReceiver: BroadcastReceiver(){
             geoIntent.putExtra("lat", lat)
             geoIntent.putExtra("long", long)
             geoIntent.putExtra("radius", radius)
-            context.startService(geoIntent)
+            context.startForegroundService(geoIntent)
             setNextAlarm(context, type, intent)
         }
         else if(type%2 == 1){

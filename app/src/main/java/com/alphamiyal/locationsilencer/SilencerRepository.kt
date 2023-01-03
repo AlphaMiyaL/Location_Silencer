@@ -148,6 +148,7 @@ class SilencerRepository private constructor(context: Context){
         Log.d(TAG, "Finished adding time-loc silencer")
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun addGeofenceSilencer(silencer: Silencer){
         if(silencer.radius == 0.0){
             return

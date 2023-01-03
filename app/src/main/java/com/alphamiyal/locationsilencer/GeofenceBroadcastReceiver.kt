@@ -12,8 +12,6 @@ private const val TAG = "GeoBroadcastReceiver"
 
 class GeofenceBroadcastReceiver: BroadcastReceiver() {
 
-
-
     //Called when BroadcastReceiver is receiving
     override fun onReceive(context: Context?, intent: Intent?) {
         Log.d(TAG, "Received")
@@ -28,14 +26,21 @@ class GeofenceBroadcastReceiver: BroadcastReceiver() {
             return
         }
 
-        var geofenceList: List<Geofence> = geofencingEvent.triggeringGeofences
+        var geofenceList = geofencingEvent.triggeringGeofences //: List<Geofence>
+        if(geofenceList == null){
+            return
+        }
         for (geofence in geofenceList){
-            Log.d(TAG, "onReceive: " + geofence.requestId)
+            Log.d(TAG, "onReceive: " + geofence.toString())
         }
         var transitionType = geofencingEvent.geofenceTransition
         when(transitionType){
             Geofence.GEOFENCE_TRANSITION_ENTER -> {
                 Log.d(TAG, "Entered Silencing Zone")
+                am.ringerMode = AudioManager.RINGER_MODE_SILENT
+            }
+            Geofence.GEOFENCE_TRANSITION_DWELL -> {
+                Log.d(TAG, "Dwelling Silencing Zone")
                 am.ringerMode = AudioManager.RINGER_MODE_SILENT
             }
             Geofence.GEOFENCE_TRANSITION_EXIT -> {
