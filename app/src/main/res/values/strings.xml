@@ -12,6 +12,7 @@
     <string name="silencer_longitude_label">Longitude</string>
     <string name="map_button_label">Map</string>
     <string name="save_button_label">Save Silencer Settings</string>
+    <string name="close_map_label">Close Map</string>
     <string name="silencer_title">Silencer Title</string>
     <string name="silencer_radius">Silencer Radius</string>
     <string name="silencer_address">Silencer Address</string>

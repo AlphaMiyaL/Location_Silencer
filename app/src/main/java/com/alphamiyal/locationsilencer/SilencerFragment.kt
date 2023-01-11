@@ -71,9 +71,6 @@ class SilencerFragment: Fragment(), TimePickerFragment.Callbacks {
         silencer = Silencer()
         val silencerId: UUID = arguments?.getSerializable(ARG_SILENCER_ID) as UUID
 
-
-
-
         silencerDetailViewModel.loadSilencer(silencerId)
 
     }

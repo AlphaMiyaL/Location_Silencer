@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AutoCompleteTextView
+import android.widget.Button
 import android.widget.TextView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -36,6 +37,7 @@ class MapFragment(s: Silencer, adrTextView: AutoCompleteTextView, latTextView: T
     var latitudeField = latTextView
     var longitudeField = lngTextView
     private lateinit var mapView: MapView
+    private lateinit var closeMapButton: Button
 
     companion object{
         const val TAG = "MapFragment"
@@ -54,6 +56,7 @@ class MapFragment(s: Silencer, adrTextView: AutoCompleteTextView, latTextView: T
         val view = inflater.inflate(R.layout.map_window, container, false)
 
         mapView = view.findViewById(R.id.map_view_popup)
+        closeMapButton = view.findViewById(R.id.close_map_button)
         initGoogleMap(savedInstanceState)
         return view
     }
@@ -78,6 +81,9 @@ class MapFragment(s: Silencer, adrTextView: AutoCompleteTextView, latTextView: T
     override fun onStart() {
         super.onStart()
         mapView.onStart()
+        closeMapButton.setOnClickListener{
+            this.dismiss()
+        }
     }
 
     override fun onStop() {
@@ -116,6 +122,7 @@ class MapFragment(s: Silencer, adrTextView: AutoCompleteTextView, latTextView: T
                 map.animateCamera(CameraUpdateFactory.newLatLngZoom(myLocation, 15F))
             }
         }
+
         map.setOnMapClickListener { latLng ->
             setMarkerLocation(map, latLng)
             if(silencer.radius!=0.0){
