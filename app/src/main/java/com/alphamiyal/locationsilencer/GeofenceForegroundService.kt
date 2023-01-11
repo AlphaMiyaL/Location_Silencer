@@ -90,11 +90,12 @@ class GeofenceForegroundService: Service() {
             }
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            startForeground(1, notification, ServiceInfo.FOREGROUND_SERVICE_TYPE_LOCATION)
-        } else {
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) { // was Q
+//            startForeground(1, notification, ServiceInfo.FOREGROUND_SERVICE_TYPE_LOCATION)
+//        } else {
+        //TODO 32 and 33 currently not adding geofence.
             startForeground(1, notification)
-        }
+//        }
 
         return START_STICKY
     }

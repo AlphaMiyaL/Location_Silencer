@@ -1,9 +1,12 @@
 package com.alphamiyal.locationsilencer
 
+import android.annotation.SuppressLint
 import android.app.PendingIntent
+import android.app.PendingIntent.FLAG_MUTABLE
 import android.content.Context
 import android.content.ContextWrapper
 import android.content.Intent
+import android.os.Build
 import com.google.android.gms.location.Geofence
 import com.google.android.gms.location.GeofencingRequest
 import java.util.*
@@ -43,6 +46,7 @@ class GeofenceHelper(base: Context?) : ContextWrapper(base) {
             .build()
     }
 
+
     fun getPendingIntent(): PendingIntent {
         if (pendingIntent != null) {
             return pendingIntent!!
@@ -50,6 +54,13 @@ class GeofenceHelper(base: Context?) : ContextWrapper(base) {
         val intent = Intent(this, GeofenceBroadcastReceiver::class.java)
         // We use FLAG_UPDATE_CURRENT so that we get the same pending intent back when calling
         // addGeofences() and removeGeofences().
-        return PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_MUTABLE)
+        } else{
+            PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+        }
+
+
     }
 }
