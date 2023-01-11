@@ -160,7 +160,7 @@ class SilencerRepository private constructor(context: Context){
         intent.putExtra("lat", silencer.latitude)
         intent.putExtra("long", silencer.longitude)
         intent.putExtra("radius", newRadius)
-        c.startService(intent)
+        c.startForegroundService(intent)
         Log.d(TAG, "Finished adding geofence")
     }
 

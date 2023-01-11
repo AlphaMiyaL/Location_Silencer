@@ -46,6 +46,7 @@ class SilencerFragment: Fragment(), TimePickerFragment.Callbacks {
     private lateinit var locCheckBox: CheckBox
     private lateinit var timeCheckBox: CheckBox
     private lateinit var adView: AdView
+    private lateinit var saveButton: Button
     private lateinit var locGroup: Group
     private lateinit var timeGroup: Group
 
@@ -96,6 +97,7 @@ class SilencerFragment: Fragment(), TimePickerFragment.Callbacks {
         locCheckBox = view.findViewById(R.id.loc_checkbox) as CheckBox
         timeCheckBox = view.findViewById(R.id.time_checkbox) as CheckBox
         adView = view.findViewById(R.id.ad_view) as AdView
+        saveButton = view.findViewById(R.id.save_button) as Button
         locGroup = view.findViewById(R.id.loc_group) as Group
         timeGroup = view.findViewById(R.id.time_group) as Group
         return view
@@ -112,6 +114,7 @@ class SilencerFragment: Fragment(), TimePickerFragment.Callbacks {
             })
     }
 
+    @RequiresApi(Build.VERSION_CODES.N)
     override fun onStart() {
         super.onStart()
 
@@ -272,19 +275,23 @@ class SilencerFragment: Fragment(), TimePickerFragment.Callbacks {
             val mapFrag = MapFragment.newInstance(silencer, addressField, latitudeField, longitudeField)
         }
 
-        startTimeButton.setOnClickListener { view: View ->
+        startTimeButton.setOnClickListener {
             TimePickerFragment.newInstance(silencer.startTime).apply {
                 setTargetFragment(this@SilencerFragment, REQUEST_TIME)
                 show(this@SilencerFragment.parentFragmentManager, DIALOG_TIME)
             }
             startTimeSelect = true
         }
-        endTimeButton.setOnClickListener { view: View ->
+        endTimeButton.setOnClickListener {
             TimePickerFragment.newInstance(silencer.endTime).apply {
                 setTargetFragment(this@SilencerFragment, REQUEST_TIME)
                 show(this@SilencerFragment.parentFragmentManager, DIALOG_TIME)
             }
             startTimeSelect = false
+        }
+
+        saveButton.setOnClickListener{
+            activity?.onBackPressed()
         }
 
         titleField.addTextChangedListener(titleWatcher)
