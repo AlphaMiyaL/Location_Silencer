@@ -38,7 +38,7 @@ class TimeBroadcastReceiver : BroadcastReceiver(){
             //}
             var calendar = Calendar.getInstance()
             calendar.add(Calendar.DATE, 1)
-            val pendingIntent = PendingIntent.getBroadcast(context, type, intent, 0)
+            val pendingIntent = PendingIntent.getBroadcast(context, type, intent, 0 or PendingIntent.FLAG_MUTABLE)
             alarmManager.setExact(
                 AlarmManager.RTC_WAKEUP,
                 calendar.timeInMillis,

@@ -310,7 +310,9 @@ class SilencerFragment: Fragment(), TimePickerFragment.Callbacks {
 
     @RequiresApi(Build.VERSION_CODES.N)
     override fun onTimeSelected(calendar: Calendar) {
-        calendar.add(Calendar.MINUTE, 8)
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
+            calendar.add(Calendar.MINUTE, 8)
+        }
         if(startTimeSelect){
             silencer.startTime = calendar.time
         }

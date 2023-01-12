@@ -34,15 +34,21 @@ class TimePickerFragment: DialogFragment() {
         val date = arguments?.getSerializable(ARG_DATE) as Date
         val calendar = Calendar.getInstance()
         calendar.time = date
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R){
+            calendar.add(Calendar.MINUTE, -8)
+        }
         val initialHour = calendar.get(Calendar.HOUR_OF_DAY)
         var initialMinute = calendar.get(Calendar.MINUTE)
+
 
         return TimePickerDialog(
             requireContext(),
             timeListener,
             initialHour,
-            initialMinute - 8,
+            initialMinute,
             DateFormat.is24HourFormat(activity))
+
+
     }
 
     companion object{

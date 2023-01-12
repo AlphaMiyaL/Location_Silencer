@@ -43,7 +43,7 @@ class SilenceTime(a: Activity, context: Context) {
     fun addTimeSilencer(type: Int, calendar: Calendar){
         val intent = Intent(context, TimeBroadcastReceiver::class.java)
         intent.putExtra("Type", type)
-        val pendingIntent= PendingIntent.getBroadcast(context, type, intent, 0)
+        val pendingIntent= PendingIntent.getBroadcast(context, type, intent, 0 or PendingIntent.FLAG_MUTABLE)
         alarmManager.setExact(
             AlarmManager.RTC_WAKEUP,
             calendar.timeInMillis,
