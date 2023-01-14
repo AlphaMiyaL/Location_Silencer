@@ -30,7 +30,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/titleTextView"
-            tools:ignore="TextContrastCheck" />
+            tools:ignore="TextContrastCheck"
+            android:inputType="text"/>
 
         <TextView
             android:id="@+id/radiusTextView"
@@ -107,6 +108,42 @@
             app:layout_constraintTop_toBottomOf="@+id/addressTextView"
             tools:ignore="TextContrastCheck" />
 
+        <EditText
+            android:id="@+id/silencer_city"
+            style="?android:listSeparatorTextViewStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:hint="@string/silencer_city_hint"
+            app:layout_constraintEnd_toStartOf="@+id/silencer_state"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/silencer_address"
+            tools:ignore="TextContrastCheck"
+            android:inputType="text"/>
+
+        <EditText
+            android:id="@+id/silencer_state"
+            style="?android:listSeparatorTextViewStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:hint="@string/silencer_state_hint"
+            app:layout_constraintStart_toEndOf="@id/silencer_city"
+            app:layout_constraintEnd_toStartOf="@+id/silencer_zipcode"
+            app:layout_constraintTop_toBottomOf="@+id/silencer_address"
+            tools:ignore="TextContrastCheck"
+            android:inputType="text"/>
+
+        <EditText
+            android:id="@+id/silencer_zipcode"
+            style="?android:listSeparatorTextViewStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:hint="@string/silencer_zipcode_hint"
+            app:layout_constraintStart_toEndOf="@id/silencer_state"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/silencer_address"
+            tools:ignore="TextContrastCheck"
+            android:inputType="text"/>
+
         <TextView
             android:id="@+id/latitudeTextView"
             style="?android:listSeparatorTextViewStyle"
@@ -115,7 +152,7 @@
             android:text="@string/silencer_latitude_label"
             app:layout_constraintEnd_toStartOf="@+id/longitudeTextView"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/silencer_address" />
+            app:layout_constraintTop_toBottomOf="@+id/silencer_city" />
 
         <TextView
             android:id="@+id/silencer_latitude"
@@ -135,7 +172,7 @@
             android:text="@string/silencer_longitude_label"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/latitudeTextView"
-            app:layout_constraintTop_toBottomOf="@+id/silencer_address" />
+            app:layout_constraintTop_toBottomOf="@+id/silencer_city" />
 
         <TextView
             android:id="@+id/silencer_longitude"
@@ -248,5 +285,6 @@
             app:constraint_referenced_ids="end_time,timeTo,start_time,silencer_time_start,silencer_time_end"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

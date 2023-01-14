@@ -6,6 +6,7 @@ import android.location.Address
 import android.location.Geocoder
 import android.os.Build
 import android.os.Bundle
+import android.os.Debug
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
@@ -36,6 +37,9 @@ class SilencerFragment: Fragment(), TimePickerFragment.Callbacks {
     private lateinit var silencer: Silencer
     private lateinit var titleField: EditText
     private lateinit var addressField: AutoCompleteTextView
+    private lateinit var cityField: EditText
+    private lateinit var stateField: EditText
+    private lateinit var zipcodeField: EditText
     private lateinit var radiusField: EditText
     private lateinit var unitDropdown: Spinner
     private lateinit var latitudeField: TextView
@@ -84,6 +88,9 @@ class SilencerFragment: Fragment(), TimePickerFragment.Callbacks {
 
         titleField = view.findViewById(R.id.silencer_title) as EditText
         addressField = view.findViewById(R.id.silencer_address) as AutoCompleteTextView
+        cityField = view.findViewById(R.id.silencer_city) as EditText
+        stateField = view.findViewById(R.id.silencer_state) as EditText
+        zipcodeField = view.findViewById(R.id.silencer_zipcode) as EditText
         radiusField = view.findViewById(R.id.silencer_radius) as EditText
         unitDropdown = view.findViewById(R.id.units) as Spinner
         latitudeField = view.findViewById(R.id.silencer_latitude) as TextView
@@ -186,12 +193,13 @@ class SilencerFragment: Fragment(), TimePickerFragment.Callbacks {
             }
             override fun onTextChanged(sequence: CharSequence?, start: Int, count: Int, after: Int) {
                 val loc: String = addressField.text.toString().trim()
+                Log.d(TAG, addressField.text.toString().trim())
                 if(loc != null && loc != "") {
 
                     val gcd = Geocoder(context, Locale.getDefault())
                     var addList: List<Address>? = null
                     try {
-                        addList = gcd.getFromLocationName(addressField.text.toString(), 5)
+                        addList = gcd.getFromLocationName(addressField.text.toString(), 1)
                     } catch (e: Exception) {
                         e.printStackTrace()
                     }
@@ -244,11 +252,27 @@ class SilencerFragment: Fragment(), TimePickerFragment.Callbacks {
                     }
                     if (add != null) {
                         if(add.isNotEmpty()) {
-                            silencer.address = add!![0].getAddressLine(0)
+                            val address = add[0]
+                            val streetAddress = "${address.thoroughfare} ${address.subThoroughfare}"
+                            val city = address.locality
+                            val state = address.adminArea
+                            val postalCode = address.postalCode
+                            val country = address.countryName
+                            val fullAddress = "$streetAddress, $city, $state, $postalCode, $country"
+
+                            silencer.address = fullAddress
+                            Log.d(TAG, "This is the address after enter " + silencer.address)
                             val latLng = LatLng(add!![0].latitude, add!![0].longitude)
                             silencer.latitude = latLng.latitude
                             silencer.longitude = latLng.longitude
                             updateUI()
+
+//                            silencer.address = add!![0].getAddressLine(0)
+//                            Log.d(TAG, "This is the address after enter " + silencer.address)
+//                            val latLng = LatLng(add!![0].latitude, add!![0].longitude)
+//                            silencer.latitude = latLng.latitude
+//                            silencer.longitude = latLng.longitude
+//                            updateUI()
                         }
                         else{
                             Toast.makeText(context, "invalid location", Toast.LENGTH_SHORT).show()
@@ -324,7 +348,32 @@ class SilencerFragment: Fragment(), TimePickerFragment.Callbacks {
 
     private fun updateUI() {
         titleField.setText(silencer.title)
-        addressField.setText(silencer.address)
+
+
+        val gcd = Geocoder(context, Locale.getDefault())
+        var add: List<Address>? = null
+        try {
+            add = gcd.getFromLocationName(silencer.address, 1)
+        }catch (e: Exception){
+            e.printStackTrace()
+        }
+        if (add != null) {
+            if (add.isNotEmpty()) {
+                val address = add[0]
+                val streetAddress = "${address.thoroughfare} ${address.subThoroughfare}"
+                val city = address.locality
+                val state = address.adminArea
+                val postalCode = address.postalCode
+                val country = address.countryName
+                Log.d(TAG, "This is the street address"  + streetAddress)
+                addressField.setText(streetAddress)
+                cityField.setText(city)
+                stateField.setText(state)
+                zipcodeField.setText(postalCode)
+            }
+        }
+
+
         radiusField.setText(silencer.radius.toString())
 
         when(silencer.unit){

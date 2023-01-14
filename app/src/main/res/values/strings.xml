@@ -5,6 +5,9 @@
     <string name="silencer_address_hint">Enter address of the silencer</string>
     <string name="silencer_longitude_hint">Enter longitude of the silencer</string>
     <string name="silencer_latitude_hint">Enter latitude of the silencer</string>
+    <string name="silencer_city_hint">City</string>
+    <string name="silencer_state_hint">State</string>
+    <string name="silencer_zipcode_hint">ZIP code</string>
     <string name="silencer_title_label">Title</string>
     <string name="silencer_radius_label">Radius</string>
     <string name="silencer_address_label">Address</string>
