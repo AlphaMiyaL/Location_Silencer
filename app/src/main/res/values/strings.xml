@@ -28,20 +28,33 @@
     <string name="dnd_perms"><b><u>Do Not Disturb Permissions</u></b></string>
     <string name="loc_details">Our app requires location services to work. It will be
                                 used to check if the user is within the specified
-                                silencing zone. To enable, allow location services
-                                with the button below.</string>
+                                silencing zone.</string>
+    <string name="loc_details_v1">Tap the button below, and select allow for the prompt</string>
+    <string name="loc_details_v2">The button will navigate to the
+                                    location settings. Please navigate to App location permissions>
+                                    Location Silencer, and set access to "Allow All the Time"</string>
     <string name="high_acc_details">Our app utilizes geofences, which requires high
-                                    accuracy location services. Click the button below,
-                                    and it will direct to the location settings. Click
-                                    Advanced>Google Location Accuracy and turn on
-                                    "Improve Location Accuracy"</string>
+                                    accuracy location services.</string>
+    <string name="high_acc_details_v1">The button below will
+                                    direct to the location settings. Navigate to Advanced>Google
+                                    Location Accuracy and turn on "Improve Location Accuracy"</string>
+    <string name="high_acc_details_v2">Tap the button and change
+                                        to Precision Location</string>
     <string name="dnd_details">Our app requires Do Not Disturb permissions to work. It
                                 will be used to silence the phone when in range of the
-                                time or location specified. To enable, enable Do Not
-                                Disturb access for this app with the button below.</string>
-    <string name="enable">Enable</string>
+                                time or location specified.</string>
+    <string name="dnd_details_v1">Tap the button below, and go to Location Silencer,
+                                    and turn on "Allow Do Not Disturb"</string>
+    <string name="enable_loc">Enable Location Services</string>
+    <string name="enable_high_acc">Enable Precision Location</string>
+    <string name="enable_dnd">Enable Do Not Disturb Permissions</string>
     <string name="delete_text">Delete</string>
     <string name="enabled_all_perms">Continue</string>
+    <string name="android9">Android 9</string>
+    <string name="android10">Android 10 and higher</string>
+    <string name="android11">Android 9-11</string>
+    <string name="android12">Android 12 and higher</string>
+    <string name="androidAll">Android 9 and higher</string>
     <string name="preference_file_key">com.example.android.while_in_use_location.PREFERENCE_FILE_KEY</string>
     <string-array name="units">
         <item>Meters</item>

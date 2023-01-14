@@ -5,17 +5,18 @@ import android.app.NotificationManager
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.Settings
 import android.view.Gravity
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.google.android.gms.ads.MobileAds
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import java.util.*
+
 
 class MainActivity : AppCompatActivity(), SilencerListFragment.Callbacks, PermissionsFragment.Callbacks  {
     lateinit var fusedLocationProviderClient: FusedLocationProviderClient
@@ -88,16 +89,34 @@ class MainActivity : AppCompatActivity(), SilencerListFragment.Callbacks, Permis
     }
 
     override fun onLocSelected(){
-        if(ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED){
+        if(ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_BACKGROUND_LOCATION) == PackageManager.PERMISSION_GRANTED){
             Toasty("Location Services are enabled")
         }
         else {
-            if(ActivityCompat.shouldShowRequestPermissionRationale(this,
-                    Manifest.permission.ACCESS_FINE_LOCATION
-                )){
+            if(Build.VERSION.SDK_INT < Build.VERSION_CODES.Q){
                 ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),locationCode)
             }
-            else {
+            else{
+                startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
+            }
+        }
+    }
+
+    override fun onHighAccSelected() {
+        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.S){
+            //sends user to the closest spot to google location accuracy
+            if(SilenceLocation.get().testGeofencing()){
+                Toasty("High Accuracy Location is enabled")
+            }
+            else{
+                startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
+            }
+        }
+        else{
+            if(ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED){
+                Toasty("High Precision Location is enabled")
+            }
+            else{
                 ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),locationCode)
             }
         }
@@ -114,16 +133,6 @@ class MainActivity : AppCompatActivity(), SilencerListFragment.Callbacks, Permis
         }
     }
 
-    override fun onHighAccSelected() {
-        //sends user to the closest spot to google location accuracy
-        if(SilenceLocation.get().testGeofencing()){
-            Toasty("High Accuracy Location is enabled")
-        }
-        else{
-            startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
-        }
-    }
-
     private fun checkPermissions(): Boolean{
         val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
         return !(!(ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) ||
@@ -131,8 +140,13 @@ class MainActivity : AppCompatActivity(), SilencerListFragment.Callbacks, Permis
     }
 
     private fun Toasty(str: String){
-        var toast = Toast.makeText(this,str, Toast.LENGTH_SHORT)
-        toast.setGravity(Gravity.TOP, 0, 0)
-        toast.show()
+        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.R){
+            var toast = Toast.makeText(this,str, Toast.LENGTH_SHORT)
+            toast.setGravity(Gravity.TOP, 0, 0)
+            toast.show()
+        }
+        else{
+            Toast.makeText(this,str, Toast.LENGTH_SHORT).show()
+        }
     }
 }
