@@ -290,10 +290,11 @@ class SilencerFragment: Fragment(), TimePickerFragment.Callbacks {
         })
 
         mapButton.setOnClickListener { view: View ->
-            MapFragment(silencer, addressField, latitudeField, longitudeField)
+            MapFragment(silencer, addressField, cityField, stateField, zipcodeField, latitudeField, longitudeField)
                 .show(childFragmentManager, "MapFragment")
 
-            val mapFrag = MapFragment.newInstance(silencer, addressField, latitudeField, longitudeField)
+            val mapFrag = MapFragment.newInstance(silencer, addressField, cityField, stateField, zipcodeField, latitudeField, longitudeField)
+
         }
 
         startTimeButton.setOnClickListener {
@@ -349,7 +350,6 @@ class SilencerFragment: Fragment(), TimePickerFragment.Callbacks {
     private fun updateUI() {
         titleField.setText(silencer.title)
 
-
         val gcd = Geocoder(context, Locale.getDefault())
         var add: List<Address>? = null
         try {
@@ -360,12 +360,22 @@ class SilencerFragment: Fragment(), TimePickerFragment.Callbacks {
         if (add != null) {
             if (add.isNotEmpty()) {
                 val address = add[0]
-                val streetAddress = "${address.thoroughfare} ${address.subThoroughfare}"
+                var streetAddress = ""
+                if (address.thoroughfare != null){
+                    streetAddress = "${address.thoroughfare}"
+                }
+                if (address.subThoroughfare != null && streetAddress == ""){
+                    streetAddress += address.subThoroughfare
+                }
+                else if (address.subThoroughfare != null && streetAddress != ""){
+                    streetAddress += " " + address.subThoroughfare
+                }
+
                 val city = address.locality
                 val state = address.adminArea
                 val postalCode = address.postalCode
-                val country = address.countryName
-                Log.d(TAG, "This is the street address"  + streetAddress)
+//                val country = address.countryName
+                Log.d(TAG, "This is the street address$streetAddress")
                 addressField.setText(streetAddress)
                 cityField.setText(city)
                 stateField.setText(state)

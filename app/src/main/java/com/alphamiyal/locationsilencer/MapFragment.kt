@@ -5,11 +5,13 @@ import android.content.pm.PackageManager
 import android.graphics.Color
 import android.location.Geocoder
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AutoCompleteTextView
 import android.widget.Button
+import android.widget.EditText
 import android.widget.TextView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -30,10 +32,14 @@ private const val ERROR_DIALOG_REQUEST = 9001
 private const val PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 9002
 private const val PERMISSIONS_REQUEST_ENABLE_GPS = 9003
 
-class MapFragment(s: Silencer, adrTextView: AutoCompleteTextView, latTextView: TextView,
+class MapFragment(s: Silencer, adrTextView: AutoCompleteTextView, ctyTextView: EditText,
+                  sttTextView: EditText, zpcdTextView: EditText, latTextView: TextView,
                   lngTextView: TextView): DialogFragment(), OnMapReadyCallback {
     var silencer = s
     var addressField = adrTextView
+    var cityField = ctyTextView
+    var stateField = sttTextView
+    var zipcodeField = zpcdTextView
     var latitudeField = latTextView
     var longitudeField = lngTextView
     private lateinit var mapView: MapView
@@ -42,9 +48,9 @@ class MapFragment(s: Silencer, adrTextView: AutoCompleteTextView, latTextView: T
     companion object{
         const val TAG = "MapFragment"
 
-        fun newInstance(s: Silencer, adrTextView: AutoCompleteTextView,
-                        latTextView: TextView, lngTextView: TextView): MapFragment{
-            return MapFragment(s, adrTextView, latTextView, lngTextView)
+        fun newInstance(s: Silencer, adrTextView: AutoCompleteTextView, ctyTextView: EditText, sttTextView: EditText,
+                        zpcdTextView: EditText, latTextView: TextView, lngTextView: TextView): MapFragment{
+            return MapFragment(s, adrTextView, ctyTextView, sttTextView, zpcdTextView, latTextView, lngTextView)
         }
     }
 
@@ -142,7 +148,27 @@ class MapFragment(s: Silencer, adrTextView: AutoCompleteTextView, latTextView: T
                     else{
                         silencer.address = "Ocean"
                     }
-                    addressField.setText(silencer.address)
+
+                    val address = loc[0]
+                    var streetAddress = ""
+                    if (address.thoroughfare != null){
+                        streetAddress = "${address.thoroughfare}"
+                    }
+                    if (address.subThoroughfare != null && streetAddress == ""){
+                        streetAddress += address.subThoroughfare
+                    }
+                    else if (address.subThoroughfare != null && streetAddress != ""){
+                        streetAddress += " " + address.subThoroughfare
+                    }
+                    val city = address.locality
+                    val state = address.adminArea
+                    val postalCode = address.postalCode
+
+                    addressField.setText(streetAddress)
+                    cityField.setText(city)
+                    stateField.setText(state)
+                    zipcodeField.setText(postalCode)
+
                     latitudeField.text = silencer.latitude.toString()
                     longitudeField.text = silencer.longitude.toString()
                     break@markerLoop
