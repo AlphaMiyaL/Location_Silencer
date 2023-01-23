@@ -16,6 +16,11 @@ class SilencerDetailViewModel:ViewModel() {
             silencerRepository.getSilencer(silencerId)
         }
 
+    var changing = false
+    var rad = ""
+    var addr = ""
+
+
     fun loadSilencer(silencerId:UUID){
         silencerIdLiveData.value = silencerId
     }

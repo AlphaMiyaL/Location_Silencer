@@ -23,6 +23,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdView
 import com.google.android.gms.maps.model.LatLng
+import org.w3c.dom.Text
 import java.text.DateFormat
 import java.util.*
 
@@ -107,6 +108,7 @@ class SilencerFragment: Fragment(), TimePickerFragment.Callbacks {
                 silencer?.let {
                     this.silencer = silencer
                     updateUI()
+
                 }
             })
     }
@@ -125,18 +127,33 @@ class SilencerFragment: Fragment(), TimePickerFragment.Callbacks {
             }
         }
 
+        val radiusWatcher = object : TextWatcher{
+            override fun beforeTextChanged(sequence: CharSequence?, start: Int, count: Int, after: Int) {
+            }
+            override fun onTextChanged(sequence: CharSequence?, start: Int, count: Int, after: Int) {
+                silencerDetailViewModel.rad = sequence.toString()
+            }
+            override fun afterTextChanged(sequence: Editable?) {
+            }
+        }
+
         radiusField.onFocusChangeListener = OnFocusChangeListener { v, hasFocus ->
             if (!hasFocus) {
                 try {
                     silencer.radius = radiusField.text.toString().toDouble()
+                    silencerDetailViewModel.rad = silencer.radius.toString()
+                    silencerDetailViewModel.changing = false
                     updateUI()
                 }
                 catch (e: Exception){
-                    radiusField.setText(silencer.radius.toString())
-                    updateUI()
+                    //N/A
                 }
             }
+            else{
+                silencerDetailViewModel.changing = true
+            }
         }
+
         val units = resources.getStringArray(R.array.units)
         val adapter = context?.let { ArrayAdapter(it, android.R.layout.simple_spinner_item, units) }
         unitDropdown.adapter = adapter
@@ -185,15 +202,17 @@ class SilencerFragment: Fragment(), TimePickerFragment.Callbacks {
             override fun beforeTextChanged(sequence: CharSequence?, start: Int, count: Int, after: Int) {
             }
             override fun onTextChanged(sequence: CharSequence?, start: Int, count: Int, after: Int) {
+                silencerDetailViewModel.addr = sequence.toString()
                 val loc: String = addressField.text.toString().trim()
                 if(loc != null && loc != "") {
-
                     val gcd = Geocoder(context, Locale.getDefault())
                     var addList: List<Address>? = null
-                    try {
-                        addList = gcd.getFromLocationName(addressField.text.toString(), 5)
-                    } catch (e: Exception) {
-                        e.printStackTrace()
+                    if(count%5==0){
+                        try {
+                            addList = gcd.getFromLocationName(addressField.text.toString(), 2)
+                        } catch (e: Exception) {
+                            e.printStackTrace()
+                        }
                     }
                     if (addList != null) {
                         if (addList.isNotEmpty()) {
@@ -223,6 +242,12 @@ class SilencerFragment: Fragment(), TimePickerFragment.Callbacks {
             updateUI()
         }
 
+        addressField.onFocusChangeListener = OnFocusChangeListener { v, hasFocus ->
+            if(hasFocus){
+                silencerDetailViewModel.changing = true
+            }
+        }
+
         addressField.setOnKeyListener(View.OnKeyListener { v, keyCode, event ->
             if (keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_UP) {
                 val loc: String = addressField.text.toString().trim()
@@ -248,6 +273,8 @@ class SilencerFragment: Fragment(), TimePickerFragment.Callbacks {
                             val latLng = LatLng(add!![0].latitude, add!![0].longitude)
                             silencer.latitude = latLng.latitude
                             silencer.longitude = latLng.longitude
+                            silencerDetailViewModel.addr = silencer.address
+                            silencerDetailViewModel.changing = false
                             updateUI()
                         }
                         else{
@@ -292,6 +319,7 @@ class SilencerFragment: Fragment(), TimePickerFragment.Callbacks {
         }
 
         titleField.addTextChangedListener(titleWatcher)
+        radiusField.addTextChangedListener(radiusWatcher)
         addressField.addTextChangedListener(addressWatcher)
         updateUI()
     }
@@ -324,8 +352,18 @@ class SilencerFragment: Fragment(), TimePickerFragment.Callbacks {
 
     private fun updateUI() {
         titleField.setText(silencer.title)
-        addressField.setText(silencer.address)
-        radiusField.setText(silencer.radius.toString())
+        if(silencerDetailViewModel.changing){
+            radiusField.setText(silencerDetailViewModel.rad.toString())
+        }
+        else{
+            radiusField.setText(silencer.radius.toString())
+        }
+        if(silencerDetailViewModel.addr != ""){
+            addressField.setText(silencerDetailViewModel.addr)
+        }
+        else{
+            addressField.setText(silencer.address)
+        }
 
         when(silencer.unit){
             "Meters" -> unitDropdown.setSelection(0)
