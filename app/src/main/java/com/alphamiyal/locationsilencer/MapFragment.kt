@@ -169,6 +169,43 @@ class MapFragment(s: Silencer, adrTextView: AutoCompleteTextView, ctyTextView: E
                     stateField.setText(state)
                     zipcodeField.setText(postalCode)
 
+
+                    if (address.thoroughfare != null){
+                        silencer.thoroughfare = address.thoroughfare
+                    }
+                    else{
+                        silencer.thoroughfare = ""
+                    }
+
+                    if (address.subThoroughfare != null){
+                        silencer.subThoroughfare = address.subThoroughfare
+                    }
+                    else{
+                        silencer.subThoroughfare = ""
+                    }
+
+                    if(address.locality != null){
+                        silencer.locality = address.locality
+                    }
+                    else{
+                        silencer.locality = ""
+                    }
+
+                    if(address.adminArea != null){
+                        silencer.adminArea = address.adminArea
+                    }
+                    else{
+                        silencer.adminArea = ""
+                    }
+
+                    if(address.postalCode != null){
+                        silencer.postalCode = address.postalCode
+                    }
+                    else{
+                        silencer.postalCode = ""
+                    }
+
+
                     latitudeField.text = silencer.latitude.toString()
                     longitudeField.text = silencer.longitude.toString()
                     break@markerLoop

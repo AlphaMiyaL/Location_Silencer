@@ -354,14 +354,12 @@ class SilencerFragment: Fragment(), TimePickerFragment.Callbacks {
     @RequiresApi(Build.VERSION_CODES.N)
     override fun onStop() {
         super.onStop()
-        checkAddress()
         silencerDetailViewModel.saveSilencer(silencer)
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
     override fun onPause() {
         super.onPause()
-        checkAddress()
         silencerDetailViewModel.saveSilencer(silencer)
     }
 
@@ -380,6 +378,10 @@ class SilencerFragment: Fragment(), TimePickerFragment.Callbacks {
     }
 
     private fun updateUI() {
+        Log.d(TAG, "Entered update UI")
+
+
+
         titleField.setText(silencer.title)
 
         if(silencerDetailViewModel.changing){
@@ -392,6 +394,7 @@ class SilencerFragment: Fragment(), TimePickerFragment.Callbacks {
         var streetAddress = ""
         if (silencer.thoroughfare != null){
             streetAddress = "${silencer.thoroughfare}"
+            Log.d(TAG, silencer.thoroughfare)
         }
         if (silencer.subThoroughfare != null && streetAddress == ""){
             streetAddress += silencer.subThoroughfare
