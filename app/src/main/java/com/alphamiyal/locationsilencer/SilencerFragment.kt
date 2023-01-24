@@ -225,6 +225,44 @@ class SilencerFragment: Fragment(), TimePickerFragment.Callbacks {
             val gcd = Geocoder(context, Locale.getDefault())
             val add = gcd.getFromLocationName(addressField.text.toString(), 1)
             silencer.address = add!![0].getAddressLine(0)
+
+            val address = add[0]
+
+            if (address.thoroughfare != null){
+                silencer.thoroughfare = address.thoroughfare
+            }
+            else{
+                silencer.thoroughfare = ""
+            }
+
+            if (address.subThoroughfare != null){
+                silencer.subThoroughfare = address.subThoroughfare
+            }
+            else{
+                silencer.subThoroughfare = ""
+            }
+
+            if(address.locality != null){
+                silencer.locality = address.locality
+            }
+            else{
+                silencer.locality = ""
+            }
+
+            if(address.adminArea != null){
+                silencer.adminArea = address.adminArea
+            }
+            else{
+                silencer.adminArea = ""
+            }
+
+            if(address.postalCode != null){
+                silencer.postalCode = address.postalCode
+            }
+            else{
+                silencer.postalCode = ""
+            }
+
             val latLng = LatLng(add!![0].latitude, add!![0].longitude)
             silencer.latitude = latLng.latitude
             silencer.longitude = latLng.longitude
@@ -237,51 +275,18 @@ class SilencerFragment: Fragment(), TimePickerFragment.Callbacks {
                 if(loc == null || loc == "") {
                     Toast.makeText(context, "provide location", Toast.LENGTH_SHORT).show()
                     silencer.address = ""
+                    silencer.thoroughfare = ""
+                    silencer.subThoroughfare = ""
+                    silencer.locality = ""
+                    silencer.adminArea = ""
+                    silencer.postalCode = ""
                     silencer.latitude = 0.0
                     silencer.longitude = 0.0
                     updateUI()
                 }
                 else{
-                    val gcd = Geocoder(context, Locale.getDefault())
-                    var add: List<Address>? = null
-
-                    try {
-                        add = gcd.getFromLocationName(addressField.text.toString(), 1)
-                    }catch (e: Exception){
-                        e.printStackTrace()
-                    }
-                    if (add != null) {
-                        if(add.isNotEmpty()) {
-                            val address = add[0]
-                            val streetAddress = "${address.thoroughfare} ${address.subThoroughfare}"
-                            val city = address.locality
-                            val state = address.adminArea
-                            val postalCode = address.postalCode
-                            val country = address.countryName
-                            val fullAddress = "$streetAddress, $city, $state, $postalCode, $country"
-
-                            silencer.address = fullAddress
-                            Log.d(TAG, "This is the address after enter " + silencer.address)
-                            val latLng = LatLng(add!![0].latitude, add!![0].longitude)
-                            silencer.latitude = latLng.latitude
-                            silencer.longitude = latLng.longitude
-                            updateUI()
-
-//                            silencer.address = add!![0].getAddressLine(0)
-//                            Log.d(TAG, "This is the address after enter " + silencer.address)
-//                            val latLng = LatLng(add!![0].latitude, add!![0].longitude)
-//                            silencer.latitude = latLng.latitude
-//                            silencer.longitude = latLng.longitude
-//                            updateUI()
-                        }
-                        else{
-                            Toast.makeText(context, "invalid location", Toast.LENGTH_SHORT).show()
-                            silencer.address = ""
-                            silencer.latitude = 0.0
-                            silencer.longitude = 0.0
-                            updateUI()
-                        }
-                    }
+                    checkAddress()
+                    updateUI()
                 }
 
                 return@OnKeyListener true
@@ -324,12 +329,14 @@ class SilencerFragment: Fragment(), TimePickerFragment.Callbacks {
     @RequiresApi(Build.VERSION_CODES.N)
     override fun onStop() {
         super.onStop()
+        checkAddress()
         silencerDetailViewModel.saveSilencer(silencer)
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
     override fun onPause() {
         super.onPause()
+        checkAddress()
         silencerDetailViewModel.saveSilencer(silencer)
     }
 
@@ -350,40 +357,21 @@ class SilencerFragment: Fragment(), TimePickerFragment.Callbacks {
     private fun updateUI() {
         titleField.setText(silencer.title)
 
-        val gcd = Geocoder(context, Locale.getDefault())
-        var add: List<Address>? = null
-        try {
-            add = gcd.getFromLocationName(silencer.address, 1)
-        }catch (e: Exception){
-            e.printStackTrace()
+        var streetAddress = ""
+        if (silencer.thoroughfare != null){
+            streetAddress = "${silencer.thoroughfare}"
         }
-        if (add != null) {
-            if (add.isNotEmpty()) {
-                val address = add[0]
-                var streetAddress = ""
-                if (address.thoroughfare != null){
-                    streetAddress = "${address.thoroughfare}"
-                }
-                if (address.subThoroughfare != null && streetAddress == ""){
-                    streetAddress += address.subThoroughfare
-                }
-                else if (address.subThoroughfare != null && streetAddress != ""){
-                    streetAddress += " " + address.subThoroughfare
-                }
-
-                val city = address.locality
-                val state = address.adminArea
-                val postalCode = address.postalCode
-//                val country = address.countryName
-                Log.d(TAG, "This is the street address$streetAddress")
-                addressField.setText(streetAddress)
-                cityField.setText(city)
-                stateField.setText(state)
-                zipcodeField.setText(postalCode)
-            }
+        if (silencer.subThoroughfare != null && streetAddress == ""){
+            streetAddress += silencer.subThoroughfare
+        }
+        else if (silencer.subThoroughfare != null && streetAddress != ""){
+            streetAddress += " " + silencer.subThoroughfare
         }
 
-
+        addressField.setText(streetAddress)
+        cityField.setText(silencer.locality)
+        stateField.setText(silencer.adminArea)
+        zipcodeField.setText(silencer.postalCode)
         radiusField.setText(silencer.radius.toString())
 
         when(silencer.unit){
@@ -415,6 +403,73 @@ class SilencerFragment: Fragment(), TimePickerFragment.Callbacks {
             }
             else{
                 timeGroup.visibility = View.GONE
+            }
+        }
+    }
+
+    private fun checkAddress(){
+        val gcd = Geocoder(context, Locale.getDefault())
+        var add: List<Address>? = null
+
+        try {
+            add = gcd.getFromLocationName(addressField.text.toString(), 1)
+        }catch (e: Exception){
+            e.printStackTrace()
+        }
+        if (add != null) {
+            if(add.isNotEmpty()) {
+                val address = add[0]
+
+                if (address.thoroughfare != null){
+                    silencer.thoroughfare = address.thoroughfare
+                }
+                else{
+                    silencer.thoroughfare = ""
+                }
+
+                if (address.subThoroughfare != null){
+                    silencer.subThoroughfare = address.subThoroughfare
+                }
+                else{
+                    silencer.subThoroughfare = ""
+                }
+
+                if(address.locality != null){
+                    silencer.locality = address.locality
+                }
+                else{
+                    silencer.locality = ""
+                }
+
+                if(address.adminArea != null){
+                    silencer.adminArea = address.adminArea
+                }
+                else{
+                    silencer.adminArea = ""
+                }
+
+                if(address.postalCode != null){
+                    silencer.postalCode = address.postalCode
+                }
+                else{
+                    silencer.postalCode = ""
+                }
+                silencer.address = address.getAddressLine(0)
+
+                val latLng = LatLng(add!![0].latitude, add!![0].longitude)
+                silencer.latitude = latLng.latitude
+                silencer.longitude = latLng.longitude
+            }
+            else{
+                Toast.makeText(context, "invalid location", Toast.LENGTH_SHORT).show()
+                silencer.address = ""
+                silencer.thoroughfare = ""
+                silencer.subThoroughfare = ""
+                silencer.locality = ""
+                silencer.adminArea = ""
+                silencer.postalCode = ""
+                silencer.latitude = 0.0
+                silencer.longitude = 0.0
             }
         }
     }

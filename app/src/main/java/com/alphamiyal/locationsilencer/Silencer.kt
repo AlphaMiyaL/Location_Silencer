@@ -1,5 +1,6 @@
 package com.alphamiyal.locationsilencer
 
+import android.location.Address
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import java.util.*
@@ -19,6 +20,11 @@ data class Silencer(@PrimaryKey
                     var radius: Double = 0.0,
                     var unit: String = "Meters",
                     var address: String = "",
+                    var thoroughfare: String = "",
+                    var subThoroughfare: String = "",
+                    var locality: String = "",
+                    var adminArea: String = "",
+                    var postalCode: String = "",
                     var latitude: Double = 0.0,
                     var longitude: Double = 0.0,
                     var startTime: Date = Date(),
