@@ -21,6 +21,7 @@ import androidx.constraintlayout.widget.Group
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.work.*
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdView
 import com.google.android.gms.maps.model.LatLng
@@ -209,32 +210,43 @@ class SilencerFragment: Fragment(), TimePickerFragment.Callbacks {
             override fun onTextChanged(sequence: CharSequence?, start: Int, count: Int, after: Int) {
                 silencerDetailViewModel.addr = sequence.toString()
                 val loc: String = addressField.text.toString().trim()
-                Log.d(TAG, addressField.text.toString().trim())
                 if(loc != null && loc != "") {
 
-                    val gcd = Geocoder(context, Locale.getDefault())
-                    var addList: List<Address>? = null
-                    if(count%5==0){
-                        try {
-                            addList = gcd.getFromLocationName(addressField.text.toString(), 2)
-                        } catch (e: Exception) {
-                            e.printStackTrace()
-                        }
-                    }
-                    if (addList != null) {
-                        if (addList.isNotEmpty()) {
-                            var addListString = mutableListOf<String>()
-                            for (adds in addList){
-                                addListString.add(adds.getAddressLine(0))
-                            }
+                    updateInputString(addressField.text.toString())
 
-                            val arrayAdapter = context?.let { ArrayAdapter<String>(it, android.R.layout.simple_list_item_1, addListString) }
-                            addressField.setAdapter(arrayAdapter)
-                        }
-                    }
+//                    WorkManager.getInstance(context).getWorkInfoByIdLiveData(addressWorker.id)
+//                        .observe(this, Observer {workInfo ->
+//                            if()
+//
+//                        })
+
+
+
+//                    val gcd = Geocoder(context, Locale.getDefault())
+//                    var addList: List<Address>? = null
+//                    if(count%5==0){
+//                        try {
+//                            addList = gcd.getFromLocationName(addressField.text.toString(), 1)
+//                        } catch (e: Exception) {
+//                            e.printStackTrace()
+//                        }
+//                    }
+
+//                    if (addList != null) {
+//                        if (addList.isNotEmpty()) {
+//                            var addListString = mutableListOf<String>()
+//                            for (adds in addList){
+//                                addListString.add(adds.getAddressLine(0))
+//                            }
+//
+//                            val arrayAdapter = context?.let { ArrayAdapter<String>(it, android.R.layout.simple_list_item_1, addListString) }
+//                            addressField.setAdapter(arrayAdapter)
+//                        }
+//                    }
                 }
                 //silencer.address = sequence.toString()
             }
+
             override fun afterTextChanged(sequence: Editable?) {
             }
         }
@@ -513,5 +525,19 @@ class SilencerFragment: Fragment(), TimePickerFragment.Callbacks {
                 silencer.longitude = 0.0
             }
         }
+    }
+
+    private fun updateInputString(newString: String){
+
+        val data = Data.Builder()
+            .putString("input_address", addressField.text.toString())
+            .build()
+
+        val addressWorker = OneTimeWorkRequestBuilder<GeocoderWorker>()
+            .setInputData(data)
+            .build()
+
+        context?.let { WorkManager.getInstance(it).enqueueUniqueWork("auto_correct",
+            ExistingWorkPolicy.REPLACE, addressWorker) }
     }
 }
