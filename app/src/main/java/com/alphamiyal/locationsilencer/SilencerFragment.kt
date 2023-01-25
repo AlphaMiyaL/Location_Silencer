@@ -161,7 +161,7 @@ class SilencerFragment: Fragment(), TimePickerFragment.Callbacks {
         }
 
         val units = resources.getStringArray(R.array.units)
-        val adapter = context?.let { ArrayAdapter(it, android.R.layout.simple_spinner_item, units) }
+        val adapter = context?.let { ArrayAdapter(it, R.layout.custom_spinner_dropdown, units) }
         unitDropdown.adapter = adapter
 
         unitDropdown.onItemSelectedListener = object :
