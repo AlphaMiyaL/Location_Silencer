@@ -13,8 +13,9 @@ private const val TAG = "GeocodeWorker"
 
 class GeocoderWorker(appContext: Context,workerParameters: WorkerParameters): Worker(appContext, workerParameters) {
     override fun doWork(): Result {
+        Log.d(TAG, "Worker started")
         val context = applicationContext
-        val inputAddress = inputData.getString("input_address")
+        val inputAddress = inputData.getString("address_string")
 
         val gcd = Geocoder(context, Locale.getDefault())
         var add: List<Address>? = null
@@ -25,21 +26,49 @@ class GeocoderWorker(appContext: Context,workerParameters: WorkerParameters): Wo
             e.printStackTrace()
         }
 
+        var fullAddress = ""
+        var latitude = 0.0
+        var longitude = 0.0
+        var thoroughfare = ""
+        var subThoroughfare = ""
+        var locality = ""
+        var adminArea = ""
+        var postalCode = ""
 
-        var outputData = Data.Builder()
-            .putString("address_list", "")
-            .build()
-
-        if (add != null) {
-            if (add.isNotEmpty()) {
+        if (add != null){
+            if (add.isNotEmpty()){
                 val address = add[0]
-                Log.d(TAG, "This is the addresss" + address.toString())
-                outputData = Data.Builder()
-                    .putString("address_list", address.toString())
-                    .build()
+                if (address.thoroughfare != null){
+                    thoroughfare = address.thoroughfare
+                }
+                if (address.subThoroughfare != null){
+                    subThoroughfare = address.subThoroughfare
+                }
+                if (address.locality != null){
+                    locality = address.locality
+                }
+                if (address.adminArea != null){
+                    adminArea = address.adminArea
+                }
+                if (address.postalCode != null){
+                    postalCode = address.postalCode
+                }
+                fullAddress = address.getAddressLine(0)
+                latitude = address.latitude
+                longitude = address.longitude
             }
         }
-        Log.d(TAG, "This is something")
+
+        var outputData = Data.Builder()
+            .putString("address", fullAddress)
+            .putString("thoroughfare", thoroughfare)
+            .putString("subThoroughfare", subThoroughfare)
+            .putString("locality", locality)
+            .putString("adminArea", adminArea)
+            .putString("postalCode", postalCode)
+            .putDouble("latitude", latitude)
+            .putDouble("longitude", longitude)
+            .build()
 
         return Result.success(outputData)
     }

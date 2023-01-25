@@ -27,6 +27,7 @@ import com.google.android.gms.ads.AdView
 import com.google.android.gms.maps.model.LatLng
 import java.text.DateFormat
 import java.util.*
+import kotlin.collections.ArrayList
 
 
 private const val TAG = "SilencerFragment"
@@ -54,6 +55,16 @@ class SilencerFragment: Fragment(), TimePickerFragment.Callbacks {
     private lateinit var saveButton: Button
     private lateinit var locGroup: Group
     private lateinit var timeGroup: Group
+
+    private var tempAddress = ""
+    private var tempLatitude = 0.0
+    private var tempLongitude = 0.0
+    private var tempThoroughfare = ""
+    private var tempSubthoroughfare = ""
+    private var tempLocatlity = ""
+    private var tempAdminArea = ""
+    private var tempPostalCode = ""
+
 
     private var startTimeSelect: Boolean = true
     private val silencerDetailViewModel: SilencerDetailViewModel by lazy{
@@ -211,40 +222,8 @@ class SilencerFragment: Fragment(), TimePickerFragment.Callbacks {
                 silencerDetailViewModel.addr = sequence.toString()
                 val loc: String = addressField.text.toString().trim()
                 if(loc != null && loc != "") {
-
-                    updateInputString(addressField.text.toString())
-
-//                    WorkManager.getInstance(context).getWorkInfoByIdLiveData(addressWorker.id)
-//                        .observe(this, Observer {workInfo ->
-//                            if()
-//
-//                        })
-
-
-
-//                    val gcd = Geocoder(context, Locale.getDefault())
-//                    var addList: List<Address>? = null
-//                    if(count%5==0){
-//                        try {
-//                            addList = gcd.getFromLocationName(addressField.text.toString(), 1)
-//                        } catch (e: Exception) {
-//                            e.printStackTrace()
-//                        }
-//                    }
-
-//                    if (addList != null) {
-//                        if (addList.isNotEmpty()) {
-//                            var addListString = mutableListOf<String>()
-//                            for (adds in addList){
-//                                addListString.add(adds.getAddressLine(0))
-//                            }
-//
-//                            val arrayAdapter = context?.let { ArrayAdapter<String>(it, android.R.layout.simple_list_item_1, addListString) }
-//                            addressField.setAdapter(arrayAdapter)
-//                        }
-//                    }
+                    autofillGeocoder(addressField.text.toString().trim())
                 }
-                //silencer.address = sequence.toString()
             }
 
             override fun afterTextChanged(sequence: Editable?) {
@@ -252,50 +231,17 @@ class SilencerFragment: Fragment(), TimePickerFragment.Callbacks {
         }
 
         addressField.setOnItemClickListener{parent, view, position, id ->
-            val gcd = Geocoder(context, Locale.getDefault())
-            val add = gcd.getFromLocationName(addressField.text.toString(), 1)
-            silencer.address = add!![0].getAddressLine(0)
+            if (tempAddress != ""){
 
-            val address = add[0]
-
-            if (address.thoroughfare != null){
-                silencer.thoroughfare = address.thoroughfare
+                silencer.address = tempAddress
+                silencer.thoroughfare = tempThoroughfare
+                silencer.subThoroughfare = tempSubthoroughfare
+                silencer.locality = tempLocatlity
+                silencer.adminArea = tempAdminArea
+                silencer.postalCode = tempPostalCode
+                silencer.latitude = tempLatitude
+                silencer.longitude = tempLongitude
             }
-            else{
-                silencer.thoroughfare = ""
-            }
-
-            if (address.subThoroughfare != null){
-                silencer.subThoroughfare = address.subThoroughfare
-            }
-            else{
-                silencer.subThoroughfare = ""
-            }
-
-            if(address.locality != null){
-                silencer.locality = address.locality
-            }
-            else{
-                silencer.locality = ""
-            }
-
-            if(address.adminArea != null){
-                silencer.adminArea = address.adminArea
-            }
-            else{
-                silencer.adminArea = ""
-            }
-
-            if(address.postalCode != null){
-                silencer.postalCode = address.postalCode
-            }
-            else{
-                silencer.postalCode = ""
-            }
-
-            val latLng = LatLng(add!![0].latitude, add!![0].longitude)
-            silencer.latitude = latLng.latitude
-            silencer.longitude = latLng.longitude
             updateUI()
         }
 
@@ -321,8 +267,7 @@ class SilencerFragment: Fragment(), TimePickerFragment.Callbacks {
                     updateUI()
                 }
                 else{
-                    checkAddress()
-                    updateUI()
+                    enterGeocoder(addressField.text.toString().trim())
                 }
 
                 return@OnKeyListener true
@@ -390,9 +335,6 @@ class SilencerFragment: Fragment(), TimePickerFragment.Callbacks {
     }
 
     private fun updateUI() {
-        Log.d(TAG, "Entered update UI")
-
-
 
         titleField.setText(silencer.title)
 
@@ -460,77 +402,9 @@ class SilencerFragment: Fragment(), TimePickerFragment.Callbacks {
         }
     }
 
-    private fun checkAddress(){
-        val gcd = Geocoder(context, Locale.getDefault())
-        var add: List<Address>? = null
-
-        try {
-            add = gcd.getFromLocationName(addressField.text.toString(), 1)
-        }catch (e: Exception){
-            e.printStackTrace()
-        }
-        if (add != null) {
-            if(add.isNotEmpty()) {
-                val address = add[0]
-
-                if (address.thoroughfare != null){
-                    silencer.thoroughfare = address.thoroughfare
-                }
-                else{
-                    silencer.thoroughfare = ""
-                }
-
-                if (address.subThoroughfare != null){
-                    silencer.subThoroughfare = address.subThoroughfare
-                }
-                else{
-                    silencer.subThoroughfare = ""
-                }
-
-                if(address.locality != null){
-                    silencer.locality = address.locality
-                }
-                else{
-                    silencer.locality = ""
-                }
-
-                if(address.adminArea != null){
-                    silencer.adminArea = address.adminArea
-                }
-                else{
-                    silencer.adminArea = ""
-                }
-
-                if(address.postalCode != null){
-                    silencer.postalCode = address.postalCode
-                }
-                else{
-                    silencer.postalCode = ""
-                }
-                silencer.address = address.getAddressLine(0)
-
-                val latLng = LatLng(add!![0].latitude, add!![0].longitude)
-                silencer.latitude = latLng.latitude
-                silencer.longitude = latLng.longitude
-            }
-            else{
-                Toast.makeText(context, "invalid location", Toast.LENGTH_SHORT).show()
-                silencer.address = ""
-                silencer.thoroughfare = ""
-                silencer.subThoroughfare = ""
-                silencer.locality = ""
-                silencer.adminArea = ""
-                silencer.postalCode = ""
-                silencer.latitude = 0.0
-                silencer.longitude = 0.0
-            }
-        }
-    }
-
-    private fun updateInputString(newString: String){
-
+    private fun enterGeocoder(newString: String) {
         val data = Data.Builder()
-            .putString("input_address", addressField.text.toString())
+            .putString("address_string", addressField.text.toString())
             .build()
 
         val addressWorker = OneTimeWorkRequestBuilder<GeocoderWorker>()
@@ -539,5 +413,79 @@ class SilencerFragment: Fragment(), TimePickerFragment.Callbacks {
 
         context?.let { WorkManager.getInstance(it).enqueueUniqueWork("auto_correct",
             ExistingWorkPolicy.REPLACE, addressWorker) }
+
+        context?.let {
+            WorkManager.getInstance(it).getWorkInfoByIdLiveData(addressWorker.id)
+                .observe(this, Observer{ workInfo ->
+                    if (workInfo != null && workInfo.state.isFinished){
+                        tempAddress = workInfo.outputData.getString("address").toString()
+                        if(tempAddress != ""){
+                            silencerDetailViewModel.changing = false
+
+                            silencer.address = tempAddress
+                            silencer.latitude = workInfo.outputData.getDouble("latitude", 0.0)
+                            silencer.longitude = workInfo.outputData.getDouble("longitude", 0.0)
+                            silencer.thoroughfare = workInfo.outputData.getString("thoroughfare").toString()
+                            silencer.subThoroughfare = workInfo.outputData.getString("subThoroughfare").toString()
+                            silencer.locality = workInfo.outputData.getString("locality").toString()
+                            silencer.adminArea = workInfo.outputData.getString("adminArea").toString()
+                            silencer.postalCode = workInfo.outputData.getString("postalCode").toString()
+                        }
+                        else{
+                            Toast.makeText(context, "invalid location", Toast.LENGTH_SHORT).show()
+                            silencer.address = ""
+                            silencer.thoroughfare = ""
+                            silencer.subThoroughfare = ""
+                            silencer.locality = ""
+                            silencer.adminArea = ""
+                            silencer.postalCode = ""
+                            silencer.latitude = 0.0
+                            silencer.longitude = 0.0
+                        }
+                        updateUI()
+
+                    }
+                })
+        }
     }
+
+    private fun autofillGeocoder(newString: String) {
+        val data = Data.Builder()
+            .putString("address_string", addressField.text.toString())
+            .build()
+
+        val addressWorker = OneTimeWorkRequestBuilder<GeocoderWorker>()
+            .setInputData(data)
+            .build()
+
+        context?.let { WorkManager.getInstance(it).enqueueUniqueWork("auto_correct",
+            ExistingWorkPolicy.REPLACE, addressWorker) }
+
+        context?.let {
+            WorkManager.getInstance(it).getWorkInfoByIdLiveData(addressWorker.id)
+                .observe(this, Observer{ workInfo ->
+                    if (workInfo != null && workInfo.state.isFinished){
+                        silencerDetailViewModel.changing = false
+
+                        tempAddress = workInfo.outputData.getString("address").toString()
+                        tempLatitude = workInfo.outputData.getDouble("latitude", 0.0)
+                        tempLongitude = workInfo.outputData.getDouble("longitude", 0.0)
+                        tempThoroughfare = workInfo.outputData.getString("thoroughfare").toString()
+                        tempSubthoroughfare = workInfo.outputData.getString("subThoroughfare").toString()
+                        tempLocatlity = workInfo.outputData.getString("locality").toString()
+                        tempAdminArea = workInfo.outputData.getString("adminArea").toString()
+                        tempPostalCode = workInfo.outputData.getString("postalCode").toString()
+
+                        var addListString = mutableListOf<String>()
+                        addListString.add(tempAddress)
+                        val arrayAdapter = ArrayAdapter<String>(it, android.R.layout.simple_list_item_1, addListString)
+                        addressField.setAdapter(arrayAdapter)
+                    }
+                })
+        }
+    }
+
+
 }
+
+
