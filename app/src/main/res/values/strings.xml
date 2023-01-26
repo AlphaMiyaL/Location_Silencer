@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Location Silencer</string>
+    <string name="app_name">Geo Silencer</string>
     <string name="silencer_title_hint">Enter title of the silencer</string>
     <string name="silencer_radius_hint">Enter silencer radius</string>
     <string name="silencer_address_hint">Enter address of the silencer</string>
