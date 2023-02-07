@@ -147,8 +147,9 @@ class SilencerListFragment: Fragment() {
                     // The toggle is disabled
                     Log.d(TAG,"button turned off")
                     silencer.on = false
-                    SilenceLocation.get().removeGeofence(silencer.id)
+                    //SilenceLocation.get().removeGeofence(silencer.id)
                     silencerListViewModel.saveSilencer(silencer)
+                    silencerListViewModel.refreshSilencers()
                 }
             }
 

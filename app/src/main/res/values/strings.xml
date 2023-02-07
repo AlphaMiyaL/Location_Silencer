@@ -29,6 +29,7 @@
     <string name="loc_perms"><b><u>Base Location Permissions</u></b></string>
     <string name="high_acc_perms"><b><u>High Accuracy Location Permissions</u></b></string>
     <string name="dnd_perms"><b><u>Do Not Disturb Permissions</u></b></string>
+    <string name="notif_perms"><b><u>Notification Permissions</u></b></string>
     <string name="loc_details">Our app requires location services to work. It will be
                                 used to check if the user is within the specified
                                 silencing zone.</string>
@@ -48,9 +49,13 @@
                                 time or location specified.</string>
     <string name="dnd_details_v1">Tap the button below, and go to Location Silencer,
                                     and turn on "Allow Do Not Disturb"</string>
+    <string name="notif_details">Android 13 and up require apps to send notifications for background
+                                    processes. If denied, the service will still work and will be shown
+                                    running in the Foreground Service Task Manager.</string>
     <string name="enable_loc">Enable Location Services</string>
     <string name="enable_high_acc">Enable Precision Location</string>
     <string name="enable_dnd">Enable Do Not Disturb Permissions</string>
+    <string name="enable_notif">Enable Notification Permissions</string>
     <string name="delete_text">Delete</string>
     <string name="enabled_all_perms">Continue</string>
     <string name="android9">Android 9</string>

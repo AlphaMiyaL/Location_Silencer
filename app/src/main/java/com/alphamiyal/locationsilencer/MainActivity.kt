@@ -133,6 +133,10 @@ class MainActivity : AppCompatActivity(), SilencerListFragment.Callbacks, Permis
         }
     }
 
+//    override fun onNotifSelected() {
+//        val notificationManager =
+//    }
+
     private fun checkPermissions(): Boolean{
         val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
         return !(!(ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) ||

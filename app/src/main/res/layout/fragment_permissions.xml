@@ -280,6 +280,44 @@
             android:layout_marginEnd="50dp"
             android:layout_marginStart="50dp" />
 
+        <LinearLayout
+            android:id="@+id/notification_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/notif_perms"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:fontFamily="@font/sf"
+                android:gravity="center"
+                android:padding="8dp"
+                android:text="@string/notif_perms"
+                android:textSize="16dp" />
+
+            <TextView
+                android:id="@+id/notif_details"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:fontFamily="@font/sf"
+                android:gravity="center"
+                android:padding="8dp"
+                android:text="@string/notif_details" />
+
+<!--            <Button-->
+<!--                android:id="@+id/notif_button"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginStart="50dp"-->
+<!--                android:layout_marginEnd="50dp"-->
+<!--                android:text="@string/enable_notif" />-->
+        </LinearLayout>
+
         <Button
             android:id="@+id/done_button"
             android:layout_width="match_parent"

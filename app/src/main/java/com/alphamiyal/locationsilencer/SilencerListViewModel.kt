@@ -17,6 +17,10 @@ class SilencerListViewModel: ViewModel() {
 
     }
 
+    fun refreshSilencers(){
+        silencerRepository.getSilencers()
+    }
+
     @RequiresApi(Build.VERSION_CODES.N)
     fun saveSilencer(silencer: Silencer){
         silencerRepository.updateSilencer(silencer)
