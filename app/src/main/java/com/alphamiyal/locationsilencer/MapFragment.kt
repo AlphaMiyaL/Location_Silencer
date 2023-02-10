@@ -5,6 +5,7 @@ import android.content.pm.PackageManager
 import android.graphics.Color
 import android.location.Geocoder
 import android.os.Bundle
+import android.os.Debug
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -122,10 +123,15 @@ class MapFragment(s: Silencer, adrTextView: AutoCompleteTextView, ctyTextView: E
                 }
             }
             else{
-                map.isMyLocationEnabled = true
-                val location = map.myLocation
-                val myLocation = LatLng(location.latitude, location.longitude)
-                map.animateCamera(CameraUpdateFactory.newLatLngZoom(myLocation, 15F))
+                try{
+                    map.isMyLocationEnabled = true
+                    val location = map.myLocation
+                    val myLocation = LatLng(location.latitude, location.longitude)
+                    map.animateCamera(CameraUpdateFactory.newLatLngZoom(myLocation, 15F))
+                }
+                catch (e: Exception){
+                    Log.d(TAG, e.toString())
+                }
             }
         }
 
