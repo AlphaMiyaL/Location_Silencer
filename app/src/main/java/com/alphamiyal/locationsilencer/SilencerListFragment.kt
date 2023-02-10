@@ -1,6 +1,7 @@
 package com.alphamiyal.locationsilencer
 
 import android.content.Context
+import android.media.AudioManager
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -149,6 +150,9 @@ class SilencerListFragment: Fragment() {
                     silencer.on = false
                     //SilenceLocation.get().removeGeofence(silencer.id)
                     silencerListViewModel.saveSilencer(silencer)
+                    //Un-silencing phone before refreshing silencers to silence phone again if in area/time
+                    var audioManager = context!!.getSystemService(Context.AUDIO_SERVICE) as AudioManager
+                    audioManager.ringerMode = AudioManager.RINGER_MODE_NORMAL
                     silencerListViewModel.refreshSilencers()
                 }
             }
