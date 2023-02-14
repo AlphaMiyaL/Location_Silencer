@@ -30,15 +30,18 @@
     <string name="high_acc_perms"><b><u>High Accuracy Location Permissions</u></b></string>
     <string name="dnd_perms"><b><u>Do Not Disturb Permissions</u></b></string>
     <string name="notif_perms"><b><u>Notification Permissions</u></b></string>
-    <string name="loc_details">Our app requires location services to work. It will be
-                                used to check if the user is within the specified
-                                silencing zone.</string>
+    <string name="loc_details">The Geo Silencer App requires access to your device location
+        services in order to determine your location and silence your phone in designated places.
+        As our app utilizes geofences, it requires background location permissions so that our app
+        continues to function when app is not in use. If you choose to revoke access,
+        the Geo Silencer App will not be able to function as intended.</string>
     <string name="loc_details_v1">Tap the button below, and select allow for the prompt</string>
     <string name="loc_details_v2">The button will navigate to the
                                     location settings. Please navigate to App location permissions>
                                     Location Silencer, and set access to "Allow All the Time"</string>
     <string name="high_acc_details">Our app utilizes geofences, which requires high
-                                    accuracy location services.</string>
+        accuracy location services. If you choose to revoke access,
+        the Geo Silencer App will not be able to function as intended.</string>
     <string name="high_acc_details_v1">The button below will
                                     direct to the location settings. Navigate to Advanced>Google
                                     Location Accuracy and turn on "Improve Location Accuracy"</string>
